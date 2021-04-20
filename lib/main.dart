@@ -29,12 +29,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int counter = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print('Floating button clicked');
+          setState(() {
+            counter = counter + 1;
+          });
+          print('Floating button clicked $counter');
         },
         child: Icon(Icons.wifi),
         foregroundColor: Colors.black,
@@ -50,9 +54,20 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text(
+              '$counter',
+              style: GoogleFonts.roboto(
+                fontSize: 30.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
             RaisedButton(
               color: Colors.amber,
               onPressed: () {
+                setState(() {
+                  counter = counter - 1;
+                });
                 print('Raised button clicked');
               },
               child: Text(
