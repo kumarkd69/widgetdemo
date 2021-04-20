@@ -51,47 +51,48 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 6.0,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(
-              '$counter',
-              style: GoogleFonts.roboto(
-                fontSize: 30.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
-            ),
-            RaisedButton(
-              color: Colors.amber,
-              onPressed: () {
-                setState(() {
-                  counter = counter + 1;
-                });
-                print('Raised button clicked');
-              },
-              child: Text(
-                'Click Raised Button',
-                style: GoogleFonts.roboto(
-                  fontSize: 20,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                print('Elevated button clicked');
-              },
-              child: Text(
-                'Click Elevated Button',
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                print('Icon Button Clicked');
-              },
-              icon: Icon(Icons.favorite_border_sharp),
-            ),
+            // Text(
+            //   '$counter',
+            //   style: GoogleFonts.roboto(
+            //     fontSize: 30.0,
+            //     fontWeight: FontWeight.bold,
+            //     color: Colors.blue,
+            //   ),
+            // ),
+            // RaisedButton(
+            //   color: Colors.amber,
+            //   onPressed: () {
+            //     setState(() {
+            //       counter = counter + 1;
+            //     });
+            //     print('Raised button clicked');
+            //   },
+            //   child: Text(
+            //     'Click Raised Button',
+            //     style: GoogleFonts.roboto(
+            //       fontSize: 20,
+            //       color: Colors.black,
+            //     ),
+            //   ),
+            // ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     print('Elevated button clicked');
+            //   },
+            //   child: Text(
+            //     'Click Elevated Button',
+            //   ),
+            // ),
+            // IconButton(
+            //   onPressed: () {
+            //     print('Icon Button Clicked');
+            //   },
+            //   icon: Icon(Icons.favorite_border_sharp),
+            // ),
             OutlineButton(
               onPressed: () {},
               child: Text(
