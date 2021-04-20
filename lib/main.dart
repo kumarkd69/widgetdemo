@@ -36,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            counter = counter + 1;
+            counter = counter - 1;
           });
           print('Floating button clicked $counter');
         },
@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.amber,
               onPressed: () {
                 setState(() {
-                  counter = counter - 1;
+                  counter = counter + 1;
                 });
                 print('Raised button clicked');
               },
