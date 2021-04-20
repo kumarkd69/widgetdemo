@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,7 +21,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
   final String title;
 
   @override
@@ -30,9 +29,65 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int counter = 0;
+
+  int _selectedIndex = 0;
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold, color: Colors.red);
+  static const List<Widget> _widgetOptions = <Widget>[
+    Text(
+      'Home : 0',
+      style: optionStyle,
+    ),
+    Text(
+      'Business : 1',
+      style: optionStyle,
+    ),
+    Text(
+      'School : 2',
+      style: optionStyle,
+    ),
+    Text(
+      'Settings : 3',
+      style: optionStyle,
+    ),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+            backgroundColor: Colors.red,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.business),
+            label: 'Home',
+            backgroundColor: Colors.red,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.school),
+            label: 'Home',
+            backgroundColor: Colors.red,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Home',
+            backgroundColor: Colors.red,
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Colors.amber[800],
+      ),
+      appBar: AppBar(
+        title: Text(widget.title),
+        elevation: 6.0,
+      ),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
@@ -46,77 +101,13 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 6.0,
         focusColor: Colors.amber,
       ),
-      appBar: AppBar(
-        title: Text(widget.title),
-        elevation: 6.0,
-      ),
-      body: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            // Text(
-            //   '$counter',
-            //   style: GoogleFonts.roboto(
-            //     fontSize: 30.0,
-            //     fontWeight: FontWeight.bold,
-            //     color: Colors.blue,
-            //   ),
-            // ),
-            // RaisedButton(
-            //   color: Colors.amber,
-            //   onPressed: () {
-            //     setState(() {
-            //       counter = counter + 1;
-            //     });
-            //     print('Raised button clicked');
-            //   },
-            //   child: Text(
-            //     'Click Raised Button',
-            //     style: GoogleFonts.roboto(
-            //       fontSize: 20,
-            //       color: Colors.black,
-            //     ),
-            //   ),
-            // ),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     print('Elevated button clicked');
-            //   },
-            //   child: Text(
-            //     'Click Elevated Button',
-            //   ),
-            // ),
-            // IconButton(
-            //   onPressed: () {
-            //     print('Icon Button Clicked');
-            //   },
-            //   icon: Icon(Icons.favorite_border_sharp),
-            // ),
-            OutlineButton(
-              onPressed: () {},
-              child: Text(
-                'Outlined Button',
-                style: GoogleFonts.roboto(
-                  fontSize: 20.0,
-                ),
-              ),
-              focusColor: Colors.blue,
-              hoverColor: Colors.blue,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: Text(
-                'Text Button',
-                style: GoogleFonts.roboto(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+
+    });
   }
 }
