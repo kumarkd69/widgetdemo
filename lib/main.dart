@@ -10,6 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -40,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
           });
           print('Floating button clicked $counter');
         },
-        child: Icon(Icons.wifi),
+        child: Icon(Icons.minimize),
         foregroundColor: Colors.black,
         backgroundColor: Colors.yellow,
         elevation: 6.0,
@@ -92,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               icon: Icon(Icons.favorite_border_sharp),
             ),
-            OutlineButton(
+            OutlinedButton(
               onPressed: () {},
               child: Text(
                 'Outlined Button',
@@ -100,8 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   fontSize: 20.0,
                 ),
               ),
-              focusColor: Colors.blue,
-              hoverColor: Colors.blue,
+              autofocus: true,
             ),
             TextButton(
               onPressed: () {},
@@ -113,6 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
+
           ],
         ),
       ),
