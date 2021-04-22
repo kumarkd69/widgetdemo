@@ -29,6 +29,25 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+void alterfunction(BuildContext context) {
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Contact Info'),
+          content: Text('mail us at: maail@nextingo.in'),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      });
+}
+
 class _MyHomePageState extends State<MyHomePage> {
   int counter = 0;
   @override
@@ -42,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListView(
           padding: EdgeInsets.all(10.0),
           children: <Widget>[
+            TextButton(onPressed: (), child: child)
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
               child: Container(
@@ -59,7 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   borderRadius: BorderRadius.circular(20.0),
                   color: Colors.amberAccent,
                   border: Border.all(
-                      width: 1.0, color: Colors.black,
+                      width: 1.0,
+                      color: Colors.black,
                       style: BorderStyle.solid),
                 ),
               ),
@@ -77,8 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 decoration: BoxDecoration(
                   color: Colors.blueAccent,
-                  border: Border.all(width: 1.0, 
-                  color: Colors.black),
+                  border: Border.all(width: 1.0, color: Colors.black),
                 ),
               ),
             ),
