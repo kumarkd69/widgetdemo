@@ -53,86 +53,91 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 6.0,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextButton(
-              onPressed: () {
-                  showDialog(
+        child: ListView(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                
+                TextButton(
+                  onPressed: () {
+                      showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          titlePadding: EdgeInsets.all(10.0),
-          backgroundColor: Colors.lightBlue,
-          insetPadding: EdgeInsets.all(20.0),
-          contentTextStyle: TextStyle(color: Colors.blue),
-          title: Text('Contact Info'),
-          content: Text('mail us at: maail@nextingo.in'),
-          actions: <Widget>[],
-        );
+            return AlertDialog(
+              titlePadding: EdgeInsets.all(10.0),
+              backgroundColor: Colors.lightBlue,
+              insetPadding: EdgeInsets.all(20.0),
+              contentTextStyle: TextStyle(color: Colors.blue),
+              title: Text('Contact Info'),
+              content: Text('mail us at: maail@nextingo.in'),
+              actions: <Widget>[],
+            );
       });
-              },
-              child: Text('Contact'),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Container(
-                padding: EdgeInsets.all(20.0),
-                height: 200.0,
-                width: MediaQuery.of(context).size.width,
-                child: Text(
-                  'Container 1',
-                  style: GoogleFonts.roboto(
-                    fontSize: 20.0,
+                  },
+                  child: Text('Contact'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: Container(
+                    padding: EdgeInsets.all(20.0),
+                    height: 200.0,
+                    width: MediaQuery.of(context).size.width,
+                    child: Text(
+                      'Container 1',
+                      style: GoogleFonts.roboto(
+                        fontSize: 20.0,
+                      ),
+                    ),
+                    margin: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      color: Colors.amberAccent,
+                      border: Border.all(
+                          width: 1.0,
+                          color: Colors.black,
+                          style: BorderStyle.solid),
+                    ),
                   ),
                 ),
-                margin: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  color: Colors.amberAccent,
-                  border: Border.all(
-                      width: 1.0,
-                      color: Colors.black,
-                      style: BorderStyle.solid),
+                
+                ElevatedButton(
+                  onPressed: () {
+                    print('Elevated button clicked');
+                  },
+                  child: Text(
+                    'Click Elevated Button',
+                  ),
                 ),
-              ),
-            ),
-            
-            ElevatedButton(
-              onPressed: () {
-                print('Elevated button clicked');
-              },
-              child: Text(
-                'Click Elevated Button',
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                print('Icon Button Clicked');
-              },
-              icon: Icon(Icons.favorite_border_sharp),
-            ),
-            OutlinedButton(
-              onPressed: () {},
-              child: Text(
-                'Outlined Button',
-                style: GoogleFonts.roboto(
-                  fontSize: 20.0,
+                IconButton(
+                  onPressed: () {
+                    print('Icon Button Clicked');
+                  },
+                  icon: Icon(Icons.favorite_border_sharp),
                 ),
-              ),
-              autofocus: true,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: Text(
-                'Text Button',
-                style: GoogleFonts.roboto(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+                OutlinedButton(
+                  onPressed: () {},
+                  child: Text(
+                    'Outlined Button',
+                    style: GoogleFonts.roboto(
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  autofocus: true,
                 ),
-              ),
-            ),
+                TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    'Text Button',
+                    style: GoogleFonts.roboto(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
 
+              ],
+            ),
           ],
         ),
       ),
