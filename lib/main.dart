@@ -29,6 +29,25 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+<<<<<<< Updated upstream
+=======
+void alterfunction(BuildContext context) {
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          titlePadding: EdgeInsets.all(10.0),
+          backgroundColor: Colors.lightBlue,
+          insetPadding: EdgeInsets.all(20.0),
+          contentTextStyle: TextStyle(color: Colors.blue),
+          title: Text('Contact Info'),
+          content: Text('mail us at: maail@nextingo.in'),
+          actions: <Widget>[],
+        );
+      });
+}
+
+>>>>>>> Stashed changes
 class _MyHomePageState extends State<MyHomePage> {
   int counter = 0;
   @override
@@ -55,12 +74,42 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+<<<<<<< Updated upstream
             Text(
               '$counter',
               style: GoogleFonts.roboto(
                 fontSize: 30.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.blue,
+=======
+            TextButton(
+              onPressed: () {
+                alterfunction(context);
+              },
+              child: Text('Contact'),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: Container(
+                padding: EdgeInsets.all(20.0),
+                height: 200.0,
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  'Container 1',
+                  style: GoogleFonts.roboto(
+                    fontSize: 20.0,
+                  ),
+                ),
+                margin: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Colors.amberAccent,
+                  border: Border.all(
+                      width: 1.0,
+                      color: Colors.black,
+                      style: BorderStyle.solid),
+                ),
+>>>>>>> Stashed changes
               ),
             ),
             RaisedButton(
