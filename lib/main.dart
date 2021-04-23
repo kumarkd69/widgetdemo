@@ -29,7 +29,6 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-
 class _MyHomePageState extends State<MyHomePage> {
   int counter = 0;
   @override
@@ -58,22 +57,55 @@ class _MyHomePageState extends State<MyHomePage> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                TextField(
+                  obscureText: false,
+                  style: GoogleFonts.montserrat(
+                    fontSize: 20.0,
+                  ),
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    hintText: 'Email',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                  ),
+                ),
+
                 
+                Material(
+                  elevation: 5,
+                  borderRadius: BorderRadius.circular(30),
+                  color: Colors.black,
+                  child: MaterialButton(
+                    onPressed: () {},
+                    padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                    child: Text(
+                      'Sign in',
+                      style: GoogleFonts.montserrat(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    minWidth: MediaQuery.of(context).size.width,
+                  ),
+                ),
+
+
                 TextButton(
                   onPressed: () {
-                      showDialog(
-      context: context,
-      builder: (BuildContext context) {
-            return AlertDialog(
-              titlePadding: EdgeInsets.all(10.0),
-              backgroundColor: Colors.lightBlue,
-              insetPadding: EdgeInsets.all(20.0),
-              contentTextStyle: TextStyle(color: Colors.blue),
-              title: Text('Contact Info'),
-              content: Text('mail us at: maail@nextingo.in'),
-              actions: <Widget>[],
-            );
-      });
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            titlePadding: EdgeInsets.all(10.0),
+                            backgroundColor: Colors.lightBlue,
+                            insetPadding: EdgeInsets.all(20.0),
+                            contentTextStyle: TextStyle(color: Colors.blue),
+                            title: Text('Contact Info'),
+                            content: Text('mail us at: maail@nextingo.in'),
+                            actions: <Widget>[],
+                          );
+                        });
                   },
                   child: Text('Contact'),
                 ),
@@ -100,7 +132,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-                
                 ElevatedButton(
                   onPressed: () {
                     print('Elevated button clicked');
@@ -135,7 +166,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-
               ],
             ),
           ],
