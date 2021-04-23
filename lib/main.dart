@@ -52,21 +52,110 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     final txtField = TextField(
-                  obscureText: false,
-                  style: GoogleFonts.montserrat(
-                    fontSize: 20.0,
-                  ),
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    hintText: 'Email',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                  ),
-                );
+      obscureText: false,
+      style: GoogleFonts.montserrat(
+        fontSize: 20.0,
+      ),
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        hintText: 'Email',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+      ),
+    );
 
+    final txtButton1 = TextButton(
+      onPressed: () {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                titlePadding: EdgeInsets.all(10.0),
+                backgroundColor: Colors.lightBlue,
+                insetPadding: EdgeInsets.all(20.0),
+                contentTextStyle: TextStyle(color: Colors.blue),
+                title: Text('Contact Info'),
+                content: Text('mail us at: maail@nextingo.in'),
+                actions: <Widget>[],
+              );
+            });
+      },
+      child: Text('Contact'),
+    );
 
+    final container1 = Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: Container(
+        padding: EdgeInsets.all(20.0),
+        height: 200.0,
+        width: MediaQuery.of(context).size.width,
+        child: Text(
+          'Container 1',
+          style: GoogleFonts.roboto(
+            fontSize: 20.0,
+          ),
+        ),
+        margin: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          color: Colors.amberAccent,
+          border: Border.all(
+              width: 1.0, color: Colors.black, style: BorderStyle.solid),
+        ),
+      ),
+    );
 
+    final elevatedButon = Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: Container(
+        padding: EdgeInsets.all(20.0),
+        height: 200.0,
+        width: MediaQuery.of(context).size.width,
+        child: Text(
+          'Container 1',
+          style: GoogleFonts.roboto(
+            fontSize: 20.0,
+          ),
+        ),
+        margin: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          color: Colors.amberAccent,
+          border: Border.all(
+              width: 1.0, color: Colors.black, style: BorderStyle.solid),
+        ),
+      ),
+    );
+
+    final iconButton = IconButton(
+      onPressed: () {
+        print('Icon Button Clicked');
+      },
+      icon: Icon(Icons.favorite_border_sharp),
+    );
+
+    final oulinedButton = OutlinedButton(
+      onPressed: () {},
+      child: Text(
+        'Outlined Button',
+        style: GoogleFonts.roboto(
+          fontSize: 20.0,
+        ),
+      ),
+      autofocus: true,
+    );
+
+    final txtButton2 = TextButton(
+      onPressed: () {},
+      child: Text(
+        'Text Button',
+        style: GoogleFonts.roboto(
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -82,96 +171,29 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 6.0,
         focusColor: Colors.amber,
       ),
+ 
+
       appBar: AppBar(
         title: Text(widget.title),
         elevation: 6.0,
       ),
+
+
+
       body: Center(
         child: ListView(
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                
                 txtField,
- 
                 loginButton,
-
-                TextButton(
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            titlePadding: EdgeInsets.all(10.0),
-                            backgroundColor: Colors.lightBlue,
-                            insetPadding: EdgeInsets.all(20.0),
-                            contentTextStyle: TextStyle(color: Colors.blue),
-                            title: Text('Contact Info'),
-                            content: Text('mail us at: maail@nextingo.in'),
-                            actions: <Widget>[],
-                          );
-                        });
-                  },
-                  child: Text('Contact'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: Container(
-                    padding: EdgeInsets.all(20.0),
-                    height: 200.0,
-                    width: MediaQuery.of(context).size.width,
-                    child: Text(
-                      'Container 1',
-                      style: GoogleFonts.roboto(
-                        fontSize: 20.0,
-                      ),
-                    ),
-                    margin: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      color: Colors.amberAccent,
-                      border: Border.all(
-                          width: 1.0,
-                          color: Colors.black,
-                          style: BorderStyle.solid),
-                    ),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    print('Elevated button clicked');
-                  },
-                  child: Text(
-                    'Click Elevated Button',
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    print('Icon Button Clicked');
-                  },
-                  icon: Icon(Icons.favorite_border_sharp),
-                ),
-                OutlinedButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Outlined Button',
-                    style: GoogleFonts.roboto(
-                      fontSize: 20.0,
-                    ),
-                  ),
-                  autofocus: true,
-                ),
-                TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Text Button',
-                    style: GoogleFonts.roboto(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                txtButton1,
+                container1,
+                elevatedButon,
+                iconButton,
+                oulinedButton,
+                txtButton2,
               ],
             ),
           ],
