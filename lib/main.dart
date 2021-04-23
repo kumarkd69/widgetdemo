@@ -29,13 +29,17 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
+=======
+>>>>>>> f448d05b01b2616e22a8fdfe03a806601b8d8cd9
 void alterfunction(BuildContext context) {
   showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+<<<<<<< HEAD
           titlePadding: EdgeInsets.all(10.0),
           backgroundColor: Colors.lightBlue,
           insetPadding: EdgeInsets.all(20.0),
@@ -43,37 +47,40 @@ void alterfunction(BuildContext context) {
           title: Text('Contact Info'),
           content: Text('mail us at: maail@nextingo.in'),
           actions: <Widget>[],
+=======
+          title: Text('Contact Info'),
+          content: Text('mail us at: maail@nextingo.in'),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+>>>>>>> f448d05b01b2616e22a8fdfe03a806601b8d8cd9
         );
       });
 }
 
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> f448d05b01b2616e22a8fdfe03a806601b8d8cd9
 class _MyHomePageState extends State<MyHomePage> {
   int counter = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            counter = counter - 1;
-          });
-          print('Floating button clicked $counter');
-        },
-        child: Icon(Icons.minimize),
-        foregroundColor: Colors.black,
-        backgroundColor: Colors.yellow,
-        elevation: 6.0,
-        focusColor: Colors.amber,
-      ),
       appBar: AppBar(
         title: Text(widget.title),
         elevation: 6.0,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
+          padding: EdgeInsets.all(10.0),
           children: <Widget>[
+<<<<<<< HEAD
 <<<<<<< Updated upstream
             Text(
               '$counter',
@@ -88,6 +95,9 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: Text('Contact'),
             ),
+=======
+            TextButton(onPressed: (), child: child)
+>>>>>>> f448d05b01b2616e22a8fdfe03a806601b8d8cd9
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
               child: Container(
@@ -108,6 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: 1.0,
                       color: Colors.black,
                       style: BorderStyle.solid),
+<<<<<<< HEAD
                 ),
 >>>>>>> Stashed changes
               ),
@@ -125,44 +136,45 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: GoogleFonts.roboto(
                   fontSize: 20,
                   color: Colors.black,
+=======
+>>>>>>> f448d05b01b2616e22a8fdfe03a806601b8d8cd9
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                print('Elevated button clicked');
-              },
-              child: Text(
-                'Click Elevated Button',
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                print('Icon Button Clicked');
-              },
-              icon: Icon(Icons.favorite_border_sharp),
-            ),
-            OutlinedButton(
-              onPressed: () {},
-              child: Text(
-                'Outlined Button',
-                style: GoogleFonts.roboto(
-                  fontSize: 20.0,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: Container(
+                height: 200.0,
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  'Container 2',
+                  style: GoogleFonts.roboto(
+                    fontSize: 20.0,
+                  ),
                 ),
-              ),
-              autofocus: true,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: Text(
-                'Text Button',
-                style: GoogleFonts.roboto(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+                decoration: BoxDecoration(
+                  color: Colors.blueAccent,
+                  border: Border.all(width: 1.0, color: Colors.black),
                 ),
               ),
             ),
-
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: Container(
+                height: 200.0,
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  'Container 3',
+                  style: GoogleFonts.roboto(
+                    fontSize: 20.0,
+                  ),
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.deepOrangeAccent,
+                  border: Border.all(width: 1.0, color: Colors.black),
+                ),
+              ),
+            ),
           ],
         ),
       ),
