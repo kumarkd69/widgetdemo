@@ -33,6 +33,41 @@ class _MyHomePageState extends State<MyHomePage> {
   int counter = 0;
   @override
   Widget build(BuildContext context) {
+    final loginButton = Material(
+      elevation: 5,
+      borderRadius: BorderRadius.circular(30),
+      color: Colors.black,
+      child: MaterialButton(
+        onPressed: () {},
+        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        child: Text(
+          'Sign in',
+          style: GoogleFonts.montserrat(
+            fontSize: 20,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        minWidth: MediaQuery.of(context).size.width,
+      ),
+    );
+
+    final txtField = TextField(
+                  obscureText: false,
+                  style: GoogleFonts.montserrat(
+                    fontSize: 20.0,
+                  ),
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    hintText: 'Email',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                  ),
+                );
+
+
+
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -57,39 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                TextField(
-                  obscureText: false,
-                  style: GoogleFonts.montserrat(
-                    fontSize: 20.0,
-                  ),
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    hintText: 'Email',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                  ),
-                ),
-
                 
-                Material(
-                  elevation: 5,
-                  borderRadius: BorderRadius.circular(30),
-                  color: Colors.black,
-                  child: MaterialButton(
-                    onPressed: () {},
-                    padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-                    child: Text(
-                      'Sign in',
-                      style: GoogleFonts.montserrat(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    minWidth: MediaQuery.of(context).size.width,
-                  ),
-                ),
-
+                txtField,
+ 
+                loginButton,
 
                 TextButton(
                   onPressed: () {
