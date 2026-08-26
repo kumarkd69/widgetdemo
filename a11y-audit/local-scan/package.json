@@ -1,0 +1,19 @@
+{
+  "name": "tot-a11y-local-scan",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local WCAG 2.1 AA scan pipeline for theoriginaltour.com — runs on a machine with real network access, produces the final Excel workbook.",
+  "type": "commonjs",
+  "scripts": {
+    "crawl": "node scripts/01_crawl_site.js",
+    "scan": "node scripts/02_run_axe_scan.js",
+    "contrast": "node scripts/03_contrast_check.js",
+    "merge": "node scripts/04_merge_to_xlsx.js",
+    "all": "npm run crawl && npm run scan && npm run contrast && npm run merge"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "^4.10.1",
+    "exceljs": "^4.4.0",
+    "playwright": "^1.48.0"
+  }
+}

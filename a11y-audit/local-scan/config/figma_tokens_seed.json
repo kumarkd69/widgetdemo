@@ -1,0 +1,68 @@
+{
+  "tokens": [
+    { "token": "01-text/inverse", "hex": "#ffffff", "status": "context-dependent", "notes": "Passes on Footer BG (13.07:1), brand red (4.87:1), action primary (9.45:1)" },
+    { "token": "10-brand/accent", "hex": "#9cd1f3", "on": "#ffffff", "ratio": 1.64, "needed": 3.0, "status": "fail", "fix": "#3f8fc4", "notes": "Or confirm decorative-only use" },
+    { "token": "06-border/strong", "hex": "#a3a3a3", "on": "#ffffff", "ratio": 2.52, "needed": 3.0, "status": "fail", "fix": "#767676" },
+    { "token": "02-background/brand", "hex": "#e30910", "status": "pass-as-bg" },
+    { "token": "info/icon", "hex": "#2467c0", "on": "#ffffff", "ratio": 5.56, "needed": 3.0, "status": "pass" },
+    { "token": "02-background/primary", "hex": "#ffffff", "status": "n/a-background" },
+    { "token": "03-action/primary-pressed", "hex": "#e30910", "status": "pass-as-bg" },
+    { "token": "03-action/primary", "hex": "#164291", "on": "#ffffff-text", "ratio": 9.45, "needed": 4.5, "status": "pass", "notes": "inverse text on this bg passes" },
+    { "token": "01-text/primary", "hex": "#171717", "on": "#ffffff", "ratio": 17.93, "needed": 4.5, "status": "pass" },
+    { "token": "01-text/secondary", "hex": "#525252", "on": "#ffffff", "ratio": 7.81, "needed": 4.5, "status": "pass" },
+    { "token": "04-icon/primary", "hex": "#171717", "status": "pass" },
+    { "token": "Divider", "hex": "#f3dde9", "status": "decorative" },
+    { "token": "06-border/primary", "hex": "#e5e5e5", "on": "#ffffff", "ratio": 1.26, "needed": 3.0, "status": "fail", "fix": "#8f8f8f", "notes": "functional borders e.g. inputs" },
+    { "token": "01-text/link", "hex": "#164291", "on": "#ffffff", "ratio": 9.45, "needed": 4.5, "status": "pass" },
+    { "token": "04-icon/disabled", "hex": "#d4d4d4", "on": "#ffffff", "ratio": 1.48, "needed": 3.0, "status": "fail", "fix": "#8f8f8f", "fix_ratio": 3.4 },
+    { "token": "03-action/primary-hover", "hex": "#4398d4", "textOn": "#ffffff", "ratio": 3.14, "needed": 4.5, "status": "fail_critical", "fix": "#2a6fa8 (keep white text, 7.1:1) OR keep #4398d4 bg + switch text to #171717 (7.9:1)", "notes": "CRITICAL — every primary button hover state fails" },
+    { "token": "01-text/tertiary", "hex": "#a3a3a3", "on": "#ffffff", "ratio": 2.52, "needed": 4.5, "status": "fail", "fix": "#767676", "fix_ratio": 4.54 },
+    { "token": "01-text/disabled", "hex": "#d4d4d4", "on": "#ffffff", "ratio": 1.48, "needed": "3-4.5", "status": "fail", "fix": "#949494", "fix_ratio": 4.2 },
+    { "token": "02-background/secondary", "hex": "#fafafa", "status": "n/a-background" },
+    { "token": "03-action/secondary-hover", "hex": "#c2070d", "status": "pass-as-bg" },
+    { "token": "07-link/default", "hex": "#164291", "status": "pass" },
+    { "token": "05-surface/overlay", "hex": "#171717", "status": "n/a-background" },
+    { "token": "success/icon", "hex": "#16a34a", "on": "#ffffff", "ratio": 3.3, "needed": 4.5, "status": "fail_as_text", "fix": "Split token: keep #16a34a for icons (passes 3:1); add success/text = #15803d (4.6:1) for copy" },
+    { "token": "07-link/pressed", "hex": "#e30910", "status": "pass-as-bg" },
+    { "token": "05-surface/secondary", "hex": "#fafafa", "status": "n/a-background" },
+    { "token": "success/background", "hex": "#f0fdf4", "status": "n/a-background" },
+    { "token": "success/border", "hex": "#86efac", "status": "decorative" },
+    { "token": "04-icon/secondary", "hex": "#737373", "status": "pass" },
+    { "token": "warning/text", "hex": "#b45309", "on": "#ffffff", "ratio": 5.02, "needed": 4.5, "status": "pass" },
+    { "token": "09-route/blue/light", "hex": "#dce8f7", "status": "decorative" },
+    { "token": "11-primitive/red/200", "hex": "#fac5c5", "status": "decorative" },
+    { "token": "04-icon/inverse", "hex": "#ffffff", "status": "context-dependent" },
+    { "token": "semantic/text/link", "hex": "#e30910", "on": "#ffffff", "ratio": 4.87, "needed": 4.5, "status": "pass" },
+    { "token": "Footer BG", "hex": "#002b76", "status": "pass-as-bg", "notes": "inverse text 13.07:1" },
+    { "token": "11-primitive/amber/500", "hex": "#f59e0b", "on": "#ffffff", "ratio": 2.15, "needed": 3.0, "status": "fail", "fix": "#b45309", "notes": "reuse existing passing warning/text token" },
+    { "token": "11-primitive/neutral/300", "hex": "#d4d4d4", "on": "#ffffff", "ratio": 1.48, "needed": 3.0, "status": "fail", "fix": "#8f8f8f" },
+    { "token": "06-border/focus", "hex": "#164291", "on": "#ffffff", "ratio": 9.45, "needed": 3.0, "status": "pass" },
+    { "token": "Paper BG", "hex": "#f8f5ef", "status": "pass-as-bg", "notes": "text on Paper BG 15.75:1" },
+    { "token": "Header", "hex": "#efe8da", "status": "pass-as-bg", "notes": "text on Header bg 14.71:1" },
+    { "token": "Text Black", "hex": "#191c1d", "status": "pass" }
+  ],
+  "type_scale_note": "All type tokens are Proxima Nova except Titles/Mobile/H5, which is Inter Semi Bold — flag as inconsistency (INCONSISTENT-FONT finding).",
+  "seed_frame_findings": [
+    {
+      "section": "Booking Flow",
+      "frame": "Sidebar nav (concept)",
+      "issue": "Sidebar nav items show no distinct keyboard-focus-visible style separate from hover/active",
+      "wcag_sc": "2.4.7",
+      "severity": "serious"
+    },
+    {
+      "section": "Home / Mobile",
+      "frame": "Menu / mobile-Home concept",
+      "issue": "Hero search widget icon affordances are ~24x24px touch target, below 44x44 minimum",
+      "wcag_sc": "2.5.5",
+      "severity": "moderate"
+    },
+    {
+      "section": "Home / Mobile",
+      "frame": "Menu / mobile-Home concept",
+      "issue": "Decorative illustration layers (pigeons, trees, skyline art) have unclear alt-text/aria-hidden strategy",
+      "wcag_sc": "1.1.1",
+      "severity": "moderate"
+    }
+  ]
+}
