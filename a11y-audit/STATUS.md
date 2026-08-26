@@ -2,69 +2,68 @@
 
 _Last updated: 2026-08-26_
 
-## Blocker (why this isn't fully automated end-to-end)
+## Both phases COMPLETE
 
-This remote session's network egress policy blocks `theoriginaltour.com`
-outright (confirmed via both raw HTTPS and the WebFetch tool — `403` /
-`EGRESS_BLOCKED` on both `www.` and the apex domain). That's a policy
-decision at the environment level, not something fixable from inside the
-session. Two ways to unblock:
+### Deliverables
+- `a11y-audit/output/TOT_WCAG21AA_Audit_FULL.xlsx` — 7-tab workbook covering both phases (496 issues)
+- Figma page **"Prod Accessibility Issues"** (node `14651:221`) in file `NpuVbHpQHxyeiIG2KKupwv`
 
-- Allowlist the domain in this environment's network settings (claude.ai/code
-  → Environments → this environment), then Phase 1 can run directly from
-  here end-to-end as originally scoped.
-- Run the scan locally, per below (current path).
+## Phase 1 — Live Site: COMPLETE
 
-## Phase 1 — Live Site
+Ran from the user's own machine (this session's egress policy blocks
+`theoriginaltour.com`; pipeline in `local-scan/` was built and validated here,
+then executed locally).
 
-**Status: pipeline built and validated, not yet run against the real site.**
+- 69 pages crawled, 138 page-views scanned (desktop 1440 + mobile 390)
+- 100% scan success, 0 auth-blocked pages
+- 202 raw axe violations, 269 confirmed contrast re-checks
+- 360 deduped issues
 
-- `a11y-audit/local-scan/` — a complete, tested Node.js pipeline
-  (Playwright + axe-core + exceljs) implementing the full spec: sitemap +
-  BFS crawl, axe scan per page × viewport, scripted manual checks (focus
-  order/indicator contrast, hover-state contrast, disabled-state contrast,
-  form-error association, skip link, keyboard-trap detection,
-  prefers-reduced-motion, 200%-zoom overflow), contrast re-derivation
-  cross-referenced against the validated Figma token seed data, and a
-  4-tab Excel workbook builder with dedupe, severity color-coding, frozen
-  headers, and autofilter.
-- **Verified working**: ran `node --check` on every script, installed
-  dependencies, and dry-ran the merge step against representative mock
-  scan data — it produced a valid `.xlsx` (4 sheets, correct row counts,
-  re-opened and validated after write). The merge/report logic is proven;
-  only the actual network fetch against the live site is blocked here.
-- **Next action**: run `npm run all` inside `a11y-audit/local-scan/` from a
-  machine with real access to `theoriginaltour.com` (confirmed available on
-  the user's personal laptop). See that folder's `README.md` for exact
-  steps. Output lands at `a11y-audit/local-scan/output/TOT_WCAG21AA_Audit.xlsx`.
+Top findings: no focus indicator (69/69 pages), no skip link (69/69), 200% zoom
+reflow failure (69/69), 185 instances of light-text-on-light-background, 1
+keyboard trap, 17 pages with keyboard-inaccessible scroll regions.
 
-## Phase 2 — Figma
+## Phase 2 — Figma: COMPLETE
 
-**Status: not started (per original instructions — Phase 2 begins only
-after Phase 1 is reviewed).**
+- 287 frames across 27 sections on page `5105:46216` audited
+- 29 component sets on the COMPONENTS page inspected
+- 136 findings (FIG- prefix)
 
-- Figma access confirmed viable from this session: authenticated as the
-  user's account, with View access to "The Original Tour" team, and
-  successfully pulled metadata for node `5105:46216` (page "✅ 1B UI
-  Designs 💻 📱") — 200+ frames confirmed present, matching the brief.
-- `config/figma_tokens_seed.json` (already in the repo) holds the fully
-  validated token contrast table from the seed data, ready to be reused
-  as-is for the Design Tokens tab and cross-referencing in Phase 2.
+### Key correction made during Phase 2
+An early draft finding claimed interactive states were undesigned. That was
+**wrong** — verified against the real component library, `Button- Master` has a
+complete 60-variant matrix (Default/Hover/Pressed/Focus/Disabled x 4 Types x 3
+Sizes). The real finding is more useful: the **Focus state is correctly designed
+and compliant (3.01:1 ring) but never implemented in code**. That reframes the
+69-page focus failure from a design gap to a pure dev gap.
 
-## Files in this repo so far
+Also corrected: the original seed table cited the hover fix `#2a6fa8` at 7.1:1.
+Recomputed from the actual component fill, the true ratio is **5.33:1** — still
+an AA pass, but the earlier figure was overstated.
+
+## Root-cause summary
+
+215 "critical" rows are NOT 215 independent bugs:
+- 185 share one cause (inherited light text on light backgrounds) -> one CSS fix
+- 69-page focus + 69-page skip-link findings are each a single global fix
+- The first 3 items in the Dev Action Plan tab clear ~90% of all findings
+
+## Known limitations (documented in the workbook's Read Me)
+
+1. 5 DRIFT rows report `#ffffff on #ffffff = 1:1` — contrast script falls back to
+   white when it cannot resolve an ancestor background-image. Verify by eye.
+2. Automation cannot judge whether alt text is *meaningful*, only that it exists.
+3. The keyboard trap needs a human to reproduce reliably.
+4. No screen-reader (NVDA/VoiceOver) testing was performed.
+5. Booking/payment flows were not exercised end-to-end.
+
+## Files
 
 ```
 a11y-audit/
-  STATUS.md                          (this file)
-  local-scan/
-    README.md                        run instructions
-    package.json
-    config/settings.js                tunable scan parameters
-    config/figma_tokens_seed.json     validated Figma token contrast table (seed data)
-    scripts/01_crawl_site.js
-    scripts/02_run_axe_scan.js
-    scripts/03_contrast_check.js
-    scripts/04_merge_to_xlsx.js
-    scripts/lib/contrast.js           WCAG luminance/contrast math
-    scripts/lib/wcag_tags.js          axe tag -> WCAG SC mapping
+  STATUS.md
+  output/TOT_WCAG21AA_Audit_FULL.xlsx     final deliverable (7 tabs, 496 issues)
+  phase2/audit_figma.py                    Figma frame-audit script
+  phase2/figma_findings.json               136 Phase 2 findings
+  local-scan/                              Phase 1 pipeline (run locally)
 ```
