@@ -66,25 +66,89 @@ async function reCheckOnPage(browser, url, selectors) {
         });
         const fg = parseColor(style.color);
         let bgColor = parseColor(style.bg);
-        // Walk up ancestors for an opaque background if this element's own bg is transparent
+        let bgSource = 'element';
+
+        // Walk up ancestors for an opaque background if this element's own bg is
+        // transparent. If we hit a background-image/gradient on the way up, the
+        // effective backdrop is a picture, not a flat color — computed styles
+        // cannot tell us the actual pixel behind the text, so we must NOT guess.
+        // (Guessing white here is what produced the bogus "#ffffff on #ffffff
+        // = 1:1" rows in the first run.)
         if (!bgColor || bgColor.a === 0) {
-          bgColor = await loc.evaluate((node) => {
+          const resolved = await loc.evaluate((node) => {
             let el = node.parentElement;
             while (el) {
               const cs = getComputedStyle(el);
+              if (cs.backgroundImage && cs.backgroundImage !== 'none') {
+                return { kind: 'image', detail: cs.backgroundImage.slice(0, 120) };
+              }
               const m = cs.backgroundColor.match(/rgba?\(([^)]+)\)/);
               if (m) {
-                const parts = m[1].split(',').map((s) => parseFloat(s));
-                if ((parts[3] === undefined || parts[3] > 0) && !(parts[0] === 255 && parts[1] === 255 && parts[2] === 255 && parts[3] === 0)) {
-                  if (parts[3] === undefined || parts[3] === 1) return `rgb(${parts[0]}, ${parts[1]}, ${parts[2]})`;
-                }
+                const p = m[1].split(',').map((s) => parseFloat(s));
+                const alpha = p[3] === undefined ? 1 : p[3];
+                if (alpha === 1) return { kind: 'color', value: `rgb(${p[0]}, ${p[1]}, ${p[2]})` };
               }
               el = el.parentElement;
             }
-            return 'rgb(255, 255, 255)'; // default to white page background
-          }).then(parseColor);
+            // Nothing opaque found anywhere up the tree: fall back to the
+            // document canvas color, which IS knowable.
+            const bodyBg = getComputedStyle(document.body).backgroundColor;
+            const htmlBg = getComputedStyle(document.documentElement).backgroundColor;
+            for (const c of [bodyBg, htmlBg]) {
+              const m = c.match(/rgba?\(([^)]+)\)/);
+              if (m) {
+                const p = m[1].split(',').map((s) => parseFloat(s));
+                if ((p[3] === undefined ? 1 : p[3]) === 1) return { kind: 'canvas', value: `rgb(${p[0]}, ${p[1]}, ${p[2]})` };
+              }
+            }
+            return { kind: 'unknown' };
+          });
+
+          if (resolved.kind === 'image') {
+            // Report for human review rather than inventing a ratio.
+            results.push({
+              url,
+              selector: sel,
+              current_fg: toHex(fg),
+              current_bg: 'background-image (unresolvable)',
+              ratio: null,
+              required_ratio: requiredRatioFor(style.fontSize, style.fontWeight),
+              font_size_px: style.fontSize,
+              font_weight: style.fontWeight,
+              classification: 'needs_manual_review',
+              suggested_fix:
+                `Text sits on a background image (${resolved.detail}). Automated contrast math cannot resolve this — ` +
+                `verify by eye at the darkest and lightest points of the image. If it fails, add a scrim/overlay ` +
+                `or a solid text background rather than adjusting the text color alone.`
+            });
+            continue;
+          }
+          if (resolved.kind === 'unknown') continue; // cannot judge; do not guess
+          bgColor = parseColor(resolved.value);
+          bgSource = resolved.kind;
         }
         if (!fg || !bgColor) continue;
+
+        // Identical fg/bg almost always means our backdrop resolution failed
+        // rather than a genuine invisible-text bug. Flag, don't assert.
+        if (toHex(fg) === toHex(bgColor) && bgSource !== 'element') {
+          results.push({
+            url,
+            selector: sel,
+            current_fg: toHex(fg),
+            current_bg: toHex(bgColor),
+            ratio: 1,
+            required_ratio: requiredRatioFor(style.fontSize, style.fontWeight),
+            font_size_px: style.fontSize,
+            font_weight: style.fontWeight,
+            classification: 'needs_manual_review',
+            suggested_fix:
+              'Foreground and resolved background are identical, which usually means the real backdrop could not ' +
+              'be determined from computed styles (image, gradient, canvas or transformed ancestor). Verify by eye ' +
+              'before filing — this row is NOT a confirmed failure.'
+          });
+          continue;
+        }
 
         const compositedFg = compositeOver(fg, bgColor);
         const ratio = contrastRatio(compositedFg, bgColor);
@@ -166,8 +230,11 @@ async function reCheckOnPage(browser, url, selectors) {
   await browser.close();
 
   fs.writeFileSync(abs(cfg.CONTRAST_FILE), JSON.stringify(all, null, 2));
+  const manual = all.filter((r) => r.classification === 'needs_manual_review').length;
   const drift = all.filter((r) => r.classification === 'live_site_drift_from_figma').length;
-  const tokenIssue = all.length - drift;
-  console.log(`[3/4] Wrote ${all.length} confirmed contrast findings to ${cfg.CONTRAST_FILE}`);
-  console.log(`  ${tokenIssue} trace to known Figma token fixes, ${drift} are live-site drift not traced to a token`);
+  const tokenIssue = all.filter((r) => r.classification === 'figma_token_fix_needed').length;
+  console.log(`[3/4] Wrote ${all.length} contrast findings to ${cfg.CONTRAST_FILE}`);
+  console.log(`  ${tokenIssue} trace to known Figma token fixes`);
+  console.log(`  ${drift} are live-site drift not traced to a token`);
+  console.log(`  ${manual} need manual review (background image/gradient — not auto-judgeable)`);
 })();

@@ -68,6 +68,25 @@ Playwright `storageState` / login step to `scripts/02_run_axe_scan.js`
 (`context = await browser.newContext({ storageState: 'auth.json' })`) and
 re-run.
 
+## Re-running later (progress tracking)
+
+After a run, archive it as the comparison point:
+
+```bash
+node scripts/05_diff_runs.js --save-baseline
+```
+
+Then after devs ship fixes, re-run the scan and compare:
+
+```bash
+npm run all
+node scripts/05_diff_runs.js
+```
+
+You get a FIXED / NEW / STILL OPEN breakdown by rule instead of another flat
+list, plus full detail in `data/diff_report.json`. The NEW section is the
+important one — it catches regressions introduced by the fixes themselves.
+
 ## Output
 
 `output/TOT_WCAG21AA_Audit.xlsx` — the complete workbook: Read Me, Design
