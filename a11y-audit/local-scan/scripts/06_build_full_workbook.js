@@ -185,7 +185,20 @@ const readme = [
   ['  SEED-   Pre-existing flagged finding carried into this audit', 10, false],
   ['', 10, false],
   ['READ THE NUMBERS HONESTLY', 11, true],
-  ['  The Master Issue Log row count is NOT a bug count. Work tabs A, B and C instead.', 10, false],
+  ['  The Master Issue Log row count is NOT a bug count, and it does NOT match the', 10, false],
+  ['  audit scorecard. Both are correct; they count different things:', 10, false],
+  ['', 10, false],
+  ['    WCAG22_AA_AUDIT.md says     17 failures, 2 critical   <- distinct DEFECTS, verified', 10, false],
+  ['    This Master Issue Log says  ~555 rows                 <- every INSTANCE + unverified rows', 10, false],
+  ['', 10, false],
+  ['  One CSS token fix resolves 174 rows here but is a single defect in the audit.', 10, false],
+  ['  Roughly 214 rows are marked severity "review" / status "Needs Verification":', 10, false],
+  ['  contrast flagged from computed styles, which cannot account for overlays or', 10, false],
+  ['  positioned parents. Run scripts/07_verify_backdrops.js to confirm or clear them.', 10, false],
+  ['  A further ~70 are text on background images, which no tool can judge, and ~70', 10, false],
+  ['  are inconclusive prefers-reduced-motion notes (2.3.3 is Level AAA regardless).', 10, false],
+  ['', 10, false],
+  ['  For the actionable list, use tabs 1, 2 and 3 — or DEV_FIXES.md.', 10, false],
   ['', 10, false],
   ['  What axe-core actually found across all pages is only FOUR issue types, and one dominates:', 10, false],
   ['    174 elements   grey text #A3A3A3 at 2.52:1  -> one find-and-replace fixes all of them', 10, false],
@@ -317,13 +330,22 @@ for (const c of contrast) {
     continue;
   }
   const isDrift = c.classification === 'live_site_drift_from_figma';
+  // Rows traced to a known Figma token are corroborated by the design audit and
+  // are treated as confirmed. Untraced "drift" rows rest solely on this script's
+  // backdrop resolution, which has produced false positives before, so they are
+  // marked for verification rather than asserted as failures. Running
+  // 07_verify_backdrops.js is what promotes them to confirmed or clears them.
   addLog([nextId(isDrift ? 'DRIFT' : 'LIVE'),
-    isDrift ? 'Live Site (Drift from Figma)' : 'Live Site', c.url, 'Web', c.selector, 'Default',
-    isDrift ? 'Live site uses a colour not traced to any Figma token — implemented differently than designed'
+    isDrift ? 'Live Site (Verify first)' : 'Live Site', c.url, 'Web', c.selector, 'Default',
+    isDrift ? 'Colour not traced to any Figma token. UNCONFIRMED — the backdrop was resolved from computed styles, which cannot account for overlays or positioned parents. Run 07_verify_backdrops.js before treating this as a defect.'
             : `Matches Figma token ${c.nearest_token} — the token itself needs the fix`,
-    '1.4.3', c.ratio < 3 ? 'critical' : 'serious',
+    '1.4.3',
+    isDrift ? 'review' : (c.ratio < 3 ? 'critical' : 'serious'),
     `${c.current_fg} on ${c.current_bg} = ${c.ratio}:1 (needs ${c.required_ratio}:1)`,
-    c.suggested_fix, isDrift ? 'Dev' : 'Designer + Dev', 'Open', '']);
+    c.suggested_fix,
+    isDrift ? 'Dev (verify first)' : 'Designer + Dev',
+    isDrift ? 'Needs Verification' : 'Open',
+    isDrift ? 'Not counted in the audit scorecard until verified.' : '']);
 }
 // reduced motion
 for (const [url, list] of Object.entries(reducedMotion)) {
@@ -696,4 +718,9 @@ vfWs.autoFilter = { from: 'A1', to: `F${vfWs.rowCount}` };
   console.log(`  Live site: ${uniquePages} pages, ${pages.length} page-views`);
   console.log(`  Contrast: ${tokenTraced} token-traced, ${drift} drift, ${manualReview} needs-manual-review`);
   console.log(`  Design file: ${figFindings.length} findings`);
+  console.log('');
+  console.log('  NOTE: this row count is not a defect count. Roughly ' + drift + ' rows are');
+  console.log('  marked "Needs Verification" and ' + manualReview + ' are text on imagery that no tool');
+  console.log('  can judge. Run scripts/07_verify_backdrops.js to resolve them, then');
+  console.log('  work tabs 1-3 (or DEV_FIXES.md) rather than the Master Issue Log.');
 })();
