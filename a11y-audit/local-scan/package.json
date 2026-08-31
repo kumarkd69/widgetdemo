@@ -9,7 +9,9 @@
     "scan": "node scripts/02_run_axe_scan.js",
     "contrast": "node scripts/03_contrast_check.js",
     "merge": "node scripts/04_merge_to_xlsx.js",
-    "all": "npm run crawl && npm run scan && npm run contrast && npm run merge"
+    "full": "node scripts/06_build_full_workbook.js",
+    "all": "npm run crawl && npm run scan && npm run contrast && npm run merge",
+    "everything": "npm run crawl && npm run scan && npm run contrast && npm run full"
   },
   "dependencies": {
     "@axe-core/playwright": "^4.10.1",

@@ -87,6 +87,24 @@ You get a FIXED / NEW / STILL OPEN breakdown by rule instead of another flat
 list, plus full detail in `data/diff_report.json`. The NEW section is the
 important one — it catches regressions introduced by the fixes themselves.
 
+## Building the COMPLETE workbook (both phases)
+
+`npm run all` produces the Phase 1 workbook only. To get the full 7-tab file
+that also includes the Phase 2 Figma findings, the component state matrix and
+the developer action plan:
+
+```bash
+npm run full            # after a scan has already run
+```
+
+or do the whole thing in one go:
+
+```bash
+npm run everything      # crawl + scan + contrast + full workbook
+```
+
+Output: `output/TOT_WCAG21AA_Audit_FULL.xlsx` — this is the file to circulate.
+
 ## Output
 
 `output/TOT_WCAG21AA_Audit.xlsx` — the complete workbook: Read Me, Design
