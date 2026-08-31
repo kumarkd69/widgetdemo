@@ -1,27 +1,53 @@
 # The Original Tour — WCAG 2.1 AA Audit: Status
 
-_Last updated: 2026-08-26_
+_Last updated: 2026-08-31 (re-scan)_
 
-## Both phases COMPLETE
+## Both phases COMPLETE — live site re-scanned 31 Aug
 
 ### Deliverables
-- `a11y-audit/output/TOT_WCAG21AA_Audit_FULL.xlsx` — 7-tab workbook covering both phases (496 issues)
-- Figma page **"Prod Accessibility Issues"** (node `14651:221`) in file `NpuVbHpQHxyeiIG2KKupwv`
+- `output/TOT_WCAG21AA_Audit_FULL.xlsx` — 7-tab workbook, both phases.
+  Regenerate any time with `npm run full` in `local-scan/`.
+- Figma page **"Prod Accessibility Issues"** (node `14651:221`) in file
+  `NpuVbHpQHxyeiIG2KKupwv`.
 
-## Phase 1 — Live Site: COMPLETE
+## Phase 1 — Live Site
 
-Ran from the user's own machine (this session's egress policy blocks
-`theoriginaltour.com`; pipeline in `local-scan/` was built and validated here,
-then executed locally).
+Runs from a machine with real network access (this session's egress policy
+blocks `theoriginaltour.com`; the pipeline is built and validated here, then
+executed locally).
 
-- 69 pages crawled, 138 page-views scanned (desktop 1440 + mobile 390)
-- 100% scan success, 0 auth-blocked pages
-- 202 raw axe violations, 269 confirmed contrast re-checks
-- 360 deduped issues
+### Re-scan comparison
 
-Top findings: no focus indicator (69/69 pages), no skip link (69/69), 200% zoom
-reflow failure (69/69), 185 instances of light-text-on-light-background, 1
-keyboard trap, 17 pages with keyboard-inaccessible scroll regions.
+| | 26 Aug | 31 Aug | |
+|---|---|---|---|
+| Pages / page-views | 69 / 138 | 69 / 138 | unchanged |
+| Raw axe violations | 202 | 202 | **identical** |
+| Contrast findings | 269 | 330 | +61 |
+| → token-traced | 45 | 46 | ~same |
+| → live-site drift | 224 | 214 | −10 |
+| → needs manual review | n/a | 70 | new category |
+| Phase 1 issue log | 360 | 420 | +60 |
+
+**No fixes have shipped between the two runs.** The axe violation count is
+identical at 202 — same rules, same pages. None of the Dev Action Plan items
+have landed yet.
+
+**The count increase is a script correction, not new problems.** The +61 is
+almost entirely the 70 new `needs_manual_review` rows: text sitting on a
+background image or gradient, where computed styles cannot resolve the real
+backdrop. The old script silently assumed white and either fabricated a
+failure or dropped the case. Drift correspondingly fell 224 → 214 and the
+bogus `#ffffff on #ffffff` rows are gone. **The report is more accurate even
+though the number went up.**
+
+Top findings (unchanged): no focus indicator site-wide, no skip link
+site-wide, 200% zoom reflow failure site-wide, large cluster of
+light-text-on-light-background, keyboard-inaccessible scroll regions on the
+route-map pages.
+
+### Baseline
+`data/baseline/` holds the 31 Aug run (138 page files). Future runs:
+`npm run all && node scripts/05_diff_runs.js` → FIXED / NEW / STILL OPEN.
 
 ## Phase 2 — Figma: COMPLETE
 
@@ -35,7 +61,8 @@ An early draft finding claimed interactive states were undesigned. That was
 complete 60-variant matrix (Default/Hover/Pressed/Focus/Disabled x 4 Types x 3
 Sizes). The real finding is more useful: the **Focus state is correctly designed
 and compliant (3.01:1 ring) but never implemented in code**. That reframes the
-69-page focus failure from a design gap to a pure dev gap.
+site-wide focus failure from a design gap to a pure dev gap — roughly an hour
+of CSS rather than a design cycle.
 
 Also corrected: the original seed table cited the hover fix `#2a6fa8` at 7.1:1.
 Recomputed from the actual component fill, the true ratio is **5.33:1** — still
@@ -43,27 +70,56 @@ an AA pass, but the earlier figure was overstated.
 
 ## Root-cause summary
 
-215 "critical" rows are NOT 215 independent bugs:
-- 185 share one cause (inherited light text on light backgrounds) -> one CSS fix
-- 69-page focus + 69-page skip-link findings are each a single global fix
-- The first 3 items in the Dev Action Plan tab clear ~90% of all findings
+Critical rows are NOT independent bugs:
+- The large majority share one cause (inherited light text on light
+  backgrounds) -> one CSS fix
+- Site-wide focus + skip-link findings are each a single global fix
+- The first 3 items in the Dev Action Plan tab clear the large majority
 
 ## Known limitations (documented in the workbook's Read Me)
 
-1. 5 DRIFT rows report `#ffffff on #ffffff = 1:1` — contrast script falls back to
-   white when it cannot resolve an ancestor background-image. Verify by eye.
-2. Automation cannot judge whether alt text is *meaningful*, only that it exists.
-3. The keyboard trap needs a human to reproduce reliably.
-4. No screen-reader (NVDA/VoiceOver) testing was performed.
-5. Booking/payment flows were not exercised end-to-end.
+1. **70 rows are marked `review`, not failures.** Text on background
+   images/gradients cannot be judged automatically. Must be verified by eye
+   before being filed as bugs.
+2. **Focus-walk counts vary run to run.** The cookie-consent banner can capture
+   focus and truncate the tab walk, so per-page manual counts swing between
+   runs (e.g. `/tours/` desktop: 43 on 26 Aug, 4 on 31 Aug). Treat them as
+   indicative, not a trend line. **The axe counts ARE stable and comparable.**
+   Not yet fixed — see Open items.
+3. Automation cannot judge whether alt text is *meaningful*, only that it exists.
+4. Any keyboard trap needs a human tabbing through to reproduce reliably.
+5. No screen-reader (NVDA/VoiceOver) testing was performed.
+6. Booking/payment flows were not exercised end-to-end.
+
+## Open items
+
+- **Dismiss the cookie banner before the focus walk** (~30 min) so focus-order
+  results become deterministic and run-over-run comparable. Worth doing before
+  devs start shipping, or the first progress diff will be partly noise.
+- Screen-reader pass on the key booking journey (manual, not automatable).
 
 ## Files
 
 ```
 a11y-audit/
   STATUS.md
-  output/TOT_WCAG21AA_Audit_FULL.xlsx     final deliverable (7 tabs, 496 issues)
+  output/TOT_WCAG21AA_Audit_FULL.xlsx     final deliverable (7 tabs)
   phase2/audit_figma.py                    Figma frame-audit script
   phase2/figma_findings.json               136 Phase 2 findings
   local-scan/                              Phase 1 pipeline (run locally)
+    scripts/01_crawl_site.js               sitemap + BFS crawl
+    scripts/02_run_axe_scan.js             axe + scripted state checks
+    scripts/03_contrast_check.js           exact ratios + token cross-ref
+    scripts/04_merge_to_xlsx.js            Phase 1 workbook
+    scripts/05_diff_runs.js                run-over-run comparison
+    scripts/06_build_full_workbook.js      COMPLETE 7-tab workbook
+```
+
+### Commands
+
+```bash
+npm run everything   # crawl + scan + contrast + full workbook
+npm run full         # rebuild full workbook from existing scan data
+node scripts/05_diff_runs.js --save-baseline   # bank a comparison point
+node scripts/05_diff_runs.js                   # FIXED / NEW / STILL OPEN
 ```
