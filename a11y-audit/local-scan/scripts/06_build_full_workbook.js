@@ -115,8 +115,12 @@ function dedupeManual() {
     for (const f of p.manual_findings || []) {
       if (f.pass !== false) continue;
       const k = `${f.check}|${f.wcag_sc}`;
-      if (!g.has(k)) g.set(k, { ...f, pages: new Set() });
-      g.get(k).pages.add(`${p.url} [${p.viewport}]`);
+      if (!g.has(k)) g.set(k, { ...f, pages: new Set(), shots: new Set() });
+      const e = g.get(k);
+      e.pages.add(`${p.url} [${p.viewport}]`);
+      // Prefer the element-level focus screenshot; fall back to the page shot.
+      const s = f.screenshot || (p.screenshots && p.screenshots.page);
+      if (s && e.shots.size < 5) e.shots.add(`data/screenshots/${s}`);
     }
   }
   return [...g.values()];
@@ -285,7 +289,8 @@ for (const f of dedupeManual()) {
   const first = [...f.pages][0] || '';
   addLog([nextId('LIVE'), 'Live Site', first, first.includes('[mobile]') ? 'Mobile' : 'Web',
     f.element || f.check, f.check, f.detail || f.check, f.wcag_sc, f.severity,
-    f.current_value || '', f.required_fix || '', 'Dev', 'Open', affected(f.pages)]);
+    f.current_value || '', f.required_fix || '', 'Dev', 'Open',
+    affected(f.pages) + (f.shots && f.shots.size ? `  |  Screenshots: ${[...f.shots].join('; ')}` : '')]);
 }
 // contrast
 for (const c of contrast) {
@@ -335,12 +340,16 @@ live.columns = [
   { header: 'Fix', width: 48 }, { header: 'Screenshot filename reference', width: 30 }
 ];
 header(live, 8);
+let shotRefs = 0;
 for (const p of pages) {
   if (!p.axe) continue;
+  const shot = (p.screenshots && p.screenshots.page) || '';
   for (const v of p.axe.violations || []) {
     for (const n of v.nodes || []) {
+      if (shot) shotRefs++;
       live.addRow([p.url, p.viewport, (n.target || []).join(' '), v.help,
-        tagsToWcagSC(v.tags), v.impact, v.helpUrl, '']);
+        tagsToWcagSC(v.tags), v.impact, v.helpUrl,
+        shot ? `data/screenshots/${shot}` : '(no screenshot captured)']);
     }
   }
 }

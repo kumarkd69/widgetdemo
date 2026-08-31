@@ -72,7 +72,7 @@ async function checkSkipLink(page, findings) {
   });
 }
 
-async function walkFocusOrder(page, findings, screenshotDir, pageSlug) {
+async function walkFocusOrder(page, findings, screenshotDir, pageSlug, shots) {
   const seen = new Set();
   let trapCount = 0;
   let prevKey = null;
@@ -153,8 +153,15 @@ async function walkFocusOrder(page, findings, screenshotDir, pageSlug) {
 
     if (i < 8) {
       try {
-        const shotPath = path.join(screenshotDir, `${pageSlug}__focus-${i}.png`);
-        await page.screenshot({ path: shotPath, clip: null });
+        const shotName = `${pageSlug}__focus-${i}.png`;
+        await page.screenshot({ path: path.join(screenshotDir, shotName), clip: null });
+        // Attach the filename to the most recent finding for this element so
+        // the workbook's "Screenshot filename reference" column can cite it.
+        const last = findings[findings.length - 1];
+        if (last && (last.check === 'focus_visible_indicator' || last.check === 'focus_indicator_contrast') && !last.screenshot) {
+          last.screenshot = shotName;
+        }
+        if (shots) shots.focus.push(shotName);
       } catch (_) {
         /* non-fatal */
       }
@@ -374,9 +381,20 @@ async function scanOnePage(browser, entry, viewport) {
 
     const axeResults = await new AxeBuilder({ page }).analyze();
 
+    // Reference screenshot for the page in its default state — cited by every
+    // row for this page/viewport in the workbook.
+    const shots = { page: null, focus: [] };
+    try {
+      const pageShot = `${pageSlug}__page.png`;
+      await page.screenshot({ path: path.join(screenshotDir, pageShot), fullPage: true });
+      shots.page = pageShot;
+    } catch (_) {
+      /* non-fatal */
+    }
+
     if (viewport.name === 'desktop') {
       await checkSkipLink(page, findings);
-      await walkFocusOrder(page, findings, screenshotDir, pageSlug);
+      await walkFocusOrder(page, findings, screenshotDir, pageSlug, shots);
       await checkHoverStates(page, findings);
       await checkDisabledStates(page, findings);
       await checkFormValidation(page, findings);
@@ -394,6 +412,7 @@ async function scanOnePage(browser, entry, viewport) {
         passes_count: axeResults.passes.length
       },
       manual_findings: findings,
+      screenshots: shots,
       auth_required: false
     };
 
