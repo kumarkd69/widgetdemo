@@ -147,7 +147,7 @@ focused element because the header covers it.
 **Steps**
 1. Visit `/routes-maps/red/` and the other route pages.
 2. Turn on a screen reader and navigate the page.
-3. Ask: can I obtain the **stop sequence and route detail** without seeing the map?
+3. Ask: can the **stop sequence and route detail** be obtained without seeing the map?
 
 **Expected:** stops and route information exist as real text or a table on the page.
 

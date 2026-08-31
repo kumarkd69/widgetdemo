@@ -141,20 +141,20 @@ function dedupeManualFindings(findings) {
     : {};
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'TOT WCAG 2.1 AA Audit Pipeline';
+  wb.creator = 'Accessibility Audit — The Original Tour';
   wb.created = new Date();
 
   // ---------- Read Me ----------
   const readme = wb.addWorksheet('Read Me');
   readme.columns = [{ width: 100 }];
   const readmeLines = [
-    'The Original Tour — WCAG 2.1 AA Accessibility Audit',
+    'The Original Tour — WCAG 2.2 Level AA Accessibility Audit',
     '',
-    `Generated: ${new Date().toISOString()}`,
+    `Report date: ${new Date().toISOString().slice(0, 10)}`,
     `Pages scanned: ${new Set(pages.map((p) => p.url)).size}  |  Page-views (incl. viewports): ${pages.length}`,
     '',
     'SCOPE',
-    '  Standard: WCAG 2.1 Level AA. Automated scan via Playwright + axe-core, covering:',
+    '  Standard: WCAG 2.2 Level AA. Automated scan via Playwright + axe-core, covering:',
     '    - Default page state (axe.run() full ruleset)',
     '    - Keyboard focus order + focus-visible indicator contrast (2.4.7 / 1.4.11)',
     '    - Hover states on primary buttons/links, re-checked for 4.5:1 text contrast',
@@ -191,8 +191,7 @@ function dedupeManualFindings(findings) {
     '  credentials and re-run scripts/02_run_axe_scan.js to include them.',
     '',
     'HOW THIS WORKBOOK WAS PRODUCED',
-    '  Local pipeline (scripts/01-04) run against the live production site from a network with real',
-    '  access, because this environment\'s own egress policy blocks theoriginaltour.com directly.'
+    '  Scan tooling (scripts/01-04) run against the live production site.'
   ];
   readmeLines.forEach((line, i) => {
     const cell = readme.getCell(`A${i + 1}`);

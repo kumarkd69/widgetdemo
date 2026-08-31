@@ -1,11 +1,11 @@
 # Accessibility Fixes — Designer List
-### The Original Tour · Figma file `NpuVbHpQHxyeiIG2KKupwv`
+### The Original Tour · WCAG 2.2 Level AA · Figma file `NpuVbHpQHxyeiIG2KKupwv`
 
 Short list. Everything a developer can do without you is already on
 `DEV_FIXES.md` with the values chosen — you don't need to approve those, though
 you're welcome to override item 1.
 
-These five are things **only** you can do, in the Figma file.
+These six are things **only** you can do, in the Figma file.
 
 ---
 
@@ -140,9 +140,9 @@ themselves were larger — in which case, say so now.
 
 ---
 
-# What I could not check from the design file
+# What the design file cannot tell us
 
-Worth knowing where the limits are:
+Worth knowing where the limits of a design-file review are:
 
 - Whether text over hero photography is legible depends on the **image**, not the
   design tokens. Dev is running a verification pass on the live site.
@@ -155,4 +155,4 @@ Worth knowing where the limits are:
 
 **Reference:** 287 frames across 27 sections audited on page "✅ 1B UI Designs"
 (node `5105:46216`), plus all 29 component sets and every local colour and type
-variable. Full detail on the Figma page **"Accessibility Fixes — Handover"**.
+variable. Full detail on the Figma page **"Accessibility Fixes — WCAG 2.2 AA"**.

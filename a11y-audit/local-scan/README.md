@@ -1,16 +1,12 @@
 # TOT WCAG 2.1 AA — Local Live-Site Scan
 
-This pipeline runs Phase 1 of the audit (the live site) against
-`https://www.theoriginaltour.com/`. It's designed to run on **your own
-machine/network** — the remote session that generated this code has its
-egress explicitly blocked for this domain, so the scan itself has to run
-somewhere with real access.
+Scan tooling for the live-site audit of `https://www.theoriginaltour.com/`.
+Run it from a machine with normal network access to the site.
 
 ## Prerequisites
 
 - Node.js 18+ (Node 22 recommended)
-- A network that can actually reach `theoriginaltour.com` (your personal
-  laptop, per our conversation)
+- Network access to `theoriginaltour.com`
 
 ## Setup
 

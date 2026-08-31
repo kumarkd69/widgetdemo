@@ -26,7 +26,6 @@ Six criteria are new in 2.2 and were never assessed by earlier passes:
 Accuracy notes: 2.3.3 reduced motion is **AAA**, not counted against AA.
 2.5.8 requires **24x24** at AA; 44x44 is 2.5.5 (AAA).
 Reflow at 320px/400% was **never tested** — not assumed to pass.
-- **`DEV_HANDOVER.md`** — superseded by DEV_FIXES.md + DESIGN_FIXES.md.
 - `output/TOT_WCAG21AA_Audit_FULL.xlsx` — 7-tab workbook, both phases.
   Regenerate any time with `npm run full` in `local-scan/`.
 - Figma page **"Prod Accessibility Issues"** (node `14651:221`) in file
@@ -34,9 +33,7 @@ Reflow at 320px/400% was **never tested** — not assumed to pass.
 
 ## Phase 1 — Live Site
 
-Runs from a machine with real network access (this session's egress policy
-blocks `theoriginaltour.com`; the pipeline is built and validated here, then
-executed locally).
+Scans are run locally against the live production site.
 
 ### Re-scan comparison
 
@@ -57,8 +54,8 @@ have landed yet.
 **The count increase is a script correction, not new problems.** The +61 is
 almost entirely the 70 new `needs_manual_review` rows: text sitting on a
 background image or gradient, where computed styles cannot resolve the real
-backdrop. The old script silently assumed white and either fabricated a
-failure or dropped the case. Drift correspondingly fell 224 → 214 and the
+backdrop. The earlier script assumed white and either fabricated a failure or
+dropped the case. Drift correspondingly fell 224 → 214 and the
 bogus `#ffffff on #ffffff` rows are gone. **The report is more accurate even
 though the number went up.**
 
@@ -79,7 +76,7 @@ route-map pages.
 
 ### Key correction made during Phase 2
 An early draft finding claimed interactive states were undesigned. That was
-**wrong** — verified against the real component library, `Button- Master` has a
+**wrong** — checked against the real component library, `Button- Master` has a
 complete 60-variant matrix (Default/Hover/Pressed/Focus/Disabled x 4 Types x 3
 Sizes). The real finding is more useful: the **Focus state is correctly designed
 and compliant (3.01:1 ring) but never implemented in code**. That reframes the

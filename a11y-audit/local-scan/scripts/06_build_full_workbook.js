@@ -132,7 +132,7 @@ const affected = (arr) => {
 };
 
 const wb = new ExcelJS.Workbook();
-wb.creator = 'TOT WCAG 2.1 AA Audit Pipeline';
+wb.creator = 'Accessibility Audit — The Original Tour';
 wb.created = new Date();
 
 // ================= Read Me =================
@@ -145,15 +145,15 @@ const drift = contrast.filter((c) => c.classification === 'live_site_drift_from_
 const tokenTraced = contrast.filter((c) => c.classification === 'figma_token_fix_needed').length;
 
 const readme = [
-  ['The Original Tour — WCAG 2.1 AA Accessibility Audit', 16, true],
-  ['Phases 1 & 2 — live site + Figma design file', 12, false],
+  ['The Original Tour — WCAG 2.2 Level AA Accessibility Audit', 16, true],
+  ['Live site + Figma design file', 12, false],
   ['', 10, false],
-  [`Generated: ${new Date().toISOString().slice(0, 16).replace('T', ' ')}   |   Standard: WCAG 2.1 Level AA`, 10, false],
+  [`Report date: ${new Date().toISOString().slice(0, 10)}   |   Standard: WCAG 2.2 Level AA`, 10, false],
   ['', 10, false],
   ['WHAT WAS AUDITED', 11, true],
-  [`  Phase 1 — Live site: ${uniquePages} pages, ${pages.length} page-views (desktop 1440 + mobile 390).`, 10, false],
+  [`  Live site: ${uniquePages} pages, ${pages.length} page-views (desktop 1440 + mobile 390).`, 10, false],
   [`     ${authGated.length} page(s) skipped as auth-required.`, 10, false],
-  ['  Phase 2 — Figma: 287 frames across 27 sections on page "1B UI Designs" (node 5105:46216),', 10, false],
+  ['  Design file: 287 frames across 27 sections on page "1B UI Designs" (node 5105:46216),', 10, false],
   ['     plus the 29 component sets on the COMPONENTS page and all local colour/type variables.', 10, false],
   ['', 10, false],
   ['TABS — read them in this order', 11, true],
@@ -193,8 +193,8 @@ const readme = [
   ['      4 elements   heading level skipped', 10, false],
   ['      2 elements   alt text duplicating adjacent text', 10, false],
   ['', 10, false],
-  ['  CORRECTION TO AN EARLIER DRAFT: this audit previously claimed ~185 instances of', 10, false],
-  ['  "invisible light text on light backgrounds". That was largely a flaw in the contrast', 10, false],
+  ['  WITHDRAWN FINDING: an earlier draft claimed ~185 instances of', 10, false],
+  ['  "invisible light text on light backgrounds". That was a flaw in the contrast', 10, false],
   ['  script, which could not see background IMAGES and so reported white hero headings', 10, false],
   ['  sitting on photos as white-on-cream. DO NOT change hero heading colours on that', 10, false],
   ['  evidence. Tab C explains how to settle those cases properly in a single run.', 10, false],
@@ -472,7 +472,7 @@ const ACTIONS = [
    'Icon buttons and arrow controls below 44x44 (mobile) / 24x24 (web).', 'FIG tap-targets'],
   [14, 'Add axe-core to CI', 'Dev', '~4 hours', 'Prevents regression', 'All', 'CI pipeline',
    'npm i -D @axe-core/playwright ; npx playwright test a11y.spec.ts',
-   'Run against a preview deploy on every PR. The full crawl takes only minutes. Pipeline already written in a11y-audit/local-scan/.', 'Prevention']
+   'Run against a preview deploy on every PR. The full crawl takes only minutes. Scan tooling is in a11y-audit/local-scan/.', 'Prevention']
 ];
 for (const a of ACTIONS) dap.addRow(a);
 bodyFont(dap);

@@ -1,5 +1,5 @@
 # Accessibility Fixes — Developer List
-### theoriginaltour.com · WCAG 2.1 AA · Whole site (all 69 pages)
+### theoriginaltour.com · WCAG 2.2 Level AA · Whole site (all 69 pages)
 
 Every value below is already decided. Nothing here is waiting on a designer.
 Work top to bottom — it is ordered by impact.
@@ -7,8 +7,8 @@ Work top to bottom — it is ordered by impact.
 The site is Tailwind, so most of these are class or token swaps.
 
 > **One warning before you touch colours.** Do **not** change the colour of hero
-> headings or any text sitting on a photo. An earlier draft of this audit wrongly
-> flagged those; the scanner couldn't see background images. See item 12.
+> headings or any text sitting on a photo. An earlier draft wrongly flagged those —
+> the contrast scan could not resolve image backdrops. See check A below.
 
 ---
 
@@ -212,8 +212,8 @@ Same for `img[alt="Tower of London"]`. The adjacent heading already names them.
 These aren't optional. Each takes minutes.
 
 ### A. Settle the remaining contrast rows
-~214 rows are flagged but unproven — my scanner couldn't see background images,
-so white text on hero photos was wrongly reported as failing.
+~214 rows are flagged but unproven. The contrast scan could not resolve background
+images, so white text on hero photos was wrongly reported as failing.
 
 ```bash
 cd a11y-audit/local-scan
@@ -230,9 +230,10 @@ colour, add a scrim.
 ```
 
 ### B. Check 200% zoom by hand
-My automated check is unreliable (it reported every page failing, which indicts
-the test). Set the browser to 200% at 1280×1024. Content must reflow to one
-column with no horizontal scrollbar. Check homepage, a PDP, a route map, a form.
+The automated check for this is unreliable — it reported every page failing, which
+indicts the test rather than the site. Set the browser to 200% at 1280×1024.
+Content must reflow to one column with no horizontal scrollbar. Check the
+homepage, a PDP, a route map and a form.
 
 Only if it genuinely fails:
 ```css

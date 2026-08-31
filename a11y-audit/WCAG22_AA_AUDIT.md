@@ -12,22 +12,22 @@ success. The Figma file was audited across 287 frames, 27 sections and all 29
 component sets. Every contrast ratio below was computed with the WCAG
 relative-luminance formula from source values, not estimated.
 
-**What this audit cannot tell you.** I could not perform real-device, keyboard,
-browser or screen-reader testing. WCAG 2.2 also introduced six success criteria
-after my tooling was built, and several of them (Dragging Movements, Consistent
-Help, Redundant Entry, Accessible Authentication, Focus Not Obscured) cannot be
-detected by any automated scan. Those are marked **NEEDS TESTING** — that is an
+**What this audit cannot tell you.** It did not include real-device, keyboard,
+browser or screen-reader testing. WCAG 2.2 also introduced six success
+criteria that post-date most audit tooling, and several of them (Dragging
+Movements, Consistent Help, Redundant Entry, Accessible Authentication, Focus
+Not Obscured) cannot be detected by any automated scan. Those are marked **NEEDS TESTING** — that is an
 honest "unknown", not a pass.
 
 **Automated tooling catches roughly 30–40% of WCAG issues.** This audit is not a
 conformance certificate and must not be presented as one until the NEEDS TESTING
 items are resolved by a human.
 
-**Two corrections to earlier drafts of this audit**, stated plainly because acting
-on them would have caused harm:
+**Two findings from an earlier draft have been withdrawn.** They are recorded
+here rather than quietly removed, because acting on either would have caused harm:
 
 1. An earlier version claimed ~185 instances of "invisible light text on light
-   backgrounds". That was a flaw in my contrast script, which could not see
+   backgrounds". That was a flaw in the contrast script, which could not see
    background *images* and fell through to the page background. The affected
    elements are hero headings and card badges on photography. **Do not change
    hero text colours on that evidence** — see C-07.
@@ -156,11 +156,11 @@ document that decision so it is not re-flagged in future audits.
 
 ### C-07 · Text over images and gradients — unverified
 **Issue:** Contrast of text sitting on photography cannot be determined by
-computed styles, and my earlier automated verdict on these was wrong.
+computed styles, and the initial automated verdict on these was wrong.
 **WCAG:** 1.4.3 Contrast (Minimum) — **Level AA**
 **Severity:** **NEEDS TESTING** (potentially High)
 **Current:** Approximately 214 elements — hero headings, card badges over
-thumbnails — sit on background images or gradients. My contrast script could not
+thumbnails — sit on background images or gradients. The contrast script could not
 resolve the true backdrop and defaulted to the page background, producing false
 failures such as "white on #f8f5ef = 1.09:1". **These are not confirmed failures.**
 **Required Fix:** Run the verifier, then fix only what it classifies `REAL_FAIL`:
@@ -808,7 +808,7 @@ be present on the hosted asset.
 **Issue:** Content must reflow to a single column without two-dimensional scrolling.
 **WCAG:** 1.4.10 Reflow — **Level AA**
 **Severity:** **NEEDS TESTING** (Critical if it fails)
-**Current:** **Not tested.** My scan covered 1440px and 390px only. 400% zoom —
+**Current:** **Not tested.** Scanning covered 1440px and 390px only. 400% zoom —
 equivalent to a 320px CSS viewport — was never assessed.
 **Required Fix:** Test every template at 1280×1024 with 400% browser zoom, or a
 320px-wide viewport. No horizontal scrolling may be required for content that
@@ -827,9 +827,9 @@ scales text far beyond what a mobile viewport does.
 **Issue:** Content must remain usable at 200% zoom.
 **WCAG:** 1.4.4 Resize Text — **Level AA**
 **Severity:** **NEEDS TESTING**
-**Current:** My automated check reported failure on 69 of 69 pages. **I do not
-trust that result** — it used CSS `zoom`, which does not replicate browser zoom,
-and a 100% failure rate indicts the method. A responsive Tailwind build would
+**Current:** The automated check reported failure on 69 of 69 pages. **That result
+is not reliable** — it used CSS `zoom`, which does not replicate browser zoom,
+and a 100% failure rate indicts the method rather than the site. A responsive Tailwind build would
 ordinarily pass.
 **Required Fix:** Set browser zoom to 200% at 1280×1024. Verify no content is
 clipped, overlapped or lost. Check the homepage, a PDP, a route map and a form.
@@ -876,8 +876,8 @@ non-essential animation stops.
 }
 ```
 **Developer Note:** Being explicit about the level: **2.3.3 is AAA and is not
-required for AA conformance.** I am reporting it because it is low-cost and high
-value for vestibular disorders — but it must not be recorded as an AA failure.
+required for AA conformance.** It is included here because it is low-cost and high
+value for users with vestibular disorders — but it must not be recorded as an AA failure.
 
 ---
 
