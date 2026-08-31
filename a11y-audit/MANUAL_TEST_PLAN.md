@@ -1,5 +1,5 @@
 # Manual Accessibility Test Plan
-### theoriginaltour.com · WCAG 2.2 Level AA · 26 unresolved criteria
+### theoriginaltour.com · WCAG 2.2 Level AA · 27 unresolved criteria
 
 **Purpose.** Scanning verified 17 failures and left 27 criteria undetermined.
 Scanning tools reliably detect roughly 30–40% of WCAG issues; the rest — keyboard
