@@ -156,13 +156,18 @@ const readme = [
   ['  Phase 2 — Figma: 287 frames across 27 sections on page "1B UI Designs" (node 5105:46216),', 10, false],
   ['     plus the 29 component sets on the COMPONENTS page and all local colour/type variables.', 10, false],
   ['', 10, false],
-  ['TABS', 11, true],
-  ['  Design Tokens            Colour variables with measured ratios and exact hex fixes.', 10, false],
-  ['  Master Issue Log         EVERYTHING, deduped. Filter by Severity or Owner to plan work.', 10, false],
-  ['  Live Site — Automated    Raw axe-core node-level results, one row per element.', 10, false],
-  ['  Figma — Frame Audit      Phase 2 findings only (FIG- prefix).', 10, false],
-  ['  Component State Matrix   Every button state with measured contrast — the root-cause table.', 10, false],
-  ['  Dev Action Plan          Prioritised actions with copy-paste code. START HERE.', 10, false],
+  ['TABS — read them in this order', 11, true],
+  ['  A — Dev Fixes (Direct)    6 fixes a developer can apply TODAY with no design input. START HERE.', 10, false],
+  ['  B — Needs Design Review   9 items where a designer decides first, then it is a one-line change.', 10, false],
+  ['  C — Verify First & Manual Items that are NOT yet actionable, and the manual QA required for an AA claim.', 10, false],
+  ['  Design Tokens             Colour variables with measured ratios and exact hex fixes.', 10, false],
+  ['  Master Issue Log          EVERYTHING, deduped. The full record — not the working list.', 10, false],
+  ['  Live Site — Automated     Raw axe-core node-level results, one row per element.', 10, false],
+  ['  Figma — Frame Audit       Phase 2 findings only (FIG- prefix).', 10, false],
+  ['  Component State Matrix    Every button state with measured contrast.', 10, false],
+  ['  Dev Action Plan           Longer-form prioritised plan with copy-paste code.', 10, false],
+  ['', 10, false],
+  ['  A companion one-page brief is at a11y-audit/DEV_HANDOVER.md — same content, easier to read.', 10, false],
   ['', 10, false],
   ['SEVERITY', 11, true],
   ['  Critical   Blocks task completion for assistive-tech users.', 10, false],
@@ -180,10 +185,19 @@ const readme = [
   ['  SEED-   Pre-existing flagged finding carried into this audit', 10, false],
   ['', 10, false],
   ['READ THE NUMBERS HONESTLY', 11, true],
-  ['  Critical rows are NOT all independent bugs. The large majority share ONE root cause', 10, false],
-  ['  (light text inheriting onto light backgrounds) and are fixed by a single CSS change.', 10, false],
-  ['  Likewise the site-wide focus-indicator and skip-link findings are each one global fix.', 10, false],
-  ['  Work the Dev Action Plan tab in order — the first three items clear the large majority.', 10, false],
+  ['  The Master Issue Log row count is NOT a bug count. Work tabs A, B and C instead.', 10, false],
+  ['', 10, false],
+  ['  What axe-core actually found across all pages is only FOUR issue types, and one dominates:', 10, false],
+  ['    174 elements   grey text #A3A3A3 at 2.52:1  -> one find-and-replace fixes all of them', 10, false],
+  ['     20 elements   scrollers with no keyboard access', 10, false],
+  ['      4 elements   heading level skipped', 10, false],
+  ['      2 elements   alt text duplicating adjacent text', 10, false],
+  ['', 10, false],
+  ['  CORRECTION TO AN EARLIER DRAFT: this audit previously claimed ~185 instances of', 10, false],
+  ['  "invisible light text on light backgrounds". That was largely a flaw in the contrast', 10, false],
+  ['  script, which could not see background IMAGES and so reported white hero headings', 10, false],
+  ['  sitting on photos as white-on-cream. DO NOT change hero heading colours on that', 10, false],
+  ['  evidence. Tab C explains how to settle those cases properly in a single run.', 10, false],
   ['', 10, false],
   [`  ${manualReview} contrast rows are marked "needs manual review": the text sits on a background`, 10, false],
   ['  image or gradient, where computed styles cannot determine the real backdrop. These are NOT', 10, false],
@@ -472,16 +486,195 @@ for (let r = 2; r <= dap.rowCount; r++) {
 }
 dap.autoFilter = { from: 'A1', to: `J${dap.rowCount}` };
 
+// ================= A — Dev Fixes (Direct) =================
+const devWs = wb.addWorksheet('A — Dev Fixes (Direct)');
+devWs.columns = [
+  { header: '#', width: 6 }, { header: 'Fix', width: 40 }, { header: 'WCAG SC', width: 14 },
+  { header: 'Scale', width: 20 }, { header: 'Confidence', width: 17 },
+  { header: 'Current', width: 26 }, { header: 'Change To', width: 26 },
+  { header: 'Exact Code / Action', width: 66 }, { header: 'Risk', width: 12 },
+  { header: 'Notes', width: 60 }
+];
+header(devWs, 10);
+const DEV_FIXES = [
+  ['A1', 'Grey text fails contrast', '1.4.3', '174 els / 31 pages', 'Verified twice',
+   '#A3A3A3 (2.52:1)', '#767676 (4.54:1)',
+   'Find/replace: text-[#A3A3A3] -> text-[#767676] (also lowercase #a3a3a3). TEXT ONLY — borders/icons use #8f8f8f (see B3).',
+   'None', 'Largest genuine issue. axe-core and the Figma token audit independently flag the same hex. Visually near-identical.'],
+  ['A2', 'Scrollers unusable by keyboard', '2.1.1', '20 regions / 14 pages', 'Verified',
+   '.overflow-x-auto (no tabindex)', 'tabindex="0" + role + label',
+   '<div class="overflow-x-auto" tabindex="0" role="region" aria-label="Tour cards, scrollable">',
+   'Low (additive)', 'Give each its own descriptive label. Route maps ALSO need the stop data as real text — a pannable map is unusable by a screen reader regardless.'],
+  ['A3', 'No visible focus indicator', '2.4.7, 1.4.11', 'Every page', 'High',
+   'No outline on :focus', '2px #4398d4 ring',
+   ':focus-visible { outline: 2px solid #4398d4; outline-offset: 2px; }  — then remove every unpaired outline:none / focus:outline-none',
+   'Low (additive)', 'The Figma design ALREADY defines this and it passes (3.01:1). Pure implementation gap, no design work needed. Use #164291 (9.45:1) if the ring lands on light surfaces.'],
+  ['A4', 'No skip-to-content link', '2.4.1', 'Every page', 'Verified',
+   'First Tab stop = Cookie Settings', 'Skip link as first focusable',
+   '<a href="#main" class="skip-link">Skip to main content</a> + <main id="main" tabindex="-1">; .skip-link{position:absolute;left:-9999px} .skip-link:focus{left:8px;top:8px}',
+   'Low (additive)', 'Must be FIRST in the DOM, before the cookie banner. Also confirm the banner does not trap or steal focus.'],
+  ['A5', 'Heading level skipped', '1.3.1', '4 headings / 2 pages', 'Verified',
+   '<h3> with no <h2>', '<h2>',
+   'Change the tag only; keep the Tailwind text classes so nothing moves visually.',
+   'Low', 'Screen-reader users navigate by heading rank; a skipped level reads as missing content.'],
+  ['A6', 'Alt text duplicates heading', '1.1.1', '2 images / 1 page', 'Verified',
+   'alt="Kensington Palace"', 'alt=""',
+   'img[alt="Kensington Palace"] and img[alt="Tower of London"] -> alt=""',
+   'None', 'The adjacent heading already names it, so the image is decorative in context. Currently announced twice.']
+];
+for (const r of DEV_FIXES) devWs.addRow(r);
+bodyFont(devWs);
+for (let r = 2; r <= devWs.rowCount; r++) {
+  const c = devWs.getRow(r).getCell(1);
+  c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF166534' } };
+  c.font = { name: 'Arial', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+  c.alignment = { horizontal: 'center', vertical: 'center' };
+  const rk = devWs.getRow(r).getCell(9);
+  const v = String(rk.value || '');
+  rk.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: v === 'None' ? 'FFDCFCE7' : 'FFFEF3C7' } };
+}
+devWs.autoFilter = { from: 'A1', to: `J${devWs.rowCount}` };
+
+// ================= B — Needs Design Review =================
+const dsWs = wb.addWorksheet('B — Needs Design Review');
+dsWs.columns = [
+  { header: '#', width: 6 }, { header: 'Issue', width: 38 }, { header: 'WCAG SC', width: 14 },
+  { header: 'Decision Needed From Designer', width: 60 },
+  { header: 'Current', width: 24 }, { header: 'Recommended', width: 26 },
+  { header: 'Measured', width: 22 }, { header: 'Then Dev Does', width: 46 }, { header: 'Notes', width: 56 }
+];
+header(dsWs, 9);
+const DESIGN_ITEMS = [
+  ['B1', 'Button hover fails contrast', '1.4.3',
+   'Pick ONE: (A) hover bg -> #2a6fa8, keep white label. (B) keep #4398d4, label -> #171717.',
+   '#4398d4 + white', 'A: #2a6fa8 (recommended)', 'A=5.33:1 · B=5.70:1 (was 3.14:1)',
+   'Update the hover token + CSS custom property',
+   'MOST IMPORTANT design decision. Labels are 16px Semibold / 14px Bold / 12px Bold — none are WCAG "large text", so all need the full 4.5:1. Option A keeps white labels consistent across states.'],
+  ['B2', 'Coloured badges fail with white text', '1.4.3',
+   'Confirm the darker shades still read as the same category colour.',
+   'blue #3b82f6 · green #16a34a · pink #ec4899',
+   'blue #2563eb · green #15803d · pink #be185d',
+   '3.68 / 3.30 / 3.53 -> 5.17 / 5.02 / 6.04',
+   'Swap the badge background tokens',
+   'Flat backgrounds, so these ratios ARE reliable. Red #e30910 already passes at 4.87:1 — leave it. Also #fce6e7 on red = 4.08:1; use white instead (4.87:1).'],
+  ['B3', 'Design token contrast fixes', '1.4.3 / 1.4.11',
+   'Approve the 9 hex changes in the Design Tokens tab; confirm whether 10-brand/accent is decorative-only.',
+   'see Design Tokens tab', 'see Design Tokens tab', 'all recomputed from source',
+   'Change the variable; instances follow. Sync CSS custom properties.',
+   'Disabled controls are EXEMPT from 1.4.3 — fixing them is best practice, not required. 06-border/primary only needs changing where the border is functional (inputs), not decorative dividers.'],
+  ['B4', 'No Input/form-field component exists', '3.3.1, 4.1.2',
+   'Create an Input component set: Default / Focus / Error / Disabled / Filled. Error must use icon + text, never colour alone.',
+   '0 of 29 component sets are form fields', 'Focus ring #164291', '9.45:1',
+   'aria-describedby + aria-invalid="true" + role="alert"',
+   'Fields are drawn per screen today, so error/focus/disabled states are inconsistent. The markup contract is fixed regardless of the visual design.'],
+  ['B5', 'Tap targets below minimum', '2.5.8',
+   'Confirm hit-area expansion is acceptable rather than resizing icons.',
+   '~30 elements under 24x24 / 44x44', '44x44 hit area', 'n/a',
+   'min-width/min-height:44px; display:grid; place-items:center',
+   'Prefer growing the touch area over enlarging the icon — no visual change.'],
+  ['B6', 'Decorative illustrations, no alt strategy', '1.1.1',
+   'Decide per illustration: decorative (alt="") or informative (single meaningful alt).',
+   '12 frames with 150+ vector layers each', 'One asset per illustration', 'n/a',
+   '<img src="..." alt="" aria-hidden="true">',
+   'If exported as individual inline SVG nodes, a screen reader announces every fragment.'],
+  ['B7', 'Duplicate / versioned Figma frames', 'N/A (process)',
+   'Mark exactly ONE frame per screen as current; prefix the rest [DEPRECATED] or move to Archive.',
+   '~90 duplicate/versioned frames', 'One source of truth', 'n/a',
+   'Nothing — prevents dev building from a stale frame',
+   'Cheapest high-value cleanup. "Home", "Home V2", "Home with multiple banners", 5x "Booking Confirmation - AcN" etc.'],
+  ['B8', 'Type scale inconsistency', 'N/A (consistency)',
+   'Confirm whether Titles/Mobile/H5 should be Proxima Nova like every other token.',
+   'Titles/Mobile/H5 = Inter Semi Bold', 'Proxima Nova Semibold', 'n/a',
+   'Nothing until the token changes',
+   'Every other type token is Proxima Nova. A single off-family token is almost always accidental.'],
+  ['B9', 'Landmarks not annotated for dev', '1.3.1, 2.4.1',
+   'Annotate header/nav/main/footer roles in the design or handoff doc.',
+   '107 header + 191 footer instances, no role annotation', 'Explicit landmark roles', 'n/a',
+   '<header role="banner">, <nav aria-label="Main">, <main id="main">, <footer role="contentinfo">',
+   'Pairs with A4 — the skip link needs a <main> target to point at.']
+];
+for (const r of DESIGN_ITEMS) dsWs.addRow(r);
+bodyFont(dsWs);
+for (let r = 2; r <= dsWs.rowCount; r++) {
+  const c = dsWs.getRow(r).getCell(1);
+  c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF164291' } };
+  c.font = { name: 'Arial', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+  c.alignment = { horizontal: 'center', vertical: 'center' };
+}
+dsWs.autoFilter = { from: 'A1', to: `I${dsWs.rowCount}` };
+
+// ================= C — Verify First / D — Manual =================
+const vfWs = wb.addWorksheet('C — Verify First & Manual QA');
+vfWs.columns = [
+  { header: '#', width: 6 }, { header: 'Item', width: 42 }, { header: 'WCAG SC', width: 14 },
+  { header: 'Why it is not actionable yet', width: 66 },
+  { header: 'How to settle it', width: 60 }, { header: 'Then', width: 46 }
+];
+header(vfWs, 6);
+const VERIFY = [
+  ['C1', 'Contrast rows on image/gradient backdrops', '1.4.3',
+   'The contrast script cannot see background IMAGES. Where text sits on a hero photo or gradient it fell through to the page background and reported a false failure. Hero headings are the main victims. DO NOT change hero heading colours on this evidence.',
+   'node scripts/07_verify_backdrops.js  then open output/verify-backdrops.html — sorts every element into REAL_FAIL / PASSES / ON_IMAGE / ON_GRADIENT / OVER_MEDIA with a cropped screenshot of each.',
+   'Fix only REAL_FAIL. For imagery, add a scrim rather than changing text colour.'],
+  ['C2', '200% zoom reflow', '1.4.10',
+   'Reported failure on 69 of 69 pages. A 100% failure rate is a red flag about the TEST, not the site: it used CSS zoom, which is not how browser zoom works. A responsive Tailwind site would likely pass a correct test.',
+   'Manually set browser zoom to 200% at 1280x1024. Content must reflow to one column with no horizontal scrollbar. Check homepage, a PDP, a route map, a form.',
+   'Only if it genuinely fails: replace fixed px widths with max-width + clamp() padding.'],
+  ['C3', 'Possible keyboard trap', '2.1.2',
+   'One page showed focus stuck on an <a>. Automated trap detection is indicative, not conclusive — and this is the most severe failure class if real.',
+   'Tab through the page from the address bar. Watch for focus that stops advancing.',
+   'Remove the preventDefault on Tab or fix the roving-tabindex logic. Modals must close on Escape and restore focus.'],
+  ['D1', 'Screen-reader pass', 'Multiple',
+   'Automated tooling catches roughly 30-40% of WCAG issues. A quiet scanner is not conformance.',
+   'NVDA (Windows) + VoiceOver (iOS) through booking, search and contact journeys.',
+   'Log and fix whatever surfaces. Required before claiming AA.'],
+  ['D2', 'Is the alt text MEANINGFUL', '1.1.1',
+   'Automation confirms alt exists; it can never judge whether it describes the image usefully.',
+   'Human review of images on key pages.',
+   'Rewrite unhelpful alt text; set alt="" on decorative images.'],
+  ['D3', 'Booking + payment journey by keyboard', 'Multiple',
+   'Not exercised end to end by this audit.',
+   'Complete a real booking using only the keyboard.',
+   'Fix any step that cannot be completed.'],
+  ['D4', 'Errors are announced, not just shown', '3.3.1, 4.1.2',
+   'Visual error display was checked; announcement was not.',
+   'Submit an invalid form with a screen reader running.',
+   'Add role="alert" / aria-live where the message is silent.'],
+  ['D5', 'prefers-reduced-motion honoured', '2.3.3',
+   'Same-origin CSS inspection was inconclusive (cross-origin stylesheets cannot be read).',
+   'Enable Reduce Motion at OS level and reload key pages.',
+   '@media (prefers-reduced-motion: reduce) { animation: none; transition: none; }']
+];
+for (const r of VERIFY) vfWs.addRow(r);
+bodyFont(vfWs);
+for (let r = 2; r <= vfWs.rowCount; r++) {
+  const c = vfWs.getRow(r).getCell(1);
+  const isC = String(c.value || '').startsWith('C');
+  c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: isC ? 'FFF59E0B' : 'FF737373' } };
+  c.font = { name: 'Arial', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+  c.alignment = { horizontal: 'center', vertical: 'center' };
+}
+vfWs.autoFilter = { from: 'A1', to: `F${vfWs.rowCount}` };
+
 // ================= write + validate =================
 (async () => {
+  // Put the working tabs immediately after Read Me
+  const desired = ['Read Me', 'A — Dev Fixes (Direct)', 'B — Needs Design Review',
+                   'C — Verify First & Manual QA', 'Design Tokens', 'Master Issue Log',
+                   'Live Site — Automated Findings', 'Figma — Frame Audit',
+                   'Component State Matrix', 'Dev Action Plan'];
+  desired.forEach((name, i) => { const w = wb.getWorksheet(name); if (w) w.orderNo = i; });
+
   const outPath = abs(OUT);
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   await wb.xlsx.writeFile(outPath);
 
   const check = new ExcelJS.Workbook();
   await check.xlsx.readFile(outPath);
-  const expect = ['Read Me', 'Design Tokens', 'Master Issue Log', 'Live Site — Automated Findings',
-                  'Figma — Frame Audit', 'Component State Matrix', 'Dev Action Plan'];
+  const expect = ['Read Me', 'A — Dev Fixes (Direct)', 'B — Needs Design Review',
+                  'C — Verify First & Manual QA', 'Design Tokens', 'Master Issue Log',
+                  'Live Site — Automated Findings', 'Figma — Frame Audit',
+                  'Component State Matrix', 'Dev Action Plan'];
   const got = check.worksheets.map((w) => w.name);
   const missing = expect.filter((s) => !got.includes(s));
   if (missing.length) {

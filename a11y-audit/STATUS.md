@@ -1,10 +1,13 @@
 # The Original Tour — WCAG 2.1 AA Audit: Status
 
-_Last updated: 2026-08-31 (re-scan)_
+_Last updated: 2026-08-31 (re-scan + dev handover)_
 
 ## Both phases COMPLETE — live site re-scanned 31 Aug
 
 ### Deliverables
+- **`DEV_HANDOVER.md`** — the one-page brief for the dev team. START HERE.
+- Figma page **"Accessibility Fixes — Handover"** (node `14863:221`) — the same
+  content visually, for designers.
 - `output/TOT_WCAG21AA_Audit_FULL.xlsx` — 7-tab workbook, both phases.
   Regenerate any time with `npm run full` in `local-scan/`.
 - Figma page **"Prod Accessibility Issues"** (node `14651:221`) in file
@@ -68,13 +71,39 @@ Also corrected: the original seed table cited the hover fix `#2a6fa8` at 7.1:1.
 Recomputed from the actual component fill, the true ratio is **5.33:1** — still
 an AA pass, but the earlier figure was overstated.
 
-## Root-cause summary
+## MAJOR CORRECTION (31 Aug) — read before acting on contrast
 
-Critical rows are NOT independent bugs:
-- The large majority share one cause (inherited light text on light
-  backgrounds) -> one CSS fix
-- Site-wide focus + skip-link findings are each a single global fix
-- The first 3 items in the Dev Action Plan tab clear the large majority
+An earlier version of this audit claimed ~185 instances of "invisible light text
+on light backgrounds" and called it the single biggest issue. **That was largely
+a flaw in the contrast script, not a fault in the site.**
+
+The script could not see background *images*. Where white text sits on a hero
+photo or gradient, it walked up the DOM for a solid colour, found none, and fell
+through to the page background — reporting "white on cream = 1.09:1". The
+affected elements are hero headings and card badges, which are almost certainly
+rendering correctly.
+
+**Do not change hero heading colours on that evidence.** `07_verify_backdrops.js`
+settles every such case in one run and produces a visual report.
+
+## What the trustworthy data says
+
+axe-core (which reports "incomplete" rather than guessing) found only **four**
+issue types across all 69 pages:
+
+| Nodes | Pages | Issue |
+|---|---|---|
+| 174 | 31 | Colour contrast — almost all `text-[#A3A3A3]` at 2.52:1 |
+| 20 | 14 | Scrollable region not keyboard accessible |
+| 4 | 2 | Heading level skipped |
+| 2 | 1 | Alt text duplicates adjacent text |
+
+The top row is cross-verified: `#A3A3A3` is exactly the `01-text/tertiary` token
+the Figma audit independently flagged. **One find-and-replace fixes 174 elements.**
+
+Also downgraded: the 200% zoom finding reported 69/69 pages failing. A 100%
+failure rate indicts the test, not the site — it used CSS `zoom`, which is not
+how browser zoom works. Needs a proper manual retest before anyone actions it.
 
 ## Known limitations (documented in the workbook's Read Me)
 
