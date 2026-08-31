@@ -1,6 +1,6 @@
 /**
  * 02_run_axe_scan.js
- * Core automated scan. For each URL x viewport:
+ * Core scan. For each URL x viewport:
  *   - runs axe.run() and saves raw JSON
  *   - walks keyboard focus order, screenshots each focus-visible state,
  *     checks a visible indicator exists and meets 3:1 (WCAG 2.4.7 / 1.4.11)

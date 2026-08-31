@@ -230,7 +230,7 @@ colour, add a scrim.
 ```
 
 ### B. Check 200% zoom by hand
-The automated check for this is unreliable — it reported every page failing, which
+The scripted check for this is unreliable — it reported every page failing, which
 indicts the test rather than the site. Set the browser to 200% at 1280×1024.
 Content must reflow to one column with no horizontal scrollbar. Check the
 homepage, a PDP, a route map and a form.
@@ -250,8 +250,10 @@ Modals must close on Escape and return focus to their trigger.
 
 # This will not make you AA on its own
 
-Automated tooling catches roughly **30–40%** of WCAG issues. A quiet scanner is
-not conformance. Before anyone claims AA:
+Scanning tools reliably detect roughly **30–40%** of WCAG issues. A quiet scanner
+is not conformance — keyboard operation, screen-reader output and whether copy
+actually helps someone recover can only be judged by a person. Before anyone
+claims AA:
 
 1. Screen-reader pass — NVDA (Windows) and VoiceOver (iOS) through booking,
    search and contact

@@ -1,9 +1,10 @@
 # Manual Accessibility Test Plan
 ### theoriginaltour.com · WCAG 2.2 Level AA · 26 unresolved criteria
 
-**Purpose.** The automated audit verified 18 failures and left 26 criteria
-undetermined. Automated tooling catches roughly 30–40% of WCAG issues; the rest
-require a human. **The site cannot be declared AA conformant until this plan is
+**Purpose.** Scanning verified 18 failures and left 26 criteria undetermined.
+Scanning tools reliably detect roughly 30–40% of WCAG issues; the rest — keyboard
+operation, screen-reader output, whether copy actually helps someone recover — can
+only be judged by a person. **The site cannot be declared AA conformant until this plan is
 completed**, because a single unresolved failure anywhere breaks conformance.
 
 **Effort:** roughly 2 days for one competent tester.
@@ -78,7 +79,7 @@ sticky header (does it consume the whole screen at 400%?), and the cookie banner
 
 > Use real browser zoom (Ctrl/Cmd +). **Not** devtools device emulation, and not
 > CSS `zoom` — all three behave differently, and getting this wrong is what
-> invalidated the automated result.
+> invalidated the earlier scripted result.
 
 | Page | Result | Notes |
 |---|---|---|
@@ -377,7 +378,7 @@ focus escape to the page behind it.
 **WCAG 1.4.4 — Level AA** · Ref R-02
 Browser at 1280×1024, zoom **200%**. Content must remain usable — nothing
 clipped, overlapping or lost.
-*(The automated result for this was invalid; treat as untested.)*
+*(The earlier scripted result for this was invalid; treat as untested.)*
 ☐ PASS ☐ FAIL
 
 ## TEST 14 · Text spacing
@@ -484,7 +485,7 @@ Expected:      Focused element visible.
 Evidence:      screenshot-014.png
 ```
 
-Then re-run the automated scan to confirm nothing regressed:
+Then re-run the scan to confirm nothing regressed:
 ```bash
 cd a11y-audit/local-scan
 npm run everything

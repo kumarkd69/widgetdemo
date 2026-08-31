@@ -58,7 +58,7 @@ concurrency, URL patterns to skip).
 
 Any page the crawler can reach but that redirects to a login/auth flow is
 recorded with `"auth_required": true` in its `data/raw/*.json` file and
-listed explicitly in the final workbook's "Live Site — Automated Findings"
+listed explicitly in the final workbook's "Live Site — Scan Results"
 tab rather than silently dropped. If you have test credentials, add a
 Playwright `storageState` / login step to `scripts/02_run_axe_scan.js`
 (`context = await browser.newContext({ storageState: 'auth.json' })`) and
@@ -105,7 +105,7 @@ Output: `output/TOT_WCAG21AA_Audit_FULL.xlsx` — this is the file to circulate.
 
 `output/TOT_WCAG21AA_Audit.xlsx` — the complete workbook: Read Me, Design
 Tokens (the pre-validated Figma seed data), Master Issue Log (everything,
-deduped), and Live Site — Automated Findings (raw axe rows). The merge
+deduped), and Live Site — Scan Results (raw axe rows). The merge
 script re-opens the file after writing it and verifies all four sheets
 exist before declaring success — if it errors, the file was not silently
 left corrupt.

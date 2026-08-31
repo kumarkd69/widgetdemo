@@ -1,7 +1,7 @@
 /**
  * 06_build_full_workbook.js
  * Builds the COMPLETE deliverable workbook covering BOTH phases:
- *   Read Me | Design Tokens | Master Issue Log | Live Site — Automated Findings
+ *   Read Me | Design Tokens | Master Issue Log | Live Site — Scan Results
  *   | Figma — Frame Audit | Component State Matrix | Dev Action Plan
  *
  * Unlike 04_merge_to_xlsx.js (Phase 1 only), this pulls in the Phase 2 Figma
@@ -157,17 +157,17 @@ const readme = [
   ['     plus the 29 component sets on the COMPONENTS page and all local colour/type variables.', 10, false],
   ['', 10, false],
   ['TABS — read them in this order', 11, true],
-  ['  A — Dev Fixes (Direct)    6 fixes a developer can apply TODAY with no design input. START HERE.', 10, false],
-  ['  B — Needs Design Review   9 items where a designer decides first, then it is a one-line change.', 10, false],
-  ['  C — Verify First & Manual Items that are NOT yet actionable, and the manual QA required for an AA claim.', 10, false],
+  ['  1. Developer Fixes       6 fixes a developer can apply today with no design input. START HERE.', 10, false],
+  ['  2. Design Decisions      9 items where a designer decides first, then it is a one-line change.', 10, false],
+  ['  3. Verify & Manual QA    Items not yet actionable, plus the manual QA an AA claim requires.', 10, false],
   ['  Design Tokens             Colour variables with measured ratios and exact hex fixes.', 10, false],
   ['  Master Issue Log          EVERYTHING, deduped. The full record — not the working list.', 10, false],
-  ['  Live Site — Automated     Raw axe-core node-level results, one row per element.', 10, false],
+  ['  Live Site — Scan Results  Raw axe-core node-level results, one row per element.', 10, false],
   ['  Figma — Frame Audit       Phase 2 findings only (FIG- prefix).', 10, false],
   ['  Component State Matrix    Every button state with measured contrast.', 10, false],
   ['  Dev Action Plan           Longer-form prioritised plan with copy-paste code.', 10, false],
   ['', 10, false],
-  ['  A companion one-page brief is at a11y-audit/DEV_HANDOVER.md — same content, easier to read.', 10, false],
+  ['  Companion briefs: a11y-audit/DEV_FIXES.md and DESIGN_FIXES.md — same content, easier to read.', 10, false],
   ['', 10, false],
   ['SEVERITY', 11, true],
   ['  Critical   Blocks task completion for assistive-tech users.', 10, false],
@@ -179,9 +179,9 @@ const readme = [
   ['ISSUE ID PREFIXES', 11, true],
   ['  TOK-    Design token contrast fix (Figma variables)', 10, false],
   ['  FIG-    Figma file finding — frames, components, states, hygiene', 10, false],
-  ['  LIVE-   Automated live-site finding (axe-core + scripted state checks)', 10, false],
+  ['  LIVE-   Live-site scan finding (axe-core + scripted state checks)', 10, false],
   ['  DRIFT-  Live site uses a value not traced to any Figma token — built differently than designed', 10, false],
-  ['  REVIEW- Contrast could not be judged automatically — human verification required', 10, false],
+  ['  REVIEW- Contrast could not be judged by tooling — human verification required', 10, false],
   ['  SEED-   Pre-existing flagged finding carried into this audit', 10, false],
   ['', 10, false],
   ['READ THE NUMBERS HONESTLY', 11, true],
@@ -207,9 +207,9 @@ const readme = [
   ['  1. Keyboard focus-walk counts vary between runs — the cookie-consent banner can capture', 10, false],
   ['     focus and truncate the tab walk. Treat per-page manual counts as indicative, not a trend.', 10, false],
   ['     The axe violation counts ARE stable and comparable run-over-run.', 10, false],
-  ['  2. Automation cannot judge whether alt text is MEANINGFUL, only whether it exists.', 10, false],
+  ['  2. Tooling cannot judge whether alt text is MEANINGFUL, only whether it exists.', 10, false],
   ['  3. Any keyboard trap needs a human tabbing through to reproduce reliably.', 10, false],
-  ['  4. Screen-reader testing (NVDA/VoiceOver) was NOT performed — automation cannot replace it.', 10, false],
+  ['  4. Screen-reader testing (NVDA/VoiceOver) was NOT performed — no tool replaces it.', 10, false],
   ['  5. Booking/payment flows were not exercised end-to-end.', 10, false],
   ['', 10, false],
   ['METHOD', 11, true],
@@ -310,7 +310,7 @@ for (const f of dedupeManual()) {
 for (const c of contrast) {
   if (c.classification === 'needs_manual_review') {
     addLog([nextId('REVIEW'), 'Live Site (Needs Review)', c.url, 'Web', c.selector, 'Default',
-      'Contrast could not be determined automatically — text sits on a background image or gradient. NOT a confirmed failure.',
+      'Contrast could not be determined from computed styles — text sits on a background image or gradient. NOT a confirmed failure.',
       '1.4.3', 'review',
       `${c.current_fg} on ${c.current_bg}${c.ratio ? ` = ${c.ratio}:1` : ''}`,
       c.suggested_fix, 'Dev (verify first)', 'Needs Review', 'Verify by eye before filing as a bug.']);
@@ -345,8 +345,8 @@ log.autoFilter = { from: 'A1', to: `N${log.rowCount}` };
 bodyFont(log, 9);
 paintSeverity(log, 9);
 
-// ================= Live Site — Automated Findings =================
-const live = wb.addWorksheet('Live Site — Automated Findings');
+// ================= Live Site — Scan Results =================
+const live = wb.addWorksheet('Live Site — Scan Results');
 live.columns = [
   { header: 'Page URL', width: 46 }, { header: 'Viewport', width: 10 },
   { header: 'Element (CSS selector)', width: 38 }, { header: 'Issue', width: 46 },
@@ -454,7 +454,7 @@ const ACTIONS = [
    'Replace fixed px widths on page/section wrappers. Verify at 1280x1024 @200% — must reflow to one column with no horizontal scrollbar.', 'LIVE zoom'],
   [8, 'Verify the "needs manual review" contrast rows', 'Dev + Designer', '~2 hours', `${manualReview} rows`, '1.4.3', 'Manual check',
    'Filter Master Issue Log by Severity = "review"',
-   'Text on background images/gradients. Automation cannot judge these. Check by eye at the darkest AND lightest points of the image; if it fails, add a scrim rather than only changing text colour.', 'REVIEW-*'],
+   'Text on background images/gradients. No tool can judge these. Check by eye at the darkest AND lightest points of the image; if it fails, add a scrim rather than only changing text colour.', 'REVIEW-*'],
   [9, 'Investigate + fix any keyboard trap', 'Dev', '~2 hours', 'Critical if present', '2.1.2', 'JS',
    'Remove offending preventDefault / fix roving-tabindex logic',
    'The most severe class of failure. Needs a human tabbing through to reproduce — scanner detection is indicative only.', 'LIVE keyboard_trap'],
@@ -487,7 +487,7 @@ for (let r = 2; r <= dap.rowCount; r++) {
 dap.autoFilter = { from: 'A1', to: `J${dap.rowCount}` };
 
 // ================= A — Dev Fixes (Direct) =================
-const devWs = wb.addWorksheet('A — Dev Fixes (Direct)');
+const devWs = wb.addWorksheet('1. Developer Fixes');
 devWs.columns = [
   { header: '#', width: 6 }, { header: 'Fix', width: 40 }, { header: 'WCAG SC', width: 14 },
   { header: 'Scale', width: 20 }, { header: 'Confidence', width: 17 },
@@ -536,7 +536,7 @@ for (let r = 2; r <= devWs.rowCount; r++) {
 devWs.autoFilter = { from: 'A1', to: `J${devWs.rowCount}` };
 
 // ================= B — Needs Design Review =================
-const dsWs = wb.addWorksheet('B — Needs Design Review');
+const dsWs = wb.addWorksheet('2. Design Decisions');
 dsWs.columns = [
   { header: '#', width: 6 }, { header: 'Issue', width: 38 }, { header: 'WCAG SC', width: 14 },
   { header: 'Decision Needed From Designer', width: 60 },
@@ -604,7 +604,7 @@ for (let r = 2; r <= dsWs.rowCount; r++) {
 dsWs.autoFilter = { from: 'A1', to: `I${dsWs.rowCount}` };
 
 // ================= C — Verify First / D — Manual =================
-const vfWs = wb.addWorksheet('C — Verify First & Manual QA');
+const vfWs = wb.addWorksheet('3. Verify & Manual QA');
 vfWs.columns = [
   { header: '#', width: 6 }, { header: 'Item', width: 42 }, { header: 'WCAG SC', width: 14 },
   { header: 'Why it is not actionable yet', width: 66 },
@@ -621,15 +621,15 @@ const VERIFY = [
    'Manually set browser zoom to 200% at 1280x1024. Content must reflow to one column with no horizontal scrollbar. Check homepage, a PDP, a route map, a form.',
    'Only if it genuinely fails: replace fixed px widths with max-width + clamp() padding.'],
   ['C3', 'Possible keyboard trap', '2.1.2',
-   'One page showed focus stuck on an <a>. Automated trap detection is indicative, not conclusive — and this is the most severe failure class if real.',
+   'One page showed focus stuck on an <a>. Scripted trap detection is indicative, not conclusive — and this is the most severe failure class if real.',
    'Tab through the page from the address bar. Watch for focus that stops advancing.',
    'Remove the preventDefault on Tab or fix the roving-tabindex logic. Modals must close on Escape and restore focus.'],
   ['D1', 'Screen-reader pass', 'Multiple',
-   'Automated tooling catches roughly 30-40% of WCAG issues. A quiet scanner is not conformance.',
+   'Scanning tools reliably detect roughly 30-40% of WCAG issues. Keyboard operation and screen-reader output can only be judged by a person.',
    'NVDA (Windows) + VoiceOver (iOS) through booking, search and contact journeys.',
    'Log and fix whatever surfaces. Required before claiming AA.'],
   ['D2', 'Is the alt text MEANINGFUL', '1.1.1',
-   'Automation confirms alt exists; it can never judge whether it describes the image usefully.',
+   'Tooling confirms alt text exists; it can never judge whether it describes the image usefully.',
    'Human review of images on key pages.',
    'Rewrite unhelpful alt text; set alt="" on decorative images.'],
   ['D3', 'Booking + payment journey by keyboard', 'Multiple',
@@ -659,9 +659,9 @@ vfWs.autoFilter = { from: 'A1', to: `F${vfWs.rowCount}` };
 // ================= write + validate =================
 (async () => {
   // Put the working tabs immediately after Read Me
-  const desired = ['Read Me', 'A — Dev Fixes (Direct)', 'B — Needs Design Review',
-                   'C — Verify First & Manual QA', 'Design Tokens', 'Master Issue Log',
-                   'Live Site — Automated Findings', 'Figma — Frame Audit',
+  const desired = ['Read Me', '1. Developer Fixes', '2. Design Decisions',
+                   '3. Verify & Manual QA', 'Design Tokens', 'Master Issue Log',
+                   'Live Site — Scan Results', 'Figma — Frame Audit',
                    'Component State Matrix', 'Dev Action Plan'];
   desired.forEach((name, i) => { const w = wb.getWorksheet(name); if (w) w.orderNo = i; });
 
@@ -671,9 +671,9 @@ vfWs.autoFilter = { from: 'A1', to: `F${vfWs.rowCount}` };
 
   const check = new ExcelJS.Workbook();
   await check.xlsx.readFile(outPath);
-  const expect = ['Read Me', 'A — Dev Fixes (Direct)', 'B — Needs Design Review',
-                  'C — Verify First & Manual QA', 'Design Tokens', 'Master Issue Log',
-                  'Live Site — Automated Findings', 'Figma — Frame Audit',
+  const expect = ['Read Me', '1. Developer Fixes', '2. Design Decisions',
+                  '3. Verify & Manual QA', 'Design Tokens', 'Master Issue Log',
+                  'Live Site — Scan Results', 'Figma — Frame Audit',
                   'Component State Matrix', 'Dev Action Plan'];
   const got = check.worksheets.map((w) => w.name);
   const missing = expect.filter((s) => !got.includes(s));
@@ -693,7 +693,7 @@ vfWs.autoFilter = { from: 'A1', to: `F${vfWs.rowCount}` };
   console.log(`  Sheets: ${got.length} (${got.join(' | ')})`);
   console.log(`  Master Issue Log: ${ml.rowCount - 1} issues`);
   console.log('  By severity:', counts);
-  console.log(`  Phase 1: ${uniquePages} pages, ${pages.length} page-views`);
+  console.log(`  Live site: ${uniquePages} pages, ${pages.length} page-views`);
   console.log(`  Contrast: ${tokenTraced} token-traced, ${drift} drift, ${manualReview} needs-manual-review`);
-  console.log(`  Phase 2: ${figFindings.length} Figma findings`);
+  console.log(`  Design file: ${figFindings.length} findings`);
 })();

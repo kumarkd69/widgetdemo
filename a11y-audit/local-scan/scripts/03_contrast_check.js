@@ -117,7 +117,7 @@ async function reCheckOnPage(browser, url, selectors) {
               font_weight: style.fontWeight,
               classification: 'needs_manual_review',
               suggested_fix:
-                `Text sits on a background image (${resolved.detail}). Automated contrast math cannot resolve this — ` +
+                `Text sits on a background image (${resolved.detail}). Contrast math cannot resolve this — ` +
                 `verify by eye at the darkest and lightest points of the image. If it fails, add a scrim/overlay ` +
                 `or a solid text background rather than adjusting the text color alone.`
             });

@@ -124,14 +124,14 @@ how browser zoom works. Needs a proper manual retest before anyone actions it.
 ## Known limitations (documented in the workbook's Read Me)
 
 1. **70 rows are marked `review`, not failures.** Text on background
-   images/gradients cannot be judged automatically. Must be verified by eye
+   images/gradients cannot be judged by tooling. Must be verified by eye
    before being filed as bugs.
 2. **Focus-walk counts vary run to run.** The cookie-consent banner can capture
    focus and truncate the tab walk, so per-page manual counts swing between
    runs (e.g. `/tours/` desktop: 43 on 26 Aug, 4 on 31 Aug). Treat them as
    indicative, not a trend line. **The axe counts ARE stable and comparable.**
    Not yet fixed — see Open items.
-3. Automation cannot judge whether alt text is *meaningful*, only that it exists.
+3. Tooling cannot judge whether alt text is *meaningful*, only that it exists.
 4. Any keyboard trap needs a human tabbing through to reproduce reliably.
 5. No screen-reader (NVDA/VoiceOver) testing was performed.
 6. Booking/payment flows were not exercised end-to-end.
@@ -141,7 +141,7 @@ how browser zoom works. Needs a proper manual retest before anyone actions it.
 - **Dismiss the cookie banner before the focus walk** (~30 min) so focus-order
   results become deterministic and run-over-run comparable. Worth doing before
   devs start shipping, or the first progress diff will be partly noise.
-- Screen-reader pass on the key booking journey (manual, not automatable).
+- Screen-reader pass on the key booking journey (manual only — no tool covers it).
 
 ## Files
 

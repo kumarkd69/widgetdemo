@@ -16,12 +16,15 @@ relative-luminance formula from source values, not estimated.
 browser or screen-reader testing. WCAG 2.2 also introduced six success
 criteria that post-date most audit tooling, and several of them (Dragging
 Movements, Consistent Help, Redundant Entry, Accessible Authentication, Focus
-Not Obscured) cannot be detected by any automated scan. Those are marked **NEEDS TESTING** — that is an
-honest "unknown", not a pass.
+Not Obscured) cannot be detected by scanning at all. Those are marked
+**NEEDS TESTING** — an honest "unknown", not a pass.
 
-**Automated tooling catches roughly 30–40% of WCAG issues.** This audit is not a
-conformance certificate and must not be presented as one until the NEEDS TESTING
-items are resolved by a human.
+**Scanning tools reliably detect roughly 30–40% of WCAG issues.** The remainder —
+whether a control can actually be operated by keyboard, what a screen reader
+announces, whether alt text is *meaningful* rather than merely present, whether an
+error message genuinely helps someone recover — can only be judged by a person.
+This audit is not a conformance certificate and must not be presented as one until
+the NEEDS TESTING items are resolved.
 
 **Two findings from an earlier draft have been withdrawn.** They are recorded
 here rather than quietly removed, because acting on either would have caused harm:
@@ -156,7 +159,7 @@ document that decision so it is not re-flagged in future audits.
 
 ### C-07 · Text over images and gradients — unverified
 **Issue:** Contrast of text sitting on photography cannot be determined by
-computed styles, and the initial automated verdict on these was wrong.
+computed styles, and the initial machine-generated verdict on these was wrong.
 **WCAG:** 1.4.3 Contrast (Minimum) — **Level AA**
 **Severity:** **NEEDS TESTING** (potentially High)
 **Current:** Approximately 214 elements — hero headings, card badges over
@@ -304,7 +307,7 @@ so the same route and stop data must exist as text or a table (see I-03).
 **WCAG:** 2.1.2 No Keyboard Trap — **Level A**
 **Severity:** **Critical if confirmed** — **NEEDS TESTING**
 **Current:** A scripted tab-walk found focus stuck on an `<a>` element after
-repeated Tab presses. Automated trap detection is indicative, not conclusive.
+repeated Tab presses. Scripted trap detection is indicative, not conclusive.
 **Required Fix:** Tab through the page from the browser address bar. If focus
 stops advancing, remove the `preventDefault` on Tab or correct the roving-tabindex
 logic.
@@ -414,7 +417,7 @@ sticky header. Fix with `scroll-margin-top` equal to the header height:
 **Design Recommendation:** Specify the sticky header height as a token and use it
 for scroll offsets, so the two cannot drift apart. Where the cookie banner is
 fixed to the bottom, confirm it does not cover focused form controls.
-**Developer Note:** Cannot be detected automatically — needs manual tabbing at
+**Developer Note:** No tool can detect this — it needs manual tabbing at
 several scroll positions. New in 2.2, so it is easily missed by teams working
 from a 2.1 checklist. Note this criterion requires the element not be *entirely*
 hidden; partial obscuring passes at AA but fails 2.4.12 at AAA.
@@ -770,10 +773,10 @@ content model.
 ---
 
 ### I-04 · Alt text quality — untested
-**Issue:** Automation confirms alt exists, never that it is meaningful.
+**Issue:** Tooling confirms alt text exists, never that it is meaningful.
 **WCAG:** 1.1.1 Non-text Content — **Level A**
 **Severity:** **NEEDS TESTING**
-**Current:** Only two alt-text failures were machine-detectable. The quality of
+**Current:** Only two alt-text failures were detectable by tooling. The quality of
 alt text across the site is unassessed.
 **Required Fix:** Human review of images on key templates.
 **Design Recommendation:** Provide alt text alongside image assets in the CMS
@@ -827,7 +830,7 @@ scales text far beyond what a mobile viewport does.
 **Issue:** Content must remain usable at 200% zoom.
 **WCAG:** 1.4.4 Resize Text — **Level AA**
 **Severity:** **NEEDS TESTING**
-**Current:** The automated check reported failure on 69 of 69 pages. **That result
+**Current:** The scripted check reported failure on 69 of 69 pages. **That result
 is not reliable** — it used CSS `zoom`, which does not replicate browser zoom,
 and a 100% failure rate indicts the method rather than the site. A responsive Tailwind build would
 ordinarily pass.

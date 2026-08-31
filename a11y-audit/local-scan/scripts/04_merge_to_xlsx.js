@@ -1,7 +1,7 @@
 /**
  * 04_merge_to_xlsx.js
  * Builds the single deliverable workbook: output/TOT_WCAG21AA_Audit.xlsx
- * Tabs: Read Me | Design Tokens | Master Issue Log | Live Site — Automated Findings
+ * Tabs: Read Me | Design Tokens | Master Issue Log | Live Site — Scan Results
  * Dedupes repeated issues (e.g. same missing-alt pattern on 50 pages) into one
  * row with an affected-pages count + list in Notes.
  */
@@ -154,7 +154,7 @@ function dedupeManualFindings(findings) {
     `Pages scanned: ${new Set(pages.map((p) => p.url)).size}  |  Page-views (incl. viewports): ${pages.length}`,
     '',
     'SCOPE',
-    '  Standard: WCAG 2.2 Level AA. Automated scan via Playwright + axe-core, covering:',
+    '  Standard: WCAG 2.2 Level AA. Scan via Playwright + axe-core, covering:',
     '    - Default page state (axe.run() full ruleset)',
     '    - Keyboard focus order + focus-visible indicator contrast (2.4.7 / 1.4.11)',
     '    - Hover states on primary buttons/links, re-checked for 4.5:1 text contrast',
@@ -183,11 +183,11 @@ function dedupeManualFindings(findings) {
     '  Every row is one distinct issue. Where the same issue recurs across many pages, rows are',
     '  DEDUPED to one row — the affected page count and full URL list are in the Notes column.',
     '  Issue ID prefixes: TOK- = design token fix (Figma), SEED- = pre-flagged frame finding,',
-    '  LIVE- = automated live-site finding, DRIFT- = live site differs from the Figma spec.',
+    '  LIVE- = live-site scan finding, DRIFT- = live site differs from the Figma spec.',
     '',
     'AUTH-GATED PAGES',
     `  ${collectAuthGated(pages).length} page(s) were not scanned because they required authentication.`,
-    '  See the auth-gated list at the bottom of the Live Site — Automated Findings tab. Provide test',
+    '  See the auth-gated list at the bottom of the Live Site — Scan Results tab. Provide test',
     '  credentials and re-run scripts/02_run_axe_scan.js to include them.',
     '',
     'HOW THIS WORKBOOK WAS PRODUCED',
@@ -405,8 +405,8 @@ function dedupeManualFindings(findings) {
   logWs.views = [{ state: 'frozen', ySplit: 1 }];
   applyBodyFont(logWs);
 
-  // ---------- Live Site — Automated Findings ----------
-  const liveWs = wb.addWorksheet('Live Site — Automated Findings');
+  // ---------- Live Site — Scan Results ----------
+  const liveWs = wb.addWorksheet('Live Site — Scan Results');
   liveWs.columns = [
     { header: 'Page URL', key: 'url', width: 45 },
     { header: 'Viewport', key: 'viewport', width: 10 },
@@ -453,7 +453,7 @@ function dedupeManualFindings(findings) {
   // Recalculation/validation pass: re-open and confirm structure before declaring done
   const verifyWb = new ExcelJS.Workbook();
   await verifyWb.xlsx.readFile(outPath);
-  const expectedSheets = ['Read Me', 'Design Tokens', 'Master Issue Log', 'Live Site — Automated Findings'];
+  const expectedSheets = ['Read Me', 'Design Tokens', 'Master Issue Log', 'Live Site — Scan Results'];
   const actualSheets = verifyWb.worksheets.map((w) => w.name);
   const missing = expectedSheets.filter((s) => !actualSheets.includes(s));
   if (missing.length) {
@@ -466,6 +466,6 @@ function dedupeManualFindings(findings) {
   console.log(`\n[4/4] Workbook written and validated: ${cfg.OUTPUT_XLSX}`);
   console.log(`  Master Issue Log: ${rowCount} issues`);
   console.log(`  Design Tokens: ${seed.tokens.filter((t) => t.status && (t.status.startsWith('fail'))).length} failing tokens`);
-  console.log(`  Live Site — Automated Findings: ${liveWs.rowCount - 1} raw axe node-level rows`);
+  console.log(`  Live Site — Scan Results: ${liveWs.rowCount - 1} raw axe node-level rows`);
   console.log(`  Pages scanned: ${new Set(pages.map((p) => p.url)).size}, auth-gated (skipped): ${collectAuthGated(pages).length}`);
 })();

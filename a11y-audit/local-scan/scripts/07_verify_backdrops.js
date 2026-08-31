@@ -126,7 +126,7 @@ async function verifyOnPage(page, url, findings, cropDir) {
         rec.note = `A <${probe.mediaTag}> is painted behind this text. Contrast depends on the image itself — check the busiest/lightest part of the photo, and add a scrim or text shadow if the text is not legible everywhere.`;
       } else if (probe.paintLayer === 'image') {
         rec.verdict = /gradient/i.test(probe.paintDetail || '') ? 'ON_GRADIENT' : 'ON_IMAGE';
-        rec.note = `Backdrop is ${rec.verdict === 'ON_GRADIENT' ? 'a gradient' : 'a background-image'}: ${probe.paintDetail}. Automated ratio is meaningless here — verify against the lightest point.`;
+        rec.note = `Backdrop is ${rec.verdict === 'ON_GRADIENT' ? 'a gradient' : 'a background-image'}: ${probe.paintDetail}. A computed ratio is meaningless here — verify against the lightest point.`;
       } else if (probe.paintLayer === 'color') {
         const bg = parseColor(probe.paintDetail);
         if (fg && bg) {
@@ -166,7 +166,7 @@ function buildHtml(results) {
   const meta = {
     REAL_FAIL: ['#e30910', 'Genuine failures — fix these', 'Flat opaque backdrop, ratio verified below the WCAG threshold. Safe for a developer to action directly.'],
     PASSES: ['#16a34a', 'False positives — no action', 'Recomputed against the real backdrop, these pass. They were artefacts of the earlier backdrop guess.'],
-    ON_IMAGE: ['#f59e0b', 'On a background image — human check', 'Ratio cannot be computed automatically. Check the lightest area of the image; add a scrim if needed.'],
+    ON_IMAGE: ['#f59e0b', 'On a background image — human check', 'Ratio cannot be computed from styles. Check the lightest area of the image; add a scrim if needed.'],
     ON_GRADIENT: ['#f59e0b', 'On a gradient — human check', 'Same as above; check the lightest stop of the gradient.'],
     OVER_MEDIA: ['#f59e0b', 'Over a photo/video — human check', 'An image or video element paints behind this text.'],
     UNKNOWN: ['#737373', 'Undetermined', 'Could not resolve a paint layer.'],
