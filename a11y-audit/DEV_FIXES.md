@@ -30,7 +30,7 @@ text-[#a3a3a3]  →  text-[#767676]
 ---
 
 ## 2. Focus indicator — every page
-**WCAG 2.4.7, 1.4.11** · Nothing currently shows focus
+**WCAG 1.4.11** · Browser default outline, 2.22:1 on dark surfaces
 
 ```css
 :focus-visible {
@@ -39,12 +39,17 @@ text-[#a3a3a3]  →  text-[#767676]
 }
 ```
 
-Then search for `outline: none`, `outline: 0`, `focus:outline-none` and delete
-every one that has no replacement. A global reset is usually the real cause.
+**To be clear about what's happening now:** focus *is* visible — you'll see a
+ring when you tab. It's the browser's default black outline, because no custom
+focus style is defined anywhere. Measured against the `#154291` button
+background it comes out at **2.22:1**, below the 3:1 that 1.4.11 requires.
 
-This ring is already specified in the Figma design system and measures 3.01:1 —
-it was simply never built. If it lands on a light surface anywhere, use `#164291`
-(9.45:1) instead.
+The fix above replaces it with a ring that passes on both light and dark
+surfaces. This exact ring is already specified in the Figma design system
+(measured 3.01:1) — it was just never implemented.
+
+Also worth a grep for `outline: none` / `focus:outline-none` in case individual
+components strip it entirely, but the site is not doing that globally.
 
 ---
 
@@ -117,7 +122,7 @@ text", so all need the full 4.5:1.
 ---
 
 ## 7. Form errors must be announced
-**WCAG 3.3.1, 4.1.2** · Errors are currently visual only
+**WCAG 3.3.1, 4.1.2** · **Check the current markup first — see note below**
 
 ```html
 <label for="email">Email address</label>
@@ -130,6 +135,13 @@ text", so all need the full 4.5:1.
 - `role="alert"` announces it when it appears
 
 Never signal an error with colour alone — keep the icon and the text.
+
+> **Check before you change anything.** The scan returned no findings for form
+> errors, which most likely means it failed to trigger validation rather than
+> that the markup is correct. Submit each form with invalid data and inspect
+> whether `aria-describedby`, `aria-invalid` and `role="alert"` are already
+> present. If they are, this item is already done — tick it off. If not, apply
+> the pattern above.
 
 ---
 

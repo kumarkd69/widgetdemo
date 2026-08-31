@@ -38,6 +38,11 @@ here rather than quietly removed, because acting on either would have caused har
    failure rate indicts the test, not the site: it used CSS `zoom`, which is not
    how browser zoom works. Reclassified to NEEDS TESTING — see R-02.
 
+**A note on the underlying data.** Roughly 69 rows in the supporting workbook are
+`prefers-reduced-motion` notes recording that no same-origin media query was
+found. They are inconclusive rather than failures, and 2.3.3 is Level AAA in any
+case — they should not be read as 69 defects.
+
 Note: **4.1.1 Parsing was removed in WCAG 2.2** and is not assessed here.
 
 ---
@@ -377,18 +382,25 @@ embedded widget's failure is still your failure.
 
 ---
 
-### F-01 · No visible focus indicator anywhere
-**Issue:** Keyboard focus is not visible on any interactive element.
-**WCAG:** 2.4.7 Focus Visible — **Level AA**
-**Severity:** **Critical**
-**Current:** No focus indicator detected on any of the 69 pages. Keyboard and
-screen-magnifier users cannot tell where they are.
+### F-01 · Focus indicator falls below required contrast
+**Issue:** No custom focus style is defined, so focus falls back to the browser's
+default black outline — which does not have enough contrast against the site's
+dark blue surfaces.
+**WCAG:** 1.4.11 Non-text Contrast — **Level AA** (and 2.4.7 Focus Visible where
+the outline is effectively imperceptible)
+**Severity:** **High**
+**Current:** Measured on all 69 pages: outline `#000000` against a `#154291`
+button background = **2.22:1**, below the 3:1 required. A focus ring *is*
+rendered — this is the user-agent default, not a designed style — so a developer
+tabbing the site will see something. The failure is its contrast on dark
+surfaces, and the absence of any deliberate focus design in the CSS.
 **Required Fix:**
 ```css
 :focus-visible { outline: 2px solid #4398d4; outline-offset: 2px; }
 ```
-Then remove every `outline: none` / `outline: 0` / `focus:outline-none` that has
-no replacement.
+This replaces the UA default with a ring that passes on both light and dark
+surfaces. Also check for any `outline: none` / `focus:outline-none` that removes
+the indicator entirely in specific components.
 **Design Recommendation:** **The design system already solves this.** The Focus
 variant in `Button- Master` specifies a 2px `#4398d4` ring measuring **3.01:1**
 against the button and **3.14:1** against a white page — both clear the 3:1
@@ -396,8 +408,9 @@ requirement. This is purely an implementation gap. Note that 3.01:1 is a thin
 margin: if the ring will ever sit on a light surface, specify `#164291` (9.45:1)
 instead, and consider adopting that as the single global focus colour for safety.
 **Developer Note:** Use `:focus-visible`, not `:focus`, so mouse users do not see
-rings on click. A global CSS reset stripping outlines is almost always the root
-cause. This is roughly an hour of work and resolves the failure site-wide.
+rings on click. Note the site is *not* stripping outlines globally — the problem
+is that nothing overrides the UA default, which is black and therefore fails on
+the dark blue brand surfaces. Roughly an hour of work, resolves it site-wide.
 
 ---
 
@@ -485,13 +498,17 @@ size must be assessed together, never separately.
 
 ---
 
-### FM-01 · Error messages are not programmatically associated
-**Issue:** Validation errors are displayed visually but not linked to their field.
+### FM-01 · Error association — unverified
+**Issue:** Whether validation errors are programmatically linked to their fields
+is not established.
 **WCAG:** 3.3.1 Error Identification (A) · 4.1.2 Name, Role, Value (A)
-**Severity:** **Critical**
-**Current:** A scripted check submitted forms with invalid data. Required fields
-showed no `aria-describedby` pointing to error text, and no `aria-invalid`. A
-screen-reader user receives no indication that a field failed or why.
+**Severity:** **NEEDS TESTING** (Critical if it fails)
+**Current:** **No evidence either way.** The scripted form check returned zero
+findings across the whole crawl. That most likely means it never triggered
+validation — the forms may not respond to a synthetic submit — rather than that
+the markup is correct. Treat this as untested, not as a pass. The related design
+gap (FM-02, no input component with a specified error state) *is* confirmed and
+makes inconsistent error handling likely.
 **Required Fix:**
 ```html
 <label for="email">Email address</label>
@@ -986,15 +1003,24 @@ until resolved.
 | C-06 | 1.4.3 / 1.4.11 — remaining tokens | AA | Medium |
 | T-01 | 1.3.1 Info and Relationships — heading skip | A | High |
 | K-01 | 2.1.1 Keyboard — scroll regions | A | Critical |
-| F-01 | 2.4.7 Focus Visible | AA | Critical |
+| F-01 | 1.4.11 Non-text Contrast — focus ring 2.22:1 | AA | High |
 | N-01 | 2.4.1 Bypass Blocks — no skip link | A | High |
 | I-01 | 1.1.1 Non-text Content — duplicated alt | A | Low |
 
-Plus, from the design system: **FM-01** (3.3.1 / 4.1.2, Critical), **FM-02**
-(3.3.2, High), **TT-01** (2.5.8, High), **I-02** (1.1.1, Medium), **S-01**
-(1.4.11 / 2.4.7, High), **K-03** (2.4.3, High), **N-02** (1.3.1, Medium).
+Plus, from the design file: **FM-02** (3.3.2, High), **TT-01** (2.5.8, High),
+**I-02** (1.1.1, Medium), **S-01** (1.4.11, High), **K-03** (2.4.3, High),
+**N-02** (1.3.1, Medium).
 
-**Total verified failures: 18** — of which **4 Critical**, **8 High**.
+**Total verified failures: 17** — of which **2 Critical**, **8 High**.
+
+**Confidence is not uniform across these 17.** Four are confirmed by axe-core and
+are the most reliable in the report: the `#A3A3A3` contrast failure, the
+scrollable regions, the heading skip and the duplicated alt text. Eight come from
+measurement of the Figma file, so they describe the design system with certainty
+but their live-site incidence is inferred. The remainder come from scripted
+checks written for this audit — the same class of tooling that produced two
+withdrawn findings — so treat them as strong indicators to confirm, not as
+settled fact.
 
 ### ⚠️ NEEDS TESTING — cannot be determined without manual/device testing (22)
 
@@ -1026,6 +1052,7 @@ Plus, from the design system: **FM-01** (3.3.1 / 4.1.2, Critical), **FM-02**
 | M-02 | 2.2.2 Pause, Stop, Hide | A | Carousel behaviour |
 | S-02 | 4.1.2 Name, Role, Value — states | A | Accordions, search |
 | S-03 | 1.4.13 Content on Hover or Focus | AA | Tooltips |
+| FM-01 | 3.3.1 / 4.1.2 Error association | A | **Form check returned nothing — untested** |
 
 ### ✅ PASS — verified conformant (selected)
 
@@ -1043,14 +1070,14 @@ Plus, from the design system: **FM-01** (3.3.1 / 4.1.2, Critical), **FM-02**
 
 | Verdict | Count |
 |---|---|
-| **FAIL** | **18** (4 Critical, 8 High, 5 Medium, 1 Low) |
-| **NEEDS TESTING** | **26** |
+| **FAIL** | **17** (2 Critical, 8 High, 6 Medium, 1 Low) |
+| **NEEDS TESTING** | **27** |
 | **PASS** | Selected criteria verified above |
 
 **Current status: NOT WCAG 2.2 Level AA conformant.**
 
-Eighteen verified failures must be fixed. Twenty-six criteria cannot be assessed
-without manual testing — and because a single failure anywhere breaks
+Seventeen verified failures must be fixed. Twenty-seven criteria cannot be
+assessed without manual testing — and because a single failure anywhere breaks
 conformance, **the site cannot be declared AA until those are resolved too.**
 
 ### The honest bottom line

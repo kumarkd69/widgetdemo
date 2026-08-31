@@ -6,15 +6,15 @@ _Last updated: 2026-08-31 (WCAG 2.2 AA)_
 
 ### Deliverables — WCAG 2.2 Level AA
 - **`WCAG22_AA_AUDIT.md`** — the full audit. 11 areas, per-issue format,
-  PASS / FAIL / NEEDS TESTING scorecard. **18 FAIL, 26 NEEDS TESTING.**
+  PASS / FAIL / NEEDS TESTING scorecard. **17 FAIL, 27 NEEDS TESTING.**
 - **`DEV_FIXES.md`** — 12 numbered fixes, every value pre-decided.
 - **`DESIGN_FIXES.md`** — 6 items only a designer can do in Figma.
-- **`MANUAL_TEST_PLAN.md`** — scripts all 26 untested criteria. ~2 days.
+- **`MANUAL_TEST_PLAN.md`** — scripts all 27 untested criteria. ~2 days.
 - Figma page **"Accessibility Fixes — WCAG 2.2 AA"** (node `14863:221`).
   The older 2.1 page is renamed `[SUPERSEDED]` rather than deleted.
 
 **Status: NOT WCAG 2.2 AA conformant.** A single unresolved failure breaks
-conformance, so both the 18 verified failures and the 26 untested criteria must
+conformance, so both the 17 verified failures and the 27 untested criteria must
 be settled before any AA claim.
 
 ### Standard changed 2.1 -> 2.2
@@ -101,6 +101,29 @@ rendering correctly.
 
 **Do not change hero heading colours on that evidence.** `07_verify_backdrops.js`
 settles every such case in one run and produces a visual report.
+
+## Corrections made during verification (31 Aug)
+
+A pass back over the raw scan data against the written findings caught two
+errors in the audit itself. Both are fixed; recording them here because both
+would have cost credibility with the dev team.
+
+1. **Focus indicator — mischaracterised.** The audit said "no focus indicator
+   detected on any page". The data actually shows `outline #000000 vs bg
+   #154291 = 2.22:1`. A focus ring *is* rendered — it is the browser default,
+   because no custom focus style exists — and it fails 1.4.11 on dark surfaces.
+   A developer would have tabbed the site, seen a ring, and doubted the report.
+   Reclassified from Critical/2.4.7 to High/1.4.11 with the correct evidence.
+
+2. **Form-error association — asserted without evidence.** The audit described a
+   scripted check finding missing `aria-describedby`. The scan returned **zero**
+   form findings; the check most likely never triggered validation. Moved from
+   verified FAIL (Critical) to NEEDS TESTING.
+
+Scorecard revised: **18 FAIL / 26 NEEDS TESTING → 17 FAIL / 27 NEEDS TESTING.**
+
+Also noted: ~69 `minor` rows in the workbook are inconclusive
+`prefers-reduced-motion` notes, not defects — and 2.3.3 is Level AAA regardless.
 
 ## What the trustworthy data says
 

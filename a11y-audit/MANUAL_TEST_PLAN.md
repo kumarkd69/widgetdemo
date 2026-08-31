@@ -1,7 +1,7 @@
 # Manual Accessibility Test Plan
 ### theoriginaltour.com · WCAG 2.2 Level AA · 26 unresolved criteria
 
-**Purpose.** Scanning verified 18 failures and left 26 criteria undetermined.
+**Purpose.** Scanning verified 17 failures and left 27 criteria undetermined.
 Scanning tools reliably detect roughly 30–40% of WCAG issues; the rest — keyboard
 operation, screen-reader output, whether copy actually helps someone recover — can
 only be judged by a person. **The site cannot be declared AA conformant until this plan is
@@ -324,9 +324,11 @@ Fail if placeholder text is the only label, or a floating label disappears on in
 Required fields are clearly marked, not by colour alone.
 ☐ PASS ☐ FAIL
 
-**11c — Error identification (3.3.1)**
+**11c — Error identification (3.3.1)** — **priority, no evidence either way**
+The scripted check returned nothing here, most likely because it could not
+trigger validation. This is genuinely untested rather than passing.
 Submit the form empty. Errors must be announced by the screen reader, not just
-shown. Each error must be associated with its field.
+shown, and each must be associated with its field via `aria-describedby`.
 ☐ PASS ☐ FAIL
 
 **11d — Error suggestion (3.3.3)**
@@ -498,7 +500,7 @@ node scripts/05_diff_runs.js
 
 **Do not publish an accessibility statement claiming WCAG 2.2 AA until:**
 
-1. All 18 verified failures are fixed *(see `DEV_FIXES.md`)*
+1. All 17 verified failures are fixed *(see `DEV_FIXES.md`)*
 2. This plan is complete with no outstanding FAIL
 3. The re-run scan is clean
 
