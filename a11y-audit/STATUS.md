@@ -1,13 +1,32 @@
 # The Original Tour — WCAG 2.1 AA Audit: Status
 
-_Last updated: 2026-08-31 (re-scan + dev handover)_
+_Last updated: 2026-08-31 (WCAG 2.2 AA)_
 
 ## Both phases COMPLETE — live site re-scanned 31 Aug
 
-### Deliverables
-- **`DEV_HANDOVER.md`** — the one-page brief for the dev team. START HERE.
-- Figma page **"Accessibility Fixes — Handover"** (node `14863:221`) — the same
-  content visually, for designers.
+### Deliverables — WCAG 2.2 Level AA
+- **`WCAG22_AA_AUDIT.md`** — the full audit. 11 areas, per-issue format,
+  PASS / FAIL / NEEDS TESTING scorecard. **18 FAIL, 26 NEEDS TESTING.**
+- **`DEV_FIXES.md`** — 12 numbered fixes, every value pre-decided.
+- **`DESIGN_FIXES.md`** — 6 items only a designer can do in Figma.
+- **`MANUAL_TEST_PLAN.md`** — scripts all 26 untested criteria. ~2 days.
+- Figma page **"Accessibility Fixes — WCAG 2.2 AA"** (node `14863:221`).
+  The older 2.1 page is renamed `[SUPERSEDED]` rather than deleted.
+
+**Status: NOT WCAG 2.2 AA conformant.** A single unresolved failure breaks
+conformance, so both the 18 verified failures and the 26 untested criteria must
+be settled before any AA claim.
+
+### Standard changed 2.1 -> 2.2
+Six criteria are new in 2.2 and were never assessed by earlier passes:
+2.4.11 Focus Not Obscured (AA) · 2.5.7 Dragging Movements (AA) ·
+2.5.8 Target Size (AA) · 3.2.6 Consistent Help (A) · 3.3.7 Redundant Entry (A) ·
+3.3.8 Accessible Authentication (AA). 4.1.1 Parsing was removed in 2.2.
+
+Accuracy notes: 2.3.3 reduced motion is **AAA**, not counted against AA.
+2.5.8 requires **24x24** at AA; 44x44 is 2.5.5 (AAA).
+Reflow at 320px/400% was **never tested** — not assumed to pass.
+- **`DEV_HANDOVER.md`** — superseded by DEV_FIXES.md + DESIGN_FIXES.md.
 - `output/TOT_WCAG21AA_Audit_FULL.xlsx` — 7-tab workbook, both phases.
   Regenerate any time with `npm run full` in `local-scan/`.
 - Figma page **"Prod Accessibility Issues"** (node `14651:221`) in file
