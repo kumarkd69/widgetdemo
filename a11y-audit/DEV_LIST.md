@@ -130,16 +130,57 @@ Grow the hit area, not the icon. 24×24 is the AA floor; 44×44 is better on mob
 
 ---
 
-### 9 · Form errors — **check before changing** · 0–4 hrs
+### 9 · Form fields — **check before changing** · 0–4 hrs
 The scan produced no evidence either way, so this may already be correct.
 Submit a form with invalid data and inspect. If these are present, tick it off:
 
 ```html
+<label for="email">Email address</label>
 <input id="email" aria-invalid="true" aria-describedby="email-err">
 <p id="email-err" role="alert">Enter a valid email address</p>
 ```
 
 Never signal an error by colour alone — keep the icon and the text.
+
+There is now an **`Input- Master`** component set in Figma (COMPONENTS page) with
+Default / Focus / Filled / Error / Disabled. Build against it. Values:
+
+| Part | Value | Ratio |
+|---|---|---|
+| Border, default | `#737373` | 4.74:1 |
+| Focus ring, 2px **outside** | `#164291` | 9.45:1 |
+| Border, error | `#c2070d` | 6.31:1 |
+| Error message text | `#9e1525` | 8.11:1 |
+| Placeholder | `#525252` | 7.81:1 |
+| Disabled text on `#fafafa` | `#525252` | 7.49:1 |
+
+Field height is 48px, which clears the 24×24 minimum target size (2.5.8).
+Keep the visible `<label>` — placeholder text is not a label (2.4.6, 3.3.2).
+
+---
+
+### 10 · Illustrations — 12 images · 15 min
+Confirmed **decorative** by the designer. Ship an empty alt attribute:
+
+```html
+<img src="..." alt="">
+```
+
+`alt=""` and *no* `alt` attribute are not the same thing — an omitted attribute
+makes screen readers announce the filename. It must be present and empty.
+
+---
+
+### 11 · Alerts — keep the icon and the label · 0 hrs
+No change needed, but **don't regress this one.** The alert border colours
+(`#86efac` success, `#fcd34d` warning, `#f49898` error, `#86b0e3` info) all sit
+below 3:1. They're exempt only because each alert also carries a distinct icon
+and a text label naming its type, so colour is reinforcement rather than the
+sole signal (1.4.1, 1.4.11).
+
+Strip the icon or the label and these become real failures. Same for the brand
+accent `#9cd1f3` — decorative only. If it ever lands on an icon, link or active
+state, darken it to `#3f8fc4` (3.10:1) first.
 
 ---
 
