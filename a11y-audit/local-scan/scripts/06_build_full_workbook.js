@@ -157,7 +157,8 @@ const readme = [
   ['     plus the 29 component sets on the COMPONENTS page and all local colour/type variables.', 10, false],
   ['', 10, false],
   ['TABS — read them in this order', 11, true],
-  ['  1. Developer Fixes       6 fixes a developer can apply today with no design input. START HERE.', 10, false],
+  ['  0. Tracker               THE TRACKER. 29 tasks, owner, effort, status dropdown. START HERE.', 10, false],
+  ['  1. Developer Fixes       Detail behind the D-items in the tracker.', 10, false],
   ['  2. Design Decisions      9 items where a designer decides first, then it is a one-line change.', 10, false],
   ['  3. Verify & Manual QA    Items not yet actionable, plus the manual QA an AA claim requires.', 10, false],
   ['  Design Tokens             Colour variables with measured ratios and exact hex fixes.', 10, false],
@@ -508,6 +509,70 @@ for (let r = 2; r <= dap.rowCount; r++) {
 }
 dap.autoFilter = { from: 'A1', to: `J${dap.rowCount}` };
 
+// ================= 0. TRACKER =================
+const trk = wb.addWorksheet('0. Tracker');
+trk.columns = [
+  { header: 'Ref', width: 8 }, { header: 'Track', width: 16 },
+  { header: 'Task', width: 54 }, { header: 'WCAG', width: 16 },
+  { header: 'Owner', width: 16 }, { header: 'Effort', width: 11 },
+  { header: 'Status', width: 16 }, { header: 'Assigned to', width: 18 },
+  { header: 'Target date', width: 14 }, { header: 'Done date', width: 14 },
+  { header: 'Notes / blockers', width: 46 }
+];
+header(trk, 11);
+
+const TRACK_ROWS = [
+  ['D1','Developer','Grey text #A3A3A3 -> #767676 (174 elements, 31 pages)','1.4.3 AA','Dev','1 hr','Not started'],
+  ['D2','Developer','Badge colours: blue/green/pink one step darker','1.4.3 AA','Dev','1 hr','Not started'],
+  ['D3','Developer','Colour token values — 8 tokens','1.4.3 / 1.4.11 AA','Dev','2 hrs','Not started'],
+  ['D4','Developer',':focus-visible ring 2px #4398d4','1.4.11 AA','Dev','1 hr','Not started'],
+  ['D5','Developer','Skip-to-content link, first in DOM','2.4.1 A','Dev','1 hr','Not started'],
+  ['D6','Developer','tabindex + role + label on 20 scroll regions','2.1.1 A','Dev','2 hrs','Not started'],
+  ['D7','Developer','Landmarks + heading level fix','1.3.1 A','Dev','2 hrs','Not started'],
+  ['D8','Developer','Tap target hit areas + duplicate alt text','2.5.8 AA / 1.1.1 A','Dev','4 hrs','Not started'],
+  ['D9','Developer','Form error ARIA — INSPECT EXISTING MARKUP FIRST','3.3.1 / 4.1.2 A','Dev','0-4 hrs','Not started'],
+  ['G1','Design','Confirm button hover fix (A: #2a6fa8 shipping)','1.4.3 AA','Designer','1 hr','Not started'],
+  ['G2','Design','Update Figma colour variables to match code','1.4.3 / 1.4.11 AA','Designer','2 hrs','Not started'],
+  ['G3','Design','Create Input component set with 5 states','3.3.2 A','Designer','4 hrs','Not started'],
+  ['G4','Design','Mark current frames, deprecate ~90 duplicates','Process','Designer','2 hrs','Not started'],
+  ['G5','Design','Illustration alt strategy + Titles/Mobile/H5 font','1.1.1 A','Designer','3 hrs','Not started'],
+  ['V1','Verify','Run 07_verify_backdrops.js, fix only REAL_FAIL','1.4.3 AA','Dev','2 hrs','Not started'],
+  ['V2','Verify','Manual retest: 200% zoom AND 320px reflow','1.4.4 / 1.4.10 AA','QA','2 hrs','Not started'],
+  ['V3','Verify','Tab through for keyboard trap','2.1.2 A','QA','2 hrs','Not started'],
+  ['M1','Manual QA','Screen-reader pass (NVDA + VoiceOver)','Multiple','QA','4 hrs','Not started'],
+  ['M2','Manual QA','Reflow at 320px across all templates','1.4.10 AA','QA','2 hrs','Not started'],
+  ['M3','Manual QA','Booking journey by keyboard only','Multiple','QA','2 hrs','Not started'],
+  ['M4','Manual QA','Route maps — text equivalent for stop data?','1.1.1 A / 1.4.5 AA','QA + Content','2 hrs','Not started'],
+  ['M5','Manual QA','Four new WCAG 2.2 criteria (2.4.11/2.5.7/3.3.7/3.3.8)','2.2 AA/A','QA','3 hrs','Not started'],
+  ['M6','Manual QA','Alt text meaningfulness review','1.1.1 A','QA + Content','2 hrs','Not started'],
+  ['M7','Manual QA','Forms: labels, required, error suggestion, autocomplete','3.3.x / 1.3.5','QA','2 hrs','Not started'],
+  ['M8','Manual QA','Composite widgets: accordions, menus, modals, tabs','2.1.1 A / 4.1.2 A','QA','3 hrs','Not started'],
+  ['M9','Manual QA','Page titles, link purpose, consistent nav','2.4.2 / 2.4.4 A','QA','2 hrs','Not started'],
+  ['X1','Close out','Re-scan + 05_diff_runs.js, check NEW column','—','Dev','1 hr','Not started'],
+  ['X2','Close out','Add axe-core to CI to prevent regression','—','Dev','4 hrs','Not started'],
+  ['X3','Close out','Write conformance statement (partial if gaps remain)','—','Owner','2 hrs','Not started']
+];
+for (const r of TRACK_ROWS) trk.addRow([r[0], r[1], r[2], r[3], r[4], r[5], r[6], '', '', '', '']);
+bodyFont(trk);
+
+const TRACK_FILL = { Developer: 'FF166534', Design: 'FF164291', Verify: 'FFF59E0B', 'Manual QA': 'FF991B1B', 'Close out': 'FF525252' };
+for (let r = 2; r <= trk.rowCount; r++) {
+  const row = trk.getRow(r);
+  const track = String(row.getCell(2).value || '');
+  const fill = TRACK_FILL[track] || 'FF737373';
+  const c = row.getCell(1);
+  c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: fill } };
+  c.font = { name: 'Arial', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+  c.alignment = { horizontal: 'center', vertical: 'center' };
+  row.getCell(7).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF3F4F6' } };
+  // status dropdown
+  row.getCell(7).dataValidation = {
+    type: 'list', allowBlank: false, formulae: ['"Not started,In progress,Blocked,Done,N/A"'],
+    showErrorMessage: true, errorTitle: 'Pick a status', error: 'Choose from the list.'
+  };
+}
+trk.autoFilter = { from: 'A1', to: `K${trk.rowCount}` };
+
 // ================= A — Dev Fixes (Direct) =================
 const devWs = wb.addWorksheet('1. Developer Fixes');
 devWs.columns = [
@@ -681,7 +746,7 @@ vfWs.autoFilter = { from: 'A1', to: `F${vfWs.rowCount}` };
 // ================= write + validate =================
 (async () => {
   // Put the working tabs immediately after Read Me
-  const desired = ['Read Me', '1. Developer Fixes', '2. Design Decisions',
+  const desired = ['Read Me', '0. Tracker', '1. Developer Fixes', '2. Design Decisions',
                    '3. Verify & Manual QA', 'Design Tokens', 'Master Issue Log',
                    'Live Site — Scan Results', 'Figma — Frame Audit',
                    'Component State Matrix', 'Dev Action Plan'];
@@ -693,7 +758,7 @@ vfWs.autoFilter = { from: 'A1', to: `F${vfWs.rowCount}` };
 
   const check = new ExcelJS.Workbook();
   await check.xlsx.readFile(outPath);
-  const expect = ['Read Me', '1. Developer Fixes', '2. Design Decisions',
+  const expect = ['Read Me', '0. Tracker', '1. Developer Fixes', '2. Design Decisions',
                   '3. Verify & Manual QA', 'Design Tokens', 'Master Issue Log',
                   'Live Site — Scan Results', 'Figma — Frame Audit',
                   'Component State Matrix', 'Dev Action Plan'];
