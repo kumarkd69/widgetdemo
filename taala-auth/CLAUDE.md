@@ -13,20 +13,22 @@ Design "Taala" (Hindi/Kannada for "lock"), a unified authentication system for a
 - Products: Orbit Bank (mobile + net banking), Orbit UPI, Orbit Cards (credit/debit), Orbit Wallet (PPI), Orbit Invest (stockbroking).
 - Problem inside the org: each product team built its own auth. Six patterns for OTP, three PIN designs, two biometric prompts, no shared fallback logic, no shared risk engine contract.
 
-## Regulatory context (verify every item against the primary source before citing)
-Primary source: Reserve Bank of India (Authentication Mechanisms for Digital Payment Transactions) Directions, 2025, issued 25 September 2025, on rbi.org.in. Read the full text. Cite paragraph numbers.
-Known from secondary sources (treat as [VERIFY] until confirmed in the primary text):
-- Effective 1 April 2026 for payment system providers and participants (banks and non-banks).
-- All digital payment transactions need at least two distinct factors of authentication: something the user knows, has or is.
-- For digital payments other than card-present transactions, at least one factor must be dynamic (unique to the transaction / proof of possession).
-- SMS OTP is NOT discontinued; it remains a valid factor. The directions encourage alternatives: device-bound tokens, app-based authentication, biometrics, passkeys and similar.
-- Issuers may add risk-based checks beyond the minimum two factors, based on fraud-risk perception of the transaction.
-- Emphasis on interoperability and open access to authentication technology.
-- Issuers are responsible for the integrity of authentication and for compensating customers for losses where they don't comply.
-- Card issuers must validate additional-factor authentication on non-recurring cross-border card-not-present transactions when the overseas merchant or acquirer requests it, by 1 October 2026.
-- Alignment with the Digital Personal Data Protection Act, 2023.
-- Exemptions exist for certain transaction types (e.g. small-value, recurring/e-mandate, offline). Extract the exact list and limits from the primary text; do not guess.
-Related: RBI's move of bank domains to ".bank.in" (separate circular; verify date) affects anti-phishing UX.
+## Regulatory context (checked in Phase 1 — see research/regulation/rbi-directions-notes.md)
+Primary source: Reserve Bank of India (Authentication Mechanisms for Digital Payment Transactions) Directions, 2025 (RBI/2025-26/79), issued 25 September 2025: https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=12898&Mode=0
+Status key: **Confirmed** = matches RBI page text seen via search index, with paragraph; **Confirmed (no ¶)** = consistent across RBI index + secondary sources, paragraph not confirmed; **Corrected** = brief was wrong or imprecise; **Not found**. The primary text could not be opened in this environment (network policy). Re-check all items before publishing.
+- Effective 1 April 2026 for payment system providers and participants (banks and non-banks). — Confirmed (no ¶)
+- At least two distinct factors: has, knows, is. — Confirmed, ¶6 and ¶5(f)
+- For non-card-present payments, one factor is dynamically created or proven (proof of possession unique to the transaction). — Confirmed, ¶6
+- SMS OTP is not discontinued; it is listed as a valid factor. — Confirmed, ¶5(f)
+- Alternatives encouraged. — Corrected: sources name biometrics (device-native or Aadhaar), software tokens, device-based tokens, cryptographic credentials. "Passkeys" by name: Not found.
+- Risk-based checks beyond the two-factor minimum. — Confirmed, ¶8
+- Interoperability and open access (incl. tokenisation for all token requestors). — Confirmed (no ¶)
+- Issuer ensures robustness and integrity before deployment; compensates the customer in full for losses from non-compliant transactions. — Corrected: compensation is tied to non-compliance, not all fraud. (no ¶)
+- Cross-border CNP: by 1 October 2026, card issuers validate AFA on non-recurring cross-border CNP when the overseas merchant or acquirer requests it. — Confirmed (no ¶)
+- DPDP Act, 2023 compliance. — Confirmed (no ¶)
+- Exemptions: small-value contactless card-present (≤ ₹5,000 reported), recurring e-mandate after the first, PPI-MTS and gift PPIs, NETC, small-value offline, GDS/IATA travel on corporate cards. — Confirmed (no ¶); limits [VERIFY]
+- Factors must be independent: compromise of one must not affect the other. — Added (no ¶)
+Related: `.bank.in` circular RBI/2025-26/28, 22 Apr 2025, migration by 31 Oct 2025 — Confirmed by two reports. NPCI on-device biometric for UPI from 8 Oct 2025, cap ₹5,000 (reported ₹10,000 from Jul 2026) — [VERIFY].
 
 ## Users
 External (end customers):

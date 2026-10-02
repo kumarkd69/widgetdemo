@@ -90,3 +90,60 @@ Option 1. Every phase also produces Figma boards, not only Phase 6+. Markdown in
 - One variable mode: no light/dark or per-language modes. Languages are shown as separate frames; dark mode is out of scope.
 - If MCP quota runs out mid-build, work pauses and resumes from `figma/figma-log.md`.
 - Moving to Pro later is a file move, not a rebuild.
+
+---
+
+## ADR-004: Device-bound key is the default dynamic factor in apps; passkey on web
+- **Date:** 2026-10-02 · **Status:** Accepted · **Phase:** 4 · **Owner:** Kumar
+
+**Context** ¶6 needs a dynamic factor for non-card-present payments. SMS OTP qualifies (¶5(f)) but is phishable and fails abroad (I2, I6). Synced passkeys may not count as proof of possession of a specific device [VERIFY].
+
+**Options** 1. SMS OTP default — familiar; phishable; SIM-dependent. 2. Synced passkey everywhere — phishing-resistant; possession of the device unclear; uneven on Android Go. 3. Device-bound key in secure hardware for apps, passkey for net banking — phishing-resistant, transaction-bound signature, works offline-ish; needs device binding.
+
+**Decision** Option 3.
+
+**Consequences** Device binding becomes a core flow. Net banking needs a second possession path (push to phone) for High tier. Compliance must accept DK signature as the dynamic factor.
+
+---
+
+## ADR-005: OTP stays, as fallback only
+- **Date:** 2026-10-02 · **Status:** Accepted · **Phase:** 4
+
+**Context** OTP is valid (¶5(f)) and universal; removing it strands users without a bound device.
+
+**Decision** OTP is never the default where DK/PK works. It's offered as fallback in Low and Medium, always with "never share" copy, and never alone.
+
+**Consequences** OTP share of dynamic factors becomes a headline metric. SMS cost falls gradually (estimate).
+
+---
+
+## ADR-006: No OTP-only path for High-risk changes or recovery
+- **Date:** 2026-10-02 · **Status:** Accepted · **Phase:** 4–5
+
+**Context** Factor independence (R6): if SMS can both reset the PIN and deliver the dynamic factor, a SIM swap defeats both.
+
+**Decision** High tier and recovery require DK, or assisted verification. OTP may be one of several factors there, never the only one besides knowledge.
+
+**Consequences** Some users will need video KYC or a branch. Support needs capacity (migration risks).
+
+---
+
+## ADR-007: Four tiers plus Exempt, three categories at High
+- **Date:** 2026-10-02 · **Status:** Accepted · **Phase:** 4
+
+**Context** ¶8 allows risk-based checks above the floor. Too many tiers confuse users and analysts.
+
+**Decision** Low, Medium, High, Blocked, plus Exempt (logged). High = has + knows + is.
+
+**Consequences** Trust Meter has four visible states. Risk can tune inputs but not invent tiers without an RFC.
+
+---
+
+## ADR-008: Cooling periods are Orbit policy and are said upfront
+- **Date:** 2026-10-02 · **Status:** Accepted · **Phase:** 4
+
+**Context** No RBI rule on cooling found (R23). Users discover limits only on failure.
+
+**Decision** New-payee cap ₹50,000 (net banking) / ₹25,000 (UPI) in the first 24 h; shown when adding the payee; releasable via assisted path. Values are tunable.
+
+**Consequences** Arjun's journey includes a hold; the assisted release path must exist on day one.

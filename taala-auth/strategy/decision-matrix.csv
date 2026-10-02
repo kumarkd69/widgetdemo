@@ -1,1 +1,33 @@
-phase,note
+row_id,transaction_type,amount_band,beneficiary,device,sim,anomaly,exemption,risk_tier,primary_factors,factor_categories,dynamic_factor,fallback_factors,cooling_period,explanation_id,rbi_basis
+UPI-01,UPI P2M,A0-A1,known,bound,unchanged,none,none,Low,DK+BIO,has+is,DK,DK+UPIN,none,EXP_LOW_KNOWN_SMALL,¶6; NPCI biometric cap (R21)
+UPI-02,UPI P2M,A0-A1,known,bound,unchanged,none,none,Low,DK+UPIN,has+knows,DK,DK+BIO,none,EXP_LOW_KNOWN_SMALL,¶6
+UPI-03,UPI P2M,A2,known,bound,unchanged,none,none,Low,DK+UPIN,has+knows,DK,assisted,none,EXP_LOW_KNOWN,¶6; above biometric cap
+UPI-04,UPI P2P,A0-A1,known,bound,unchanged,none,none,Low,DK+BIO,has+is,DK,DK+UPIN,none,EXP_LOW_KNOWN_SMALL,¶6
+UPI-05,UPI P2P,A2,new,bound,unchanged,none,none,Medium,DK+UPIN,has+knows,DK,DK+UPIN after cooldown,none,EXP_MED_NEW_PAYEE,¶6; ¶8
+UPI-06,UPI P2P,A3,new,bound,unchanged,none,none,High,DK+UPIN+BIO,has+knows+is,DK,DK+UPIN+OTP,first 24h cap ₹25000 (Orbit policy),EXP_HIGH_NEW_PAYEE_LARGE,¶6; ¶8
+UPI-07,UPI P2P,A2-A3,any,bound,unchanged,active call detected,none,High,DK+UPIN+pause 30s,has+knows,DK,assisted,30s pause + scam warning (Orbit policy),EXP_HIGH_ON_CALL,¶8
+UPI-08,UPI any,any,any,bound,changed <48h,none,none,High,DK+UPIN+BIO,has+knows+is,DK,assisted,limit ₹5000/day for 48h (Orbit policy),EXP_HIGH_SIM_CHANGED,¶8; R6
+UPI-09,UPI any,any,any,rooted/emulator,any,any,none,Blocked,none,—,—,assisted (branch/video),until device clean,EXP_BLOCK_DEVICE,¶8; R15
+UPI-10,UPI Lite / offline,A0,known,bound,any,none,small-value offline,Exempt,DK,has,DK,DK+UPIN,none,EXP_EXEMPT_SMALL_OFFLINE,Exemptions [VERIFY limits]
+CNP-01,Card CNP domestic,A0-A1,saved merchant,bound,unchanged,none,none,Low,DK+BIO (in-app push),has+is,DK,OTP+APIN,none,EXP_LOW_KNOWN_SMALL,¶6
+CNP-02,Card CNP domestic,A2-A3,new merchant,bound,unchanged,none,none,Medium,DK+APIN (in-app push),has+knows,DK,OTP+APIN,none,EXP_MED_NEW_MERCHANT,¶6; ¶8
+CNP-03,Card CNP domestic,A4,any,bound,unchanged,none,none,High,DK+APIN+BIO,has+knows+is,DK,OTP+APIN+assisted,none,EXP_HIGH_LARGE,¶6; ¶8
+CNP-04,Card CNP domestic,any,any,not bound,unchanged,none,none,Medium,OTP+APIN,has+knows,OTP,assisted,none,EXP_MED_NO_APP,¶6; ¶5(f) OTP valid
+CB-01,Card CNP cross-border (AFA requested),A0-A2,any,bound,absent,abroad (expected),none,Medium,DK+BIO or DK+APIN (push),has+is / has+knows,DK,QR approve-on-another-device; email OTP [VERIFY],none,EXP_MED_ABROAD,Cross-border rule (R13)
+CB-02,Card CNP cross-border (AFA requested),A3-A4,any,bound,absent,abroad,none,High,DK+APIN+BIO,has+knows+is,DK,assisted call-back,none,EXP_HIGH_ABROAD_LARGE,R13; ¶8
+CB-03,Card CNP cross-border (no AFA request),any,any,any,any,none,none,Medium (risk-scored),risk-based; step-up to CB-01 if score high,—,DK if stepped up,—,none,EXP_MED_ABROAD,R14 [VERIFY scope]
+NB-01,Net banking transfer,A0-A2,known,passkey enrolled,n/a,none,none,Low,PK+password,has+knows,PK,DK push+password; OTP+password,none,EXP_LOW_KNOWN,¶6
+NB-02,Net banking transfer,A3-A4,new,passkey enrolled,n/a,none,none,High,PK+password+DK push to phone,has+knows+has(2nd device),PK,assisted,new payee cap ₹50000 first 24h (Orbit policy),EXP_HIGH_NEW_PAYEE_LARGE,¶6; ¶8
+NB-03,Net banking login,—,—,new browser,n/a,none,none,Medium,password+DK push,knows+has,DK,password+OTP,none,EXP_MED_NEW_DEVICE,¶6
+NB-04,Add beneficiary (any channel),—,new,bound,unchanged,none,none,Medium,DK+APIN,has+knows,DK,OTP+APIN,payee usable at once up to cap (Orbit policy),EXP_MED_ADD_PAYEE,¶8
+WAL-01,Wallet spend,A0-A1,known,bound,unchanged,none,none,Low,DK+BIO,has+is,DK,DK+APIN,none,EXP_LOW_KNOWN_SMALL,¶6
+WAL-02,Wallet load from card/UPI,A1-A2,own instrument,bound,unchanged,none,none,Low,inherits source instrument auth (UPI/CNP row),—,—,—,none,EXP_LOW_OWN_FUNDS,¶6 via source
+WAL-03,Wallet gift / transit PPI,A0,—,any,any,none,PPI-MTS / Gift PPI,Exempt,DK or none per product,—,—,—,none,EXP_EXEMPT_PPI,Exemptions [VERIFY]
+INV-01,Bank-to-broker funds transfer,A2-A3,own broker a/c (verified),bound,unchanged,none,none,Low,DK+BIO,has+is,DK,DK+APIN,none,EXP_LOW_OWN_FUNDS,¶6
+INV-02,Broker order placement,any,—,bound,unchanged,none,SEBI scope,Low (SEBI),session (DK) + BIO at login,has+is,—,APIN,none,EXP_INFO_SEBI,SEBI 2FA [VERIFY] (R25)
+INV-03,Broker withdrawal to new bank a/c,A3,new,bound,unchanged,none,none,High,DK+APIN+BIO,has+knows+is,DK,assisted,24h hold (Orbit policy),EXP_HIGH_NEW_PAYEE_LARGE,¶8
+EMD-01,E-mandate registration,any,merchant,bound,unchanged,none,none,Medium,DK+APIN,has+knows,DK,OTP+APIN,none,EXP_MED_MANDATE,¶6; first debit not exempt (R19)
+EMD-02,E-mandate recurring debit (not first),within mandate,merchant,—,—,none,recurring e-mandate,Exempt,none (pre-debit notice),—,—,—,none,EXP_EXEMPT_MANDATE,Exemptions [VERIFY limits]
+DEV-01,Bind new device,—,—,new,unchanged,none,none,High,old device DK approve OR (OTP+APIN+BIO enrol),has+knows+is,DK/OTP,video KYC,12h new-device payee lock (Orbit policy),EXP_HIGH_NEW_DEVICE,¶8; R6
+DEV-02,Bind new device,—,—,new,changed <48h,none,none,Blocked,none in-app,—,—,video KYC or branch,until assisted check,EXP_BLOCK_SIM_SWAP,¶8; R6
+REC-01,Reset app/UPI PIN,—,—,bound,unchanged,none,none,High,DK+BIO + card/Aadhaar-OTP check,has+is+knows,DK,video KYC,6h cooling on new payees (Orbit policy),EXP_HIGH_RECOVERY,R6; I5

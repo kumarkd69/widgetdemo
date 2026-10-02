@@ -1,3 +1,31 @@
-# rule-to-requirement
+# Rule to requirement
 
-Status: not started. Filled in the phase listed in PLAN.md.
+Source IDs refer to `rbi-directions-notes.md`. Primary URL for all RBI rows: https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=12898&Mode=0. **[VERIFY ¶]** = rule reported by several sources, paragraph number not confirmed.
+
+| # | RBI paragraph | Rule in plain words | Design requirement for Taala | Component / pattern | Open question |
+|---|---|---|---|---|---|
+| R1 | Scope [VERIFY ¶] | Applies to all payment system providers and participants, banks and non-banks. | One policy engine contract for every Orbit product, including Wallet (non-bank PPI). | Policy engine API; Adoption guide | Is Orbit Wallet a separate PPI issuer entity? |
+| R2 | Effective date [VERIFY ¶] | Comply by 1 April 2026. | Baseline audit assumes Orbit is compliant via OTP; Taala improves on it (ADR-002). | Migration plan | — |
+| R3 | ¶5(f) | Factors: has, knows, is. Examples include SMS OTP, PIN, password, card, software token, device-native or Aadhaar biometrics. | Every factor in Taala is tagged by category in the API (`knows` / `has` / `is`) so compliance can prove two **distinct** categories. | Policy engine `factors[]`; Compliance log | Does device-native biometric that only unlocks a device key count as a separate factor? |
+| R4 | ¶6 | At least two distinct factors per transaction, unless exempt. | Policy engine never returns a plan with fewer than two categories unless an `exemption_code` is set. | Decision matrix; Auth Sheet | — |
+| R5 | ¶6 | Non-card-present: one factor is dynamic, unique to the transaction. | Device-bound token signs a challenge that includes amount, payee and nonce. OTP only as fallback dynamic factor. | Device Binding; Biometric/PIN prompts; OTP Input | Is a signed challenge from a synced passkey "proof of possession"? |
+| R6 | ¶6 [VERIFY sub-para] | Compromise of one factor must not affect the other. | Don't let SMS deliver both the dynamic factor and the means to reset the PIN. PIN reset never by OTP alone. | Recovery Entry; Fallback ladder | — |
+| R7 | ¶6 / ¶5(f) | Card-present payments don't need a dynamic factor. | Out of Taala's app scope (PoS). Note it so teams don't add needless friction. | Scope.md | — |
+| R8 | ¶7 [VERIFY ¶] | Issuers may adopt new factors beyond OTP. | Default dynamic factor = device-bound token; passkey for net banking. | Device Binding Status; Passkey Prompt | — |
+| R9 | ¶8 | Issuers may add risk-based checks above the two-factor minimum. | Risk tiers Low / Medium / High / Blocked. Extra checks only add, never replace, the minimum. | Trust Meter; Step-up Explainer; Decision matrix | Which signals is Orbit allowed to collect under DPDP? |
+| R10 | ¶8 | Risk checks follow fraud-risk perception. | Every step-up shows a one-line reason in the user's language. | Step-up Explainer; `explanation_id` | Can the reason reveal the signal (e.g. "new device") without helping fraudsters? |
+| R11 | Interop [VERIFY ¶] | Authentication and tokenisation must work across platforms and devices. | Taala works on Android Go devices, iOS, and web; no factor depends on one OS vendor. | a11y.md; device matrix | — |
+| R12 | Interop [VERIFY ¶] | Offer tokenisation to all token requestors. | Cards product exposes token lifecycle in-app (view and delete tokens). | Cards screens | Out of MVP? |
+| R13 | Cross-border [VERIFY ¶] | By 1 Oct 2026, validate AFA on non-recurring cross-border CNP when overseas merchant/acquirer asks. | Cross-border CNP approval works without Indian SIM: in-app push approval on a bound device. | Cross-border card approval pattern; Approve on another device | Does Orbit's ACS vendor support out-of-band in-app approval? |
+| R14 | Cross-border [VERIFY scope] | Some read it as risk-based auth for all cross-border CNP. | Policy engine treats all cross-border CNP as at least Medium, regardless of merchant request. | Decision matrix rows CB-* | Confirm against text. |
+| R15 | Issuer duty [VERIFY ¶] | Ensure robustness and integrity before deployment. | Every new factor or pattern needs a security review and an Auth Council sign-off before rollout. | Governance; RFC process | — |
+| R16 | Compensation [VERIFY ¶] | Full compensation for losses from non-compliant transactions. | Policy engine logs the factors used for every transaction, signed and stored, so Orbit can prove compliance. | Audit log in Policy console | Retention period? |
+| R17 | DPDP [VERIFY ¶] | Comply with the DPDP Act, 2023. | Biometrics stay on device. Taala stores only a key handle and a yes/no result. Consent screen at device binding. | Device Binding; content guidelines | Legal sign-off on consent copy. |
+| R18 | Exemptions [VERIFY ¶] | Small-value contactless, recurring e-mandate (after first), PPI-MTS/gift, NETC, small-value offline. | Engine supports `exemption_code`; UI shows a lighter Success Confirmation but still logs it. | Decision matrix rows EX-* | Exact limits. |
+| R19 | Exemptions [VERIFY ¶] | First e-mandate debit is not exempt. | Mandate set-up uses full Medium flow; later debits notify only. | Patterns: Approve a payment | — |
+| R20 | `.bank.in` circular (S7) | Banks move to `.bank.in` by 31 Oct 2025. | Net banking login shows the domain as a trust cue and teaches users to check it. | Net banking login; content guidelines | — |
+| R21 | NPCI (S8) | UPI may use on-device biometric instead of UPI PIN up to a cap. | UPI Low tier offers biometric up to the NPCI cap; above it, UPI PIN. Cap is a config value, not hard-coded. | Biometric Prompt; PIN Pad | Current cap: ₹5,000 or ₹10,000 [VERIFY]. |
+| R22 | NPCI [VERIFY] | UPI PIN is set and captured under NPCI rules. | Taala wraps the UPI PIN step (explainer, trust meter, fallback) but does not change the PIN pad's core behaviour. | PIN Pad (UPI variant) | Can the UPI PIN pad carry Taala styling? |
+| R23 | Not in Directions | No rule on cooling periods. | Cooling period on new beneficiaries is labelled as Orbit policy in UI and docs. | Cooldown Timer | Duration, decided in Phase 4. |
+| R24 | Not in Directions | OTP is not banned. | OTP stays as a fallback factor everywhere, with anti-phishing copy. | OTP Input; Fallback Chooser | — |
+| R25 | SEBI [VERIFY] | Broker order auth is SEBI's domain. | Invest uses the same Taala patterns; policy rows cite SEBI, not RBI. | Invest screens | Which SEBI circular? |
