@@ -75,7 +75,7 @@ Legend for "Needs from Kumar": **Input** = material only you can supply. **Decis
 2. **Card CNP auth runs through 3-D Secure.** The challenge is hosted by the issuer's ACS, often a vendor, inside a merchant's checkout. Orbit controls the ACS challenge UI and app-based approval, not the merchant page. "Same pattern as UPI" is only partly reachable here.
 3. **Stockbroking is SEBI, not RBI.** Order placement auth falls under SEBI/exchange rules (e.g. 2FA for trading login) [VERIFY]. Only the bank-to-broker funds transfer is a payment under the RBI Directions. Orbit Invest also has to be a separate legal entity. I'll scope Invest as "same pattern, different regulator".
 4. **"Passkeys are device-bound" is often false.** Most Android and iOS passkeys sync across devices via the platform account. Whether a synced passkey counts as a possession or dynamic factor under the Directions is unclear [VERIFY]. A device-bound key (in-app keystore + signed challenge) may be the safer default, with passkeys for net banking.
-5. **The timeline has already passed.** Today is 2 Oct 2026. The Directions took effect 1 April 2026 and the cross-border CNP date was 1 Oct 2026 [VERIFY both]. So the honest story is "Orbit meets the minimum with OTP; Taala moves it to better factors", not "race to the deadline". I'll frame it that way unless you prefer a backdated scenario.
+5. **The timeline has already passed.** Today is 2 Oct 2026. The Directions took effect 1 April 2026 and the cross-border CNP date was 1 Oct 2026 [VERIFY both]. **Resolved (ADR-002):** the story is set after April 2026 — Orbit meets the minimum with OTP; Taala moves it to better factors.
 6. **Exemptions and amount bands.** Small-value, e-mandate and offline limits come from separate RBI/NPCI circulars and change often. I won't use any limit I can't cite.
 7. **Cooling periods on new beneficiaries** are common bank practice, not (as far as I know) an RBI rule in these Directions. They'll be an Orbit policy choice, labelled as such.
 8. **".bank.in"** — RBI's domain circular came out in 2025 with a deadline later that year [VERIFY]. Net banking screens can show it, but the domain is a trust cue, not an auth factor.
@@ -84,11 +84,26 @@ Legend for "Needs from Kumar": **Input** = material only you can supply. **Decis
 11. **The internal problem is invented.** "Six OTP patterns, three PINs" is a scenario. In the case study it must read as a fictional brief backed by the real-app audit, not as Orbit research.
 12. **Personas are made up.** Meena, Arjun, Imran and Priya are reasonable but unvalidated. Without interviews, the case study should say so, and the research plan becomes a key exhibit.
 13. **Shared phones and dual SIM** (Imran) clash with device binding, which ties one user to one device and SIM. This needs an explicit design answer, not a footnote.
-14. **Figma quota.** All teams where you have full seats are Starter. Starter has tight MCP limits and one variable mode, so no light/dark or language modes. The build in Phase 6 is large (17 components, ~40 screens, 3 scripts). See decision 1.
+14. **Figma quota. Resolved (ADR-003):** using the shared Starter file; the Pro team refused file creation (guest seat). All teams where you have full seats are Starter. Starter has tight MCP limits and one variable mode, so no light/dark or language modes. The build in Phase 6 is large (17 components, ~40 screens, 3 scripts). See decision 1.
 15. **Hindi and Kannada copy** written by me will be unidiomatic in places. It needs a native reviewer before it reaches screens.
 
-## Decisions I need from you
-1. **Figma plan.** Use the file you shared (`rbi`, key `neC2nH6A7j7ZFyPBDh9N7H`, currently one empty page) on a Starter team and accept one variable mode and possible quota stops? Or move the file to a Pro team?
-2. **Repo.** Keep Taala in `taala-auth/` inside `widgetdemo` (current setup), or move to its own repo later?
-3. **Timeline framing.** Post-deadline story (recommended, honest to today's date) or a backdated "before April 2026" story?
-4. **Screenshots.** When will they be in `research/audit/screenshots/`? Phase 1 doesn't need them; Phase 2 does.
+## Figma deliverables per phase (ADR-003: whole project in Figma)
+| Phase | Figma page | Boards |
+|---|---|---|
+| 1 | 01 Story | RBI rules board: key paragraphs, rule-to-requirement summary, "what the rules don't say" |
+| 2 | 01 Story | Audit board: anonymised findings, inconsistency cards, heuristic score chart |
+| 3 | 01 Story | Personas, 3 journey maps, insights + HMWs, hypotheses |
+| 4 | 01 Story, 05 Flows & Policy | Principles, scope, tier summary, decision matrix exhibit, worked examples |
+| 5 | 05 Flows & Policy | Fallback ladder flowcharts, message table |
+| 6 | Cover → 10 | Foundations, components, patterns, screens, states |
+| 7 | 11 Migration | Roadmap, metrics tree, exec summary |
+| 8 | 12 Handoff | Specs, redlines |
+| 9 | 13 Case study | 1440 long-form case study from instances |
+
+To keep the research boards consistent with the later system, I'll build a small set of foundations (colours, type) on 02 Foundations at the start of Phase 1, then expand it in Phase 6.
+
+## Decisions (answered 2 Oct 2026)
+1. Figma: shared file `neC2nH6A7j7ZFyPBDh9N7H`, all 15 pages created. Pro team refused file creation.
+2. Repo: `taala-auth/` in `widgetdemo` for now.
+3. Timeline: after April 2026.
+4. Screenshots: still needed before Phase 2.
