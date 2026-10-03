@@ -2,7 +2,7 @@
 
 | Project | Kickoff | A Discover | B Define | C Develop | D Deliver | E/F | Figma node IDs |
 |---|---|---|---|---|---|---|---|
-| P1 | Done | Pending | Pending | Pending | Pending | Pending | |
+| P1 | Done | Done (11:2) | Done (12:2) | Done (13:2) | Done (14:2 + sections, 15:2) | Done (16:2) | |
 | P2 | Done | Done (3:2) | Done (5:2) | Done (7:2) | Done (8:2 + sections, 9:2) | Done (10:2) | |
 | P3 | Done | Pending | Pending | Pending | Pending | Pending | |
 | P4 | Done | Pending | Pending | Pending | Pending | Pending | |
@@ -20,3 +20,4 @@ Notes: screenshots could only be checked structurally (no image view); do a visu
 P2 Phase A done: docs in P2/01-discover, Figma page 'P2 · 01 Discover' root 3:2. Next: P2 Phase B.
 
 P2 Nod complete (A-F). Pages: Discover 3:2 · Define 5:2 · Develop 7:2 · Deliver 8:2 + sections 8:154 8:311 8:422 8:564 8:680 + validate 9:2 · Case study 10:2. Tools: tools/render.py, tools/render_cs.py. Hero frames tagged "Ready for dev" in name (devStatus API unsupported). Next: P1.
+P1 Rein complete. Pages 2:6..2:10: Discover 11:2, Define 12:2, Develop 13:2, Deliver 14:2 (+sections 14:143 14:241 14:362 14:457 14:581) + validate 15:2, Case study 16:2. Next: P3.
