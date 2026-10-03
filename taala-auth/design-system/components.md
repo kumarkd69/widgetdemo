@@ -12,7 +12,7 @@ All components use semantic tokens (`tokens.json`). Minimum target 48×48. Every
 ## 2. Trust Meter (signature)
 - **Anatomy:** lock glyph · 4-segment bar · tier label · reason (one line).
 - **Variants:** `tier` = Low / Medium / High / Blocked · `size` = Compact (inline) / Full (in sheet).
-- **Redundancy:** colour + icon shape + number of filled segments + text label. Blocked adds diagonal stripes.
+- **Redundancy:** colour + icon shape + number of filled segments + text label. Blocked uses four dark segments and a crossed lock.
 - **Behaviour:** Static; animates fill once on open (reduced motion: no animation). Tap opens "Why this check?" explainer.
 - **Content:** Reason ≤ 48 characters in English, from `explanation_id`.
 

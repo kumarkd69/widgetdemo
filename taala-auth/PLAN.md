@@ -107,3 +107,16 @@ To keep the research boards consistent with the later system, I'll build a small
 2. Repo: `taala-auth/` in `widgetdemo` for now.
 3. Timeline: after April 2026.
 4. Screenshots: still needed before Phase 2.
+
+## Status (3 Oct 2026)
+| Phase | Repo | Figma |
+|---|---|---|
+| 1 Regulation | Done; primary text blocked by network → [VERIFY ¶] tags | 01 Story · Context |
+| 2 Audit | Blocked: no screenshots. Frame + checklist ready | 01 Story · Problem (scenario) |
+| 3 Synthesis | Done as hypotheses / proto-personas + research plan | 01 Story |
+| 4 Strategy | Done (32-row matrix) | 05 Flows & Policy |
+| 5 Fallbacks | Done | 05 Flows & Policy |
+| 6 Design system | Done | 02–10 |
+| 7 Migration | Done | 11 Migration |
+| 8 Handoff | Done | 12 Handoff |
+| 9 Case study | Done (concept status stated) | 13 Case study |
