@@ -39,7 +39,10 @@ def blk(k):
         for e in k['edges']:
             o.append(f"  {e[0]} -->{'|'+e[2]+'|' if len(e)>2 else ''} {e[1]}")
         o.append('```')
+    elif t=='map':
+        o.append('Centre: '+k['center']);o+=['- '+n for n in k['nodes']]
     elif t=='quad':
+        o.append('Quadrants: '+' | '.join(k.get('labels',[])))
         for i in k['items']: o.append(f'- {i[0]} (x{i[1]}, y{i[2]})')
     elif t=='screens':
         for s in k['items']: o.append(f"- **{s['n']}**: {s.get('a','')}")
