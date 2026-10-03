@@ -20,12 +20,12 @@ Orbit met the rule — mostly with SMS OTP. The brief described six OTP patterns
 - Same risk, different friction per product.
 - Compliance chased screenshots from five teams.
 - Users couldn't learn what a real screen looks like.
-*A real-app audit (Bank A, UPI app B, Card C, Wallet D, Broker E) is planned; findings will replace this section's scenario.*
+I then ran a desk audit of five real apps from their public help pages (Bank A, UPI app B, Card C, Wallet D, Broker E). It found the same pattern in the wild: SMS OTP still the default for online card payments, PIN lengths that change with the bank, PIN resets that need only card details and an SMS code, and a 24-hour lockout after three wrong UPI PINs ([audit](../research/audit/inconsistencies.md)).
 
 ## Research
-- **Desk research:** regulation, NPCI biometric rules, `.bank.in` domain rule.
+- **Desk research:** regulation, NPCI biometric rules, `.bank.in` domain rule, and a desk audit of 5 real apps from public sources (12 findings, each linked).
 - **Proto-personas:** Meena, Arjun, Imran, Priya, two accessibility users, and four internal users ([personas](../research/synthesis/personas.md)).
-- **Not yet done:** interviews and usability tests. I wrote the plan: 12 participants, Kannada and Hindi sessions, screen-reader users ([plan](../research/synthesis/research-plan.md)).
+- **Not yet done:** hands-on app walkthroughs, interviews and usability tests. I wrote the plan: 12 participants, Kannada and Hindi sessions, screen-reader users ([plan](../research/synthesis/research-plan.md)).
 
 ## Insights
 1. **The rule is a floor, not a design.** Extra checks are allowed (¶8) but nobody has to explain them. → Every step-up gets one plain sentence.

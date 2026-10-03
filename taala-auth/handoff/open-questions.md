@@ -18,5 +18,5 @@
 | Q14 | Cooling caps and durations | ADR-008 | Risk + Product | Phase 2 |
 | Q15 | Orbit Financial name clash check | CLAUDE.md | Kumar | Before publishing |
 | Q16 | Native-speaker review of all Hindi and Kannada | fallback-ladder, migration | Kumar | Before publishing |
-| Q17 | Audit screenshots for 5 apps | Phase 2 | Kumar | Before case study |
+| Q17 | Optional: hands-on walkthroughs to confirm desk-audit findings (copy, steps, timings) | Phase 2 | Kumar | Nice to have |
 | Q18 | Real interviews (research plan) | Phase 3 | Kumar | Before claiming validation |

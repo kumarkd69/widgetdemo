@@ -12,7 +12,7 @@
 |---|---|---|
 | Cover | `0:1` | Cover frame `11:442` (lock + trust-meter motif) |
 | Read me | `3:2` | `11:487` page guide, status legend, naming, changelog, known limits |
-| 01 Story | `3:3` | Boards: Context `13:2`, Problem `13:75`, People `13:128`, Journeys `14:45`, Insights `14:289`, Principles `14:342`, Strategy `14:376`, Research plan `14:405` |
+| 01 Story | `3:3` | Boards: Context `13:2`, Desk audit `28:45`, People `13:128`, Journeys `14:45`, Insights `14:289`, Principles `14:342`, Strategy `14:376`, Research plan `14:405` |
 | 02 Foundations | `3:4` | Header `11:2`, primitives `11:6`, semantic + contrast `11:153`, risk scale `11:229`, type in 3 scripts `11:316`, spacing/radius/elevation/motion `11:370` |
 | 03 Components | `3:5` | See component table |
 | 04 Patterns | `3:6` | 7 pattern strips `15:5`…`15:215` |
@@ -64,5 +64,6 @@ UPI `26:1411`–`26:1415` · Bank `26:1436`–`26:1439` · Cards `26:1789`–`26
 
 ## Known gaps
 - Hindi/Kannada copy needs native review.
-- Audit board waits on real screenshots.
+- Audit is a desk audit from public sources (no screenshots).
 - RBI paragraph numbers other than ¶5(f), ¶6, ¶8 are [VERIFY].
+- 2026-10-03 — Desk audit of 5 apps replaced the scenario board; case study, Read me and context cites updated.

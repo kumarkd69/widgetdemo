@@ -112,7 +112,7 @@ To keep the research boards consistent with the later system, I'll build a small
 | Phase | Repo | Figma |
 |---|---|---|
 | 1 Regulation | Done; primary text blocked by network → [VERIFY ¶] tags | 01 Story · Context |
-| 2 Audit | Blocked: no screenshots. Frame + checklist ready | 01 Story · Problem (scenario) |
+| 2 Audit | Done as desk audit from public sources (5 apps, 12 findings) | 01 Story · Desk audit |
 | 3 Synthesis | Done as hypotheses / proto-personas + research plan | 01 Story |
 | 4 Strategy | Done (32-row matrix) | 05 Flows & Policy |
 | 5 Fallbacks | Done | 05 Flows & Policy |

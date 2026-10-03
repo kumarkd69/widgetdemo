@@ -17,6 +17,9 @@ This environment's network policy blocks `rbi.org.in` and `rbidocs.rbi.org.in` (
 | S6 | Lawrbit analysis (cites Para 8): https://www.lawrbit.com/article/rbi-digital-payment-authentication-guidelines/ | Secondary |
 | S7 | RBI circular on `.bank.in` domains, 22 Apr 2025 (RBI/2025-26/28), via Business Standard: https://www.business-standard.com/finance/news/rbi-asks-banks-to-complete-migration-to-bank-in-domain-by-october-31-2025-125042201515_1.html | Secondary report of a primary circular |
 | S8 | NPCI on-device biometric for UPI, live 8 Oct 2025, via Upstox: https://upstox.com/news/personal-finance/latest-updates/how-to-use-face-and-fingerprint-for-faster-upi-payments-6-key-fa-qs-you-should-know/article-182641/ | Secondary |
+| S10 | Veritect compliance playbook (quotes Direction 9(2), refers to Direction 10): https://veritect.ai/digital-data-ai-law/rbi-auth-mechanisms-compliance-playbook | Secondary (quotes text) |
+| S11 | RBI Annual Report 2024-25 figures, via Corbado: https://www.corbado.com/blog/rbi-2fa-directives | Secondary |
+| S12 | Bloomberg on RBI fraud data: https://www.bloomberg.com/news/articles/2024-05-30/online-payment-frauds-jump-over-400-in-india-rbi-data-shows | Secondary (news) |
 | S9 | RBI FAQ, device-based tokenisation: https://www.rbi.org.in/commonman/english/scripts/FAQs.aspx?Id=2917 | Primary (not opened) |
 
 ## Identity of the document
@@ -55,13 +58,13 @@ This environment's network policy blocks `rbi.org.in` and `rbidocs.rbi.org.in` (
 - Authentication and tokenisation services should be interoperable and accessible across platforms and apps, whatever the device or OS. (S6)
 - Issuers should offer tokenisation to all token requestors for all use cases or channels. (S4 / taxmann)
 
-### Cross-border card-not-present — [VERIFY ¶, likely ¶10]
+### Cross-border card-not-present — ¶10 (per S10; [VERIFY])
 - **By 1 October 2026**, card issuers must put in place a mechanism to **validate AFA on non-recurring cross-border CNP transactions when the overseas merchant or acquirer asks for it**. (S2, S3)
 - Some commentators say issuers must also apply risk-based authentication to all cross-border CNP transactions (S6). This is wider than S2's wording. Treat as [VERIFY].
 
-### Issuer responsibility and compensation — [VERIFY ¶, likely ¶11]
+### Issuer responsibility and compensation — ¶9 (per S10; [VERIFY])
 - Issuers ensure the **robustness and integrity** of an authentication mechanism **before deployment**. (S3)
-- If a loss arises from a transaction done **without complying** with these Directions, the issuer **compensates the customer in full, without demur**. (S4 search snippet)
+- ¶9(2): "If any loss arises out of transactions effected without complying with these directions, the issuer shall compensate the customer for the loss in full without demur." (quoted by S10)
 
 ### Data protection — [VERIFY ¶]
 - Implementation must comply with the **Digital Personal Data Protection Act, 2023**. (S1 index, S4)
@@ -101,3 +104,13 @@ Reported by S5 as "existing exemptions" carried forward:
 | "The rules apply to stock orders." | No. They cover digital payment transactions. Broker order auth is SEBI's. |
 | "Exemptions are new." | Sources describe them as existing exemptions carried forward. |
 | "Issuers are liable for all fraud." | Full compensation is tied to losses from transactions done **without complying** with the Directions (S4). Other liability rules (e.g. RBI's limited-liability circulars) still apply separately. |
+
+## Fraud context (for the case study's "why now")
+| Figure | Source | Use as |
+|---|---|---|
+| 13,516 card/internet fraud cases, ₹520 crore, FY 2024-25 | RBI Annual Report 2024-25, via S11 | Context; [VERIFY in RBI report] |
+| Account-takeover fraud +310% year on year | RBI Bulletin, June 2025, via secondary sources | Context; [VERIFY] |
+| Online payment frauds up over 400% (FY24) | S12 | Context |
+
+## Secondary-source claims that overreach
+- Some vendors say the Directions "require device-bound alternatives" or "phase out SMS OTP". The RBI text lists SMS OTP as a valid factor (¶5(f)). Treat these as marketing, not law.
