@@ -3,7 +3,7 @@
 | Project | Kickoff | A Discover | B Define | C Develop | D Deliver | E/F | Figma node IDs |
 |---|---|---|---|---|---|---|---|
 | P1 | Done | Pending | Pending | Pending | Pending | Pending | |
-| P2 | Done | Done (Figma 3:2) | Pending | Pending | Pending | Pending | |
+| P2 | Done | Done (3:2) | Done (5:2) | Done (7:2) | Done (8:2 + sections, 9:2) | Done (10:2) | |
 | P3 | Done | Pending | Pending | Pending | Pending | Pending | |
 | P4 | Done | Pending | Pending | Pending | Pending | Pending | |
 | P5 | Done | Pending | Pending | Pending | Pending | Pending | |
@@ -18,3 +18,5 @@ Components (P1 theme): Button, Status pill, Input, Chip x2, Card, List row. Not 
 Next: P2 Phase A (order: P2, P1, P3, P4, P5, P7, P6).
 Notes: screenshots could only be checked structurally (no image view); do a visual check in Figma.
 P2 Phase A done: docs in P2/01-discover, Figma page 'P2 · 01 Discover' root 3:2. Next: P2 Phase B.
+
+P2 Nod complete (A-F). Pages: Discover 3:2 · Define 5:2 · Develop 7:2 · Deliver 8:2 + sections 8:154 8:311 8:422 8:564 8:680 + validate 9:2 · Case study 10:2. Tools: tools/render.py, tools/render_cs.py. Hero frames tagged "Ready for dev" in name (devStatus API unsupported). Next: P1.
