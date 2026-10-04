@@ -6,7 +6,7 @@
 | P2 | Done | Done (3:2) | Done (5:2) | Done (7:2) | Done (8:2 + sections, 9:2) | Done (10:2) | |
 | P3 | Done | Done (17:2) | Done (18:2) | Done (19:2) | Done (20:2 + sections, 21:2) | Done (22:2) | |
 | P4 | Done | Done (23:2) | Done (24:2) | Done (25:2) | Done (26:2 + sections, 27:2) | Done (28:2) | |
-| P5 | Done | Pending | Pending | Pending | Pending | Pending | |
+| P5 | Done | Done (29:2) | Done (30:2) | Done (31:2) | Done (33:2 + sections, 34:2) | Done (35:2) | |
 | P6 | Done | Pending | Pending | Pending | Pending | Pending | |
 | P7 | Done | Pending | Pending | Pending | Pending | Pending | |
 
@@ -23,3 +23,4 @@ P2 Nod complete (A-F). Pages: Discover 3:2 · Define 5:2 · Develop 7:2 · Deliv
 P1 Rein complete. Pages 2:6..2:10: Discover 11:2, Define 12:2, Develop 13:2, Deliver 14:2 (+sections 14:143 14:241 14:362 14:457 14:581) + validate 15:2, Case study 16:2. Next: P3.
 P3 Mend complete. Discover 17:2, Define 18:2, Develop 19:2, Deliver 20:2 (+sections 20:160 20:258 20:402 20:476 20:600) + validate 21:2, Case study 22:2. Next: P4.
 P4 Passline complete. Discover 23:2, Define 24:2, Develop 25:2, Deliver 26:2 (+sections 26:161 26:256 26:388 26:449 26:572) + validate 27:2, Case study 28:2. Next: P5.
+P5 Fineprint complete. Discover 29:2, Define 30:2, Develop 31:2, Deliver 33:2 (+sections 33:164 33:270 33:375 33:497 33:624) + validate 34:2, Case study 35:2. Next: P7, then P6, then hub.
