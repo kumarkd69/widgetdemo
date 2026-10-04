@@ -8,7 +8,7 @@
 | P4 | Done | Done (23:2) | Done (24:2) | Done (25:2) | Done (26:2 + sections, 27:2) | Done (28:2) | |
 | P5 | Done | Done (29:2) | Done (30:2) | Done (31:2) | Done (33:2 + sections, 34:2) | Done (35:2) | |
 | P6 | Done | Pending | Pending | Pending | Pending | Pending | |
-| P7 | Done | Pending | Pending | Pending | Pending | Pending | |
+| P7 | Done | Done (36:2) | Done (37:2) | Done (38:2) | Done (39:2 + sections, 40:2) | Done (41:2) | |
 
 ## Kickoff status: done (Figma starter plan; one variable collection per project)
 File: https://www.figma.com/design/GEz4YMWFknnPANHuyutm5U/7
@@ -24,3 +24,4 @@ P1 Rein complete. Pages 2:6..2:10: Discover 11:2, Define 12:2, Develop 13:2, Del
 P3 Mend complete. Discover 17:2, Define 18:2, Develop 19:2, Deliver 20:2 (+sections 20:160 20:258 20:402 20:476 20:600) + validate 21:2, Case study 22:2. Next: P4.
 P4 Passline complete. Discover 23:2, Define 24:2, Develop 25:2, Deliver 26:2 (+sections 26:161 26:256 26:388 26:449 26:572) + validate 27:2, Case study 28:2. Next: P5.
 P5 Fineprint complete. Discover 29:2, Define 30:2, Develop 31:2, Deliver 33:2 (+sections 33:164 33:270 33:375 33:497 33:624) + validate 34:2, Case study 35:2. Next: P7, then P6, then hub.
+P7 Span complete. Discover 36:2, Define 37:2, Develop 38:2, Deliver 39:2 (+sections 39:170 39:263 39:391 39:449 39:571) + validate 40:2, Case study 41:2. Next: P6, then portfolio hub.
