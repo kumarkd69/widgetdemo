@@ -1,0 +1,910 @@
+<title>Specialized Investment Fund</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap">
+<style>
+/* Layout: one continuous camera move. A pinned video hero hands off to pinned, scroll-scrubbed chapters
+   (word fill, card stack, horizontal rail, image window, drawn charts, gauge) separated by quiet reading sections. */
+:root{
+  --ink:#0B1030;        /* deep navy, hue-biased toward the brand blue */
+  --ink-2:#151B45;
+  --text:#1D1D1F;
+  --muted:#5E6378;
+  --paper:#FFFFFF;
+  --mist:#F3F4F9;
+  --line:#E3E5EF;
+  --blue:#2B50EC;
+  --violet:#5B3FE0;
+  --teal:#13A8A0;
+  --on-dark:#FFFFFF;
+  --on-dark-muted:rgba(255,255,255,.72);
+  --glass:rgba(255,255,255,.12);
+  --glass-line:rgba(255,255,255,.22);
+  --warm:#F2A24A;
+  --hot:#E5484D;
+  --f-display:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r-lg:32px;--r-md:22px;--r-sm:14px;
+  --ease:cubic-bezier(.2,.7,.1,1);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:auto}
+body{margin:0;background:var(--paper);color:var(--text);font-family:var(--f-body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+p{margin:0}
+a{color:var(--blue);text-underline-offset:3px}
+a:hover{color:var(--violet)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:8px}
+button{font:inherit;color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+.h2{font-size:clamp(34px,5.2vw,68px);line-height:1.04;letter-spacing:-.025em;font-weight:800}
+.grad{background:linear-gradient(100deg,var(--blue),var(--violet) 55%,var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* progress */
+.progress{position:fixed;inset:0 0 auto;height:3px;z-index:50;padding-top:env(safe-area-inset-top,0px);pointer-events:none}
+.progress i{display:block;height:3px;background:linear-gradient(90deg,var(--teal),var(--blue),var(--violet));transform-origin:0 50%;transform:scaleX(var(--p,0))}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;height:420vh;background:var(--paper)}
+.hero-stick{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.hero-media{position:absolute;inset:0;background:var(--ink) url("frames/f001.webp") 58% 50%/cover no-repeat;clip-path:inset(var(--inset,0px) round var(--rad,0px));will-change:clip-path}
+.hero-media canvas{position:absolute;inset:0;width:100%;height:100%;transform:scale(var(--zoom,1.04));transform-origin:58% 55%}
+.hero-scrim{position:absolute;inset:0;background:
+  linear-gradient(180deg,rgba(11,16,48,.70) 0%,rgba(11,16,48,.38) 38%,rgba(11,16,48,0) 64%),
+  linear-gradient(0deg,rgba(11,16,48,.45) 0%,rgba(11,16,48,0) 30%)}
+.hero-copy{position:absolute;inset:0;display:flex;justify-content:center;padding-top:clamp(96px,15vh,170px);padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));text-align:center;color:var(--on-dark);pointer-events:none}
+.hero h1{display:flex;flex-direction:column;align-items:center;gap:.08em;font-weight:800;letter-spacing:-.03em;line-height:.98}
+.hero h1 .l1{font-size:clamp(17px,1.7vw,22px);font-weight:500;letter-spacing:.02em;opacity:.92;margin-bottom:.9em;display:inline-flex;align-items:center;gap:12px}
+.hero h1 .l1::before,.hero h1 .l1::after{content:"";width:34px;height:1px;background:currentColor;opacity:.6}
+.hero h1 .l2{font-size:clamp(46px,8.4vw,120px)}
+.hero h1 .l2 span{font-weight:400}
+.hero h1 .l3{font-size:clamp(40px,7.2vw,104px);max-width:12ch;background:linear-gradient(100deg,#B9C8FF 0%,#C9BBFF 45%,#8FF0E3 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero h1>span{display:block;will-change:transform,opacity}
+.chip{position:absolute;border-radius:18px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:0 20px 50px rgba(5,8,30,.25);padding:14px;will-change:transform}
+.chip.c1{left:7%;bottom:22%;width:150px}
+.chip.c2{right:7%;top:24%;width:126px}
+.chip.c3{right:13%;bottom:15%;width:170px}
+.chip.c4{left:12%;top:30%;width:88px;height:88px;display:grid;place-items:center}
+.bars{display:flex;align-items:flex-end;gap:5px;height:46px}
+.bars i{flex:1;border-radius:4px;background:#fff;opacity:.9;animation:wave 2.6s ease-in-out infinite;transform-origin:bottom}
+.bars i:nth-child(2n){animation-delay:-.6s;opacity:.65}
+.bars i:nth-child(3n){animation-delay:-1.2s}
+@keyframes wave{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.7)}}
+.ring{width:56px;height:56px;border-radius:50%;background:conic-gradient(#8FF0E3 0 68%,rgba(255,255,255,.25) 0);-webkit-mask:radial-gradient(circle 21px,transparent 98%,#000);mask:radial-gradient(circle 21px,transparent 98%,#000);animation:spin 9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lines{display:grid;gap:8px}
+.lines i{display:block;height:8px;border-radius:5px;background:rgba(255,255,255,.75)}
+.lines i:nth-child(2){width:70%;opacity:.6}.lines i:nth-child(3){width:45%;opacity:.45}
+.dotrow{display:flex;gap:6px;margin-bottom:10px}.dotrow i{width:10px;height:10px;border-radius:50%;background:#fff;opacity:.8}.dotrow i:nth-child(2){background:#8FF0E3}.dotrow i:nth-child(3){background:#C9BBFF}
+.cue{position:absolute;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));width:26px;height:42px;margin-left:-13px;border:2px solid rgba(255,255,255,.8);border-radius:14px}
+.cue::after{content:"";position:absolute;left:50%;top:8px;width:4px;height:8px;margin-left:-2px;border-radius:2px;background:#fff;animation:cue 1.8s var(--ease) infinite}
+@keyframes cue{0%{transform:translateY(0);opacity:1}80%{transform:translateY(14px);opacity:0}100%{opacity:0}}
+
+/* ---------- WHAT IS ---------- */
+.what{position:relative;height:240vh;background:var(--paper)}
+.what-stick{position:sticky;top:0;min-height:100vh;min-height:100svh;display:flex;align-items:center;overflow:hidden}
+.what-ghost{position:absolute;top:50%;left:0;font-weight:900;font-size:clamp(200px,34vw,520px);letter-spacing:-.06em;line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--line);white-space:nowrap;transform:translate3d(var(--gx,0),-50%,0);pointer-events:none;user-select:none}
+.what .wrap{position:relative;display:grid;gap:clamp(24px,4vw,48px);padding-block:12vh}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.eyebrow::before{content:"";width:28px;height:2px;border-radius:2px;background:currentColor}
+.what h2.eyebrow{font-size:15px}
+.fill{font-size:clamp(26px,3.6vw,50px);line-height:1.22;letter-spacing:-.018em;font-weight:600;max-width:24ch;max-width:min(100%,30ch)}
+.fill .w{color:var(--text);opacity:var(--o,1);transition:opacity .2s linear}
+
+/* ---------- WHY ---------- */
+.why{background:var(--mist);padding-block:clamp(96px,14vw,180px)}
+.why .wrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(32px,6vw,96px);align-items:start}
+.why-head{position:sticky;top:calc(18vh + env(safe-area-inset-top,0px))}
+.why-head .h2{max-width:9ch}
+.stack{display:grid;gap:22vh;padding-bottom:10vh}
+.scard{position:sticky;top:calc(16vh + var(--i)*26px);min-height:300px;border-radius:var(--r-lg);padding:clamp(28px,4vw,48px);color:var(--on-dark);display:flex;flex-direction:column;justify-content:space-between;gap:48px;overflow:hidden;transform-origin:50% 0;transform:scale(var(--s,1));box-shadow:0 30px 70px -30px rgba(11,16,48,.45)}
+.scard:nth-child(1){background:linear-gradient(140deg,#2B50EC,#3E3FE3)}
+.scard:nth-child(2){background:linear-gradient(140deg,#4A3FE0,#6C3FD8)}
+.scard:nth-child(3){background:linear-gradient(140deg,#11817B,#13A8A0)}
+.scard p{font-size:clamp(22px,2.4vw,32px);line-height:1.25;font-weight:600;letter-spacing:-.01em;max-width:22ch}
+.scard svg{width:64px;height:64px}
+.scard::after{content:"";position:absolute;right:-80px;bottom:-80px;width:280px;height:280px;border-radius:50%;border:1px solid rgba(255,255,255,.25);box-shadow:0 0 0 40px rgba(255,255,255,.05),0 0 0 80px rgba(255,255,255,.04)}
+
+/* ---------- FEATURES ---------- */
+.features{position:relative;background:var(--ink);color:var(--on-dark);padding-block:clamp(96px,14vw,180px);overflow:hidden}
+.features::before{content:"";position:absolute;inset:-20% -10% auto;height:120%;background:radial-gradient(40% 40% at 20% 20%,rgba(43,80,236,.45),transparent 70%),radial-gradient(35% 35% at 85% 70%,rgba(91,63,224,.4),transparent 70%);transform:translate3d(0,var(--bgy,0),0);pointer-events:none}
+.features .wrap{position:relative;display:grid;gap:clamp(40px,6vw,72px)}
+.bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:18px}
+.fcard{position:relative;border-radius:var(--r-md);background:var(--glass);border:1px solid var(--glass-line);padding:28px;display:flex;flex-direction:column;gap:12px;overflow:hidden;min-height:240px;transform:translate3d(0,var(--ty,0),0)}
+.fcard h3{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.fcard p{color:var(--on-dark-muted);font-size:16px;max-width:40ch}
+.fcard strong{color:var(--on-dark)}
+.fcard.big{grid-column:span 3;grid-row:span 2;justify-content:flex-end;background:linear-gradient(160deg,rgba(43,80,236,.55),rgba(91,63,224,.35));min-height:520px}
+.fcard.big .num{position:absolute;top:24px;left:24px;right:24px;font-weight:900;font-size:clamp(72px,10vw,150px);line-height:.9;letter-spacing:-.05em;color:var(--on-dark);transform:translate3d(0,var(--ny,0),0)}
+.fcard.big .num small{display:block;font-size:.34em;letter-spacing:-.02em;font-weight:600;opacity:.8}
+.fcard.wide{grid-column:span 3}
+.fcard.sm{grid-column:span 3}
+.viz{height:84px;margin-bottom:auto;display:flex;align-items:center;gap:10px;transform:translate3d(0,var(--vy,0),0)}
+.viz .sw{width:38px;height:22px;border-radius:12px;background:rgba(255,255,255,.2);position:relative}
+.viz .sw::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;animation:sw 3s ease-in-out infinite}
+.viz .sw:nth-child(2)::after{animation-delay:-1s}.viz .sw:nth-child(3)::after{animation-delay:-2s}
+@keyframes sw{0%,40%{transform:translateX(0)}50%,90%{transform:translateX(16px);background:#8FF0E3}}
+.viz .orb{width:64px;height:64px;border-radius:50%;border:1px dashed rgba(255,255,255,.5);position:relative;animation:spin 8s linear infinite}
+.viz .orb::before{content:"";position:absolute;inset:22px;border-radius:50%;background:#C9BBFF}
+.viz .orb::after{content:"";position:absolute;top:-5px;left:50%;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#8FF0E3}
+.viz .tag{padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.35);font-weight:700;font-size:13px;letter-spacing:.08em}
+.viz .tag.on{background:#fff;color:var(--ink)}
+.viz .lvl{display:flex;align-items:flex-end;gap:6px;height:60px}
+.viz .lvl i{width:16px;border-radius:4px;background:rgba(255,255,255,.3)}
+.viz .lvl i:nth-child(4),.viz .lvl i:nth-child(5){background:linear-gradient(#8FF0E3,#C9BBFF)}
+
+/* ---------- ADVANTAGES (pinned rail) ---------- */
+.adv{position:relative;background:var(--paper)}
+.adv-stick{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;gap:clamp(28px,5vh,56px);overflow:hidden}
+.adv-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.adv-nav{display:flex;gap:10px}
+.adv-nav button{width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--mist);font-size:20px;cursor:pointer;transition:background .2s,transform .2s}
+.adv-nav button:hover{background:var(--line);transform:translateY(-2px)}
+.track::after{content:"";flex:0 0 max(1px,calc((100vw - 1240px)/2))}
+.track{display:flex;gap:22px;padding-left:max(24px,env(safe-area-inset-left,0px),calc((100vw - 1240px)/2 + 24px));padding-right:max(24px,env(safe-area-inset-right,0px));transform:translate3d(var(--tx,0),0,0);will-change:transform}
+.acard{flex:0 0 min(400px,78vw);border-radius:var(--r-md);background:var(--paper);border:1px solid var(--line);box-shadow:0 18px 40px -24px rgba(11,16,48,.25);overflow:hidden;display:flex;flex-direction:column;transition:transform .3s var(--ease),box-shadow .3s}
+.acard:hover{transform:translateY(-6px);box-shadow:0 24px 48px rgba(11,16,48,.12)}
+.acard .art{height:clamp(170px,26vh,240px);display:grid;place-items:center;position:relative;overflow:hidden}
+.acard .art>div{transform:translate3d(var(--ax,0),0,0)}
+.acard:nth-child(1) .art{background:#E9EDFF}.acard:nth-child(2) .art{background:#E2F6F4}.acard:nth-child(3) .art{background:#EEEAFF}.acard:nth-child(4) .art{background:#E6EEFF}.acard:nth-child(5) .art{background:#FFF1E2}
+.acard p{padding:24px 26px 30px;font-size:17px;color:var(--muted)}
+.acard p strong{display:block;color:var(--text);font-size:21px;margin-bottom:6px}
+.checker{display:grid;grid-template-columns:repeat(4,26px);gap:6px}
+.checker i{height:26px;border-radius:6px;background:#fff}
+.checker i:nth-child(3n+1){background:var(--blue)}.checker i:nth-child(5n){background:var(--violet)}
+.cols{display:flex;align-items:flex-end;gap:12px;height:110px}
+.cols i{width:22px;border-radius:6px;background:var(--teal);animation:wave 3s ease-in-out infinite;transform-origin:bottom}
+.cols i:nth-child(2){animation-delay:-.8s;opacity:.6}.cols i:nth-child(4){animation-delay:-1.6s;opacity:.6}
+.atom{width:120px;height:120px;border-radius:50%;border:1.5px dashed rgba(91,63,224,.5);position:relative;animation:spin 10s linear infinite}
+.atom::before{content:"";position:absolute;inset:38px;border-radius:50%;background:var(--violet)}
+.atom::after{content:"";position:absolute;top:-7px;left:50%;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:var(--violet)}
+.shield svg{width:110px;height:110px}
+.dots{display:grid;grid-template-columns:repeat(5,18px);gap:10px}
+.dots i{height:18px;border-radius:50%;background:var(--warm);opacity:.35}
+.dots i:nth-child(odd){opacity:.9}
+.rail{height:4px;border-radius:4px;background:var(--line);overflow:hidden;max-width:420px}
+.rail i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--violet));transform-origin:0 50%;transform:scaleX(var(--rp,.2))}
+
+/* ---------- WHO (image window) ---------- */
+.who{position:relative;min-height:150vh;overflow:hidden;color:var(--on-dark);display:flex;align-items:center;background:var(--ink)}
+.who-bg{position:absolute;inset:-18% 0;background:url("assets/meeting.jpg") 60% 50%/cover no-repeat;transform:translate3d(0,var(--by,0),0) scale(var(--bs,1.1));will-change:transform}
+.who::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(11,16,48,.86) 0%,rgba(11,16,48,.55) 50%,rgba(11,16,48,.2) 100%)}
+.who .wrap{position:relative;z-index:2;width:100%;display:grid;gap:clamp(36px,6vw,64px);padding-block:20vh}
+.who .h2{font-size:clamp(42px,7vw,96px);max-width:10ch;transform:translate3d(0,var(--hy,0),0)}
+.who .h2 span{background:linear-gradient(100deg,#B9C8FF,#8FF0E3);-webkit-background-clip:text;background-clip:text;color:transparent}
+.who-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.gcard{border-radius:var(--r-md);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);padding:28px;display:grid;gap:22px;align-content:start;transform:translate3d(0,var(--ty,0),0)}
+.gcard svg{width:44px;height:44px}
+.gcard p{font-size:18px;line-height:1.45;font-weight:500}
+
+/* ---------- STRATEGIES ---------- */
+.strat{background:var(--mist);padding-block:clamp(96px,14vw,180px);overflow:hidden}
+.strat .wrap{display:grid;gap:clamp(32px,5vw,56px)}
+.strat-head{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:32px;align-items:end}
+.strat-head p{color:var(--muted);font-size:18px;max-width:46ch}
+.tabs{position:relative;display:inline-flex;flex-wrap:wrap;gap:4px;padding:6px;border-radius:999px;background:var(--paper);border:1px solid var(--line);justify-self:start;max-width:100%}
+.tabs .pill{position:absolute;top:6px;left:0;height:calc(100% - 12px);border-radius:999px;background:var(--ink);transition:transform .45s var(--ease),width .45s var(--ease);z-index:0}
+.tabs button{position:relative;z-index:1;border:0;background:none;padding:12px 20px;border-radius:999px;font-weight:600;font-size:15px;cursor:pointer;color:var(--muted);transition:color .3s}
+.tabs button[aria-selected="true"]{color:var(--on-dark)}
+.panel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;perspective:1400px}
+.panel[data-n="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.stcard{background:var(--paper);border-radius:var(--r-md);border:1px solid var(--line);padding:30px;display:flex;flex-direction:column;gap:14px;transform:rotateX(var(--rx,0deg)) translate3d(0,var(--ty,0),0);transform-origin:50% 100%;animation:pop .6s var(--ease) both;animation-delay:calc(var(--i)*80ms)}
+@keyframes pop{from{transform:translateY(24px);opacity:.2}}
+.stcard h3{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.stcard p{color:var(--muted);font-size:16px}
+.stcard hr{border:0;height:1px;background:var(--line);margin:6px 0;width:100%}
+.stcard p.spec{color:var(--text);font-weight:600;font-size:15px}
+.ls{display:flex;align-items:center;gap:6px;height:64px;margin-bottom:6px}
+.ls i{width:14px;border-radius:4px}
+.ls .up{background:var(--blue);align-self:flex-end}
+.ls .dn{background:var(--violet);align-self:flex-start;opacity:.7}
+.ls .mid{background:var(--teal);align-self:flex-end}
+
+/* ---------- COMPARISON ---------- */
+.cmp{background:var(--paper);padding-block:clamp(96px,14vw,180px)}
+.cmp .wrap{display:grid;gap:clamp(32px,5vw,56px)}
+.tscroll{overflow-x:auto;border-radius:var(--r-md);border:1px solid var(--line)}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:760px;font-size:16px}
+th,td{text-align:left;padding:20px 22px;vertical-align:top;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+thead th{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--mist)}
+tbody tr{transform:translate3d(var(--rx,0),0,0);opacity:var(--ro,1)}
+tbody th{font-weight:700;width:20%}
+td{color:var(--muted);width:26.6%}
+.sifcol{background:linear-gradient(180deg,rgba(43,80,236,.07),rgba(91,63,224,.07));color:var(--text);font-weight:600}
+thead .sifcol{background:var(--ink);color:var(--on-dark)}
+.cmp .note{color:var(--muted);font-size:14px;max-width:80ch}
+
+/* ---------- DERIVATIVES ---------- */
+.der{background:var(--mist);padding-block:clamp(96px,14vw,180px)}
+.der .wrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(32px,6vw,96px);align-items:start}
+.der-head{position:sticky;top:calc(16vh + env(safe-area-inset-top,0px));display:grid;gap:24px}
+.der-head p{color:var(--muted);font-size:18px;max-width:44ch}
+.der-list{display:grid;gap:22px}
+.dcard{background:var(--paper);border-radius:var(--r-md);border:1px solid var(--line);padding:26px;display:grid;gap:18px;transition:transform .3s var(--ease)}
+.dcard:hover{transform:translateY(-6px)}
+.dcard svg{width:100%;height:auto;display:block;border-radius:var(--r-sm);background:var(--mist)}
+.dcard p{font-size:18px;line-height:1.5;font-weight:500}
+.draw{stroke-dasharray:1;stroke-dashoffset:var(--d,0)}
+
+/* ---------- RISKS ---------- */
+.risks{background:var(--paper);padding-block:clamp(96px,14vw,180px);overflow:hidden}
+.risks .wrap{display:grid;gap:clamp(40px,6vw,72px)}
+.rgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:start}
+.rcard{background:var(--mist);border-radius:var(--r-md);padding:26px;display:grid;gap:12px;align-content:start;transform:translate3d(0,var(--ty,0),0);transition:background .25s}
+.rcard:hover{background:#E8E9F2}
+.rcard .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--paper);color:var(--blue)}
+.rcard .ic svg{width:22px;height:22px}
+.rcard h3{font-size:19px;font-weight:700}
+.rcard p{color:var(--muted);font-size:15.5px}
+.band{border-radius:var(--r-lg);background:var(--ink);color:var(--on-dark);padding:clamp(28px,5vw,56px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,64px);align-items:center;position:relative;overflow:hidden}
+.band::before{content:"";position:absolute;width:520px;height:520px;right:-140px;top:-180px;border-radius:50%;background:radial-gradient(circle,rgba(91,63,224,.45),transparent 65%)}
+.band>div{position:relative;display:grid;gap:18px}
+.band p{color:var(--on-dark-muted);font-size:17px;max-width:48ch}
+.gauge svg{width:100%;max-width:440px;height:auto;display:block;margin:0 auto}
+.gauge .needle{transform-origin:200px 200px;transform:rotate(var(--g,-72deg));transition:transform .15s linear}
+
+/* ---------- CHECKLIST ---------- */
+.check{background:var(--mist);padding-block:clamp(96px,14vw,180px)}
+.check .wrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(32px,6vw,96px);align-items:start}
+.check-head{position:sticky;top:calc(16vh + env(safe-area-inset-top,0px));display:grid;gap:36px}
+.check-head .h2{font-size:clamp(32px,4.4vw,58px)}
+.cring{position:relative;width:180px;height:180px}
+.cring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.cring .arc{transition:stroke-dashoffset .6s var(--ease)}
+.cring .burst i{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px;border-radius:3px;opacity:0}
+.cring.done .burst i{animation:burst 1.1s var(--ease) forwards}
+@keyframes burst{0%{transform:rotate(var(--a)) translateY(-40px) scale(.3);opacity:0}25%{opacity:1}100%{transform:rotate(var(--a)) translateY(-130px) scale(1) rotate(180deg);opacity:0}}
+.clist{background:var(--paper);border-radius:var(--r-lg);border:1px solid var(--line);padding:clamp(20px,3vw,36px);display:grid;gap:6px}
+.clist-head{display:flex;justify-content:space-between;align-items:center;padding:4px 8px 18px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.clist-head h3{font-size:20px}
+.count{font-variant-numeric:tabular-nums;font-weight:700;padding:6px 14px;border-radius:999px;background:var(--mist)}
+.citem{display:grid;grid-template-columns:30px minmax(0,1fr);gap:16px;align-items:start;text-align:left;border:0;background:none;padding:16px 8px;border-radius:var(--r-sm);cursor:pointer;transition:background .2s}
+.citem:hover{background:var(--mist)}
+.citem .box{width:28px;height:28px;border-radius:9px;border:2px solid #C9CCDA;display:grid;place-items:center;transition:all .3s var(--ease)}
+.citem .box svg{width:16px;height:16px;stroke:#fff;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .35s var(--ease)}
+.citem[aria-checked="true"] .box{background:var(--blue);border-color:var(--blue)}
+.citem[aria-checked="true"] .box svg{stroke-dashoffset:0}
+.citem p{color:var(--muted);font-size:16.5px}
+.citem p strong{color:var(--text)}
+
+/* ---------- FAQ ---------- */
+.faq{background:var(--paper);padding-block:clamp(96px,14vw,180px)}
+.faq .wrap{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(32px,6vw,96px);align-items:start}
+.faq .h2 span{display:block}
+.qa{border-bottom:1px solid var(--line)}
+.qa h3{font-size:inherit}
+.qa button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:20px;text-align:left;border:0;background:none;padding:26px 0;font-size:clamp(18px,1.8vw,22px);font-weight:600;cursor:pointer}
+.qa .pm{flex:0 0 40px;height:40px;border-radius:50%;background:var(--mist);position:relative;transition:background .3s,transform .4s var(--ease)}
+.qa .pm::before,.qa .pm::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:2px;margin:-1px -7px;border-radius:2px;background:var(--text);transition:transform .4s var(--ease)}
+.qa .pm::after{transform:rotate(90deg)}
+.qa button[aria-expanded="true"] .pm{background:var(--blue)}
+.qa button[aria-expanded="true"] .pm::before,.qa button[aria-expanded="true"] .pm::after{background:#fff;transform:rotate(180deg)}
+.qa .ans{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ease)}
+.qa .ans>div{overflow:hidden}
+.qa .ans p{padding:0 56px 28px 0;color:var(--muted);font-size:17px;max-width:68ch}
+.qa.open .ans{grid-template-rows:1fr}
+
+/* ---------- BEFORE ---------- */
+.before{background:var(--paper);padding-block:0 clamp(96px,12vw,160px)}
+.bcard{position:relative;border-radius:calc(var(--r-lg) * var(--br,1.6));overflow:hidden;background:linear-gradient(130deg,var(--blue) 0%,var(--violet) 60%,#3B2BB0 100%);color:var(--on-dark);padding:clamp(48px,9vw,120px) clamp(28px,7vw,96px);display:grid;gap:24px;transform:scale(var(--bsc,1));transform-origin:50% 0;will-change:transform}
+.bcard h2{font-size:clamp(34px,5vw,64px);line-height:1.05;letter-spacing:-.02em;font-weight:800;max-width:14ch;position:relative}
+.bcard p{font-size:clamp(17px,1.5vw,20px);color:rgba(255,255,255,.86);max-width:60ch;position:relative}
+.bcard .fl{position:absolute;border-radius:50%;transform:translate3d(0,var(--ty,0),0);pointer-events:none}
+.fl.a{width:220px;height:220px;right:6%;top:-60px;border:1px solid rgba(255,255,255,.35)}
+.fl.b{width:90px;height:90px;right:22%;bottom:12%;background:rgba(143,240,227,.55);filter:blur(2px)}
+.fl.c{width:380px;height:380px;right:-120px;bottom:-200px;background:radial-gradient(circle,rgba(255,255,255,.25),transparent 70%)}
+.fl.d{width:14px;height:14px;right:36%;top:22%;background:#fff}
+.fl.e{width:26px;height:26px;right:12%;top:48%;background:#C9BBFF}
+.fl.f{width:160px;height:160px;left:-60px;bottom:-60px;border:1px dashed rgba(255,255,255,.3)}
+
+footer{background:var(--mist);padding-block:48px calc(48px + env(safe-area-inset-bottom,0px))}
+footer p{font-size:13.5px;color:var(--muted);line-height:1.7;max-width:110ch}
+footer a{word-break:break-all}
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  .why .wrap,.der .wrap,.check .wrap,.faq .wrap,.strat-head,.band{grid-template-columns:minmax(0,1fr)}
+  .why-head,.der-head,.check-head{position:static}
+  .bento{grid-template-columns:minmax(0,1fr)}
+  .fcard.big,.fcard.wide,.fcard.sm{grid-column:auto;grid-row:auto}
+  .fcard.big{min-height:380px}
+  .who-cards{grid-template-columns:minmax(0,1fr)}
+  .panel,.panel[data-n="2"]{grid-template-columns:minmax(0,1fr)}
+  .rgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .chip.c4,.chip.c2{display:none}
+  .stack{gap:12vh}
+}
+@media (max-width:760px){
+  .adv{height:auto!important}
+  .adv-stick{position:static;height:auto;padding-block:96px}
+  .track{transform:none!important;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px;scrollbar-width:none}
+  .track::-webkit-scrollbar{display:none}
+  .acard{scroll-snap-align:center}
+}
+@media (max-width:560px){
+  .rgrid{grid-template-columns:minmax(0,1fr)}
+  .rcard{transform:none}
+  .chip.c1{left:5%;bottom:16%;width:120px}
+  .chip.c3{display:none}
+  .qa .ans p{padding-right:0}
+  .tabs{border-radius:22px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .hero{height:auto}
+  .hero-stick{position:relative;height:100svh}
+  .what{height:auto}.what-stick{position:relative}
+  .fill .w{opacity:1!important}
+}
+</style>
+
+<div class="progress" aria-hidden="true"><i id="prog"></i></div>
+
+<main>
+<!-- HERO -->
+<section class="hero" id="hero" data-screen-label="Hero">
+  <div class="hero-stick">
+    <div class="hero-media" id="heroMedia"><canvas id="heroCanvas" aria-hidden="true"></canvas></div>
+    <div class="hero-scrim" aria-hidden="true"></div>
+    <div aria-hidden="true">
+      <div class="chip c1" data-depth="1.2"><div class="dotrow"><i></i><i></i><i></i></div><div class="lines"><i></i><i></i><i></i></div></div>
+      <div class="chip c2" data-depth="1.8"><div class="bars"><i style="height:40%"></i><i style="height:60%"></i><i style="height:52%"></i><i style="height:80%"></i><i style="height:100%"></i></div></div>
+      <div class="chip c3" data-depth="0.7"><div class="bars"><i style="height:30%"></i><i style="height:45%"></i><i style="height:70%"></i><i style="height:55%"></i><i style="height:85%"></i><i style="height:65%"></i><i style="height:95%"></i></div></div>
+      <div class="chip c4" data-depth="1.5"><div class="ring"></div></div>
+    </div>
+    <div class="hero-copy">
+      <h1 aria-label="A bridge between Mutual Funds and Portfolio Management Services">
+        <span class="l1" aria-hidden="true">A bridge between</span>
+        <span class="l2" aria-hidden="true">Mutual Funds <span>and</span></span>
+        <span class="l3" aria-hidden="true">Portfolio Management Services</span>
+      </h1>
+    </div>
+    <div class="cue" id="cue" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- WHAT IS -->
+<section class="what" id="what" data-screen-label="What is SIF">
+  <div class="what-stick">
+    <div class="what-ghost" aria-hidden="true">SIF · SIF · SIF</div>
+    <div class="wrap">
+      <h2 class="eyebrow">What is a SIF?</h2>
+      <p class="fill" id="fill">A Specialized Investment Fund (SIF) is a SEBI-regulated investment product designed to bridge the gap between traditional Mutual Funds and Portfolio Management Services (PMS). It offers investors access to more flexible and differentiated investment strategies, while retaining a pooled-fund structure.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why" id="why" data-screen-label="Why SIF">
+  <div class="wrap">
+    <div class="why-head"><h2 class="h2">Why was SIF <span class="grad">introduced?</span></h2></div>
+    <div class="stack" id="stack">
+      <div class="scard" style="--i:0">
+        <svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M4 44c10 0 14-20 28-20s18 20 28 20"/><path d="M4 52h56"/><path d="M14 52V38M50 52V38M32 52V24"/></svg>
+        <p>Bridges the portfolio-flexibility gap between Mutual Funds and PMS.</p>
+      </div>
+      <div class="scard" style="--i:1">
+        <svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 6l7 15 16 2-12 11 3 16-14-8-14 8 3-16L9 23l16-2z"/></svg>
+        <p>Caters to investors seeking more sophisticated and differentiated investment strategies.</p>
+      </div>
+      <div class="scard" style="--i:2">
+        <svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 6l22 8v16c0 14-10 24-22 28C20 54 10 44 10 30V14z"/><path d="M22 32l7 7 13-14"/></svg>
+        <p>Provides professional portfolio management within a SEBI-regulated framework.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features" data-screen-label="Key Features">
+  <div class="wrap">
+    <h2 class="h2">Key Features</h2>
+    <div class="bento">
+      <div class="fcard big" data-speed="-0.06">
+        <div class="num" aria-hidden="true"><small>Minimum</small>₹10 lakh</div>
+        <h3>Minimum investment</h3>
+        <p>Aggregate investment of <strong>₹10 lakh</strong> across SIF investment strategies at PAN level; not applicable to accredited investors.</p>
+      </div>
+      <div class="fcard sm" data-speed="0.04">
+        <div class="viz" aria-hidden="true"><span class="sw"></span><span class="sw"></span><span class="sw"></span></div>
+        <h3>Strategy flexibility</h3><p>Offers differentiated investment strategies with greater flexibility than conventional Mutual Fund schemes.</p>
+      </div>
+      <div class="fcard sm" data-speed="0.09">
+        <div class="viz" aria-hidden="true"><span class="orb"></span></div>
+        <h3>Professional management</h3><p>Managed by the AMC under a defined investment strategy and SEBI regulatory framework.</p>
+      </div>
+      <div class="fcard sm" data-speed="-0.02">
+        <div class="viz" aria-hidden="true"><span class="tag">MF</span><span class="tag on">SIF</span><span class="tag">PMS</span></div>
+        <h3>Distinct product</h3><p>SIF is separately identified from the Mutual Fund offering of the AMC.</p>
+      </div>
+      <div class="fcard sm" data-speed="0.05">
+        <div class="viz" aria-hidden="true"><span class="lvl"><i style="height:20%"></i><i style="height:40%"></i><i style="height:60%"></i><i style="height:80%"></i><i style="height:100%"></i></span></div>
+        <h3>Suitability</h3><p>Designed for investors seeking sophisticated strategies and who can take higher complexity and risk than typical Mutual Fund products.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADVANTAGES -->
+<section class="adv" id="adv" data-screen-label="Potential Advantages">
+  <div class="adv-stick">
+    <div class="wrap adv-head" style="width:100%">
+      <div id="adv-h"><h2 class="h2">Potential Advantages</h2></div>
+      <div class="adv-nav">
+        <button type="button" id="advPrev" aria-label="Previous">←</button>
+        <button type="button" id="advNext" aria-label="Next">→</button>
+      </div>
+    </div>
+    <div class="track" id="track" tabindex="0" aria-labelledby="adv-h">
+      <div class="acard"><div class="art" aria-hidden="true"><div class="checker"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p><strong>Greater choice:</strong>Access to differentiated strategies beyond conventional Mutual Fund categories.</p></div>
+      <div class="acard"><div class="art" aria-hidden="true"><div class="cols"><i style="height:50%"></i><i style="height:80%"></i><i style="height:35%"></i><i style="height:95%"></i><i style="height:65%"></i></div></div><p><strong>Portfolio flexibility:</strong>A framework intended to provide greater flexibility than traditional Mutual Funds.</p></div>
+      <div class="acard"><div class="art" aria-hidden="true"><div class="atom"></div></div><p><strong>Professional expertise:</strong>Investment decisions are managed by professional fund managers.</p></div>
+      <div class="acard"><div class="art" aria-hidden="true"><div class="shield"><svg viewBox="0 0 64 64" fill="none" stroke="#2B50EC" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 6l22 8v16c0 14-10 24-22 28C20 54 10 44 10 30V14z" fill="#fff"/><path d="M22 32l7 7 13-14"/></svg></div></div><p><strong>Regulated structure:</strong>Operates within SEBI's regulatory framework, with defined disclosures and oversight.</p></div>
+      <div class="acard"><div class="art" aria-hidden="true"><div class="dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p><strong>Diversification:</strong>Investors can access a pooled portfolio rather than building and managing individual securities themselves.</p></div>
+    </div>
+    <div class="wrap" style="width:100%"><div class="rail" aria-hidden="true"><i id="rail"></i></div></div>
+  </div>
+</section>
+
+<!-- WHO -->
+<section class="who" id="who" data-screen-label="Who may consider">
+  <div class="who-bg" id="whoBg" aria-hidden="true"></div>
+  <div class="wrap">
+    <h2 class="h2">Who may consider <span>SIF</span>?</h2>
+    <div class="who-cards">
+      <div class="gcard" data-speed="0.10">
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="20" cy="20" r="12"/><path d="M29 29l12 12"/></svg>
+        <p>Investors looking beyond conventional Mutual Fund strategies.</p>
+      </div>
+      <div class="gcard" data-speed="0.18">
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 38l10-12 8 6 16-20"/><path d="M32 12h8v8"/></svg>
+        <p>Investors comfortable with a higher minimum investment and potentially higher complexity/risk.</p>
+      </div>
+      <div class="gcard" data-speed="0.26">
+        <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="36" height="28" rx="6"/><path d="M6 20h36M16 30h6"/></svg>
+        <p>Investors seeking differentiated portfolio strategies while remaining within a regulated pooled-investment framework.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRATEGIES -->
+<section class="strat" id="strat" data-screen-label="Strategies">
+  <div class="wrap">
+    <div class="strat-head" id="strat-h"><h2 class="h2">Types of SIF Investment Strategies</h2><p>SEBI's framework permits specific investment strategy categories under SIF. The strategy selected determines the portfolio approach, use of derivatives, liquidity and associated risks.</p></div>
+    <div class="tabs" role="tablist" aria-labelledby="strat-h" id="tabs">
+      <span class="pill" aria-hidden="true"></span>
+      <button type="button" role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true">1. Equity-Oriented Strategies</button>
+      <button type="button" role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">2. Debt-Oriented Strategies</button>
+      <button type="button" role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">3. Hybrid Investment Strategies</button>
+    </div>
+    <div class="panel" id="panel-0" role="tabpanel" aria-labelledby="tab-0" data-n="3">
+      <div class="stcard" style="--i:0"><div class="ls" aria-hidden="true"><i class="up" style="height:80%"></i><i class="up" style="height:100%"></i><i class="up" style="height:70%"></i><i class="dn" style="height:25%"></i></div><h3>Equity Long-Short Fund</h3><p>Invests primarily in equity while also permitting limited short exposure through derivatives.</p><hr><p class="spec">At least 80% in equity/equity-related instruments; unhedged short exposure up to 25%.</p></div>
+      <div class="stcard" style="--i:1"><div class="ls" aria-hidden="true"><i class="up" style="height:45%"></i><i class="up" style="height:65%"></i><i class="up" style="height:55%"></i><i class="dn" style="height:25%"></i></div><h3>Equity Ex-Top 100 Long-Short Fund</h3><p>Focuses on stocks outside the top 100 by market capitalisation, with limited short exposure.</p><hr><p class="spec">At least 65% in equity/equity-related instruments excluding the top 100 stocks; short exposure up to 25%.</p></div>
+      <div class="stcard" style="--i:2"><div class="ls" aria-hidden="true"><i class="up" style="height:90%"></i><i class="up" style="height:20%"></i><i class="up" style="height:85%"></i><i class="up" style="height:20%"></i><i class="dn" style="height:25%"></i></div><h3>Sector Rotation Long-Short Fund</h3><p>Focuses on a limited number of sectors and can use short positions to express sector views.</p><hr><p class="spec">At least 80% in a maximum of four sectors; short exposure up to 25%, subject to the prescribed framework.</p></div>
+    </div>
+    <div class="panel" id="panel-1" role="tabpanel" aria-labelledby="tab-1" data-n="2" hidden>
+      <div class="stcard" style="--i:0"><div class="ls" aria-hidden="true"><i class="mid" style="height:30%"></i><i class="mid" style="height:50%"></i><i class="mid" style="height:70%"></i><i class="mid" style="height:90%"></i><i class="dn" style="height:25%"></i></div><h3>Debt Long-Short Fund</h3><p>Invests across the duration spectrum and may use derivatives to take limited short exposure.</p><hr><p class="spec">Debt investments across duration; limited unhedged short exposure through exchange-traded debt derivatives.</p></div>
+      <div class="stcard" style="--i:1"><div class="ls" aria-hidden="true"><i class="mid" style="height:75%"></i><i class="mid" style="height:75%"></i><i class="up" style="height:50%"></i><i class="dn" style="height:25%"></i></div><h3>Sectoral Debt Long-Short Fund</h3><p>Focuses on debt securities across at least two sectors and may use sector-level short exposure.</p><hr><p class="spec">At least two sectors; maximum 75% in a single sector; short exposure up to 25%, subject to the prescribed framework.</p></div>
+    </div>
+    <div class="panel" id="panel-2" role="tabpanel" aria-labelledby="tab-2" data-n="2" hidden>
+      <div class="stcard" style="--i:0"><div class="ls" aria-hidden="true"><i class="up" style="height:70%"></i><i class="mid" style="height:55%"></i><i class="up" style="height:40%"></i><i class="mid" style="height:30%"></i><i class="dn" style="height:25%"></i></div><h3>Active Asset Allocator Long-Short Fund</h3><p>Dynamically allocates across equity, debt and other permitted asset classes, with limited short exposure.</p><hr><p class="spec">May invest across equity, debt, derivatives, REITs/InvITs and commodity derivatives; short exposure up to 25%.</p></div>
+      <div class="stcard" style="--i:1"><div class="ls" aria-hidden="true"><i class="up" style="height:60%"></i><i class="mid" style="height:60%"></i><i class="dn" style="height:25%"></i></div><h3>Hybrid Long-Short Fund</h3><p>Combines equity and debt and may use derivatives for limited short exposure.</p><hr><p class="spec">Minimum 25% each in equity/equity-related instruments and debt; short exposure up to 25%.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="cmp" id="cmp" data-screen-label="Comparison">
+  <div class="wrap">
+    <div id="cmp-h"><h2 class="h2">SIF vs Mutual Funds vs PMS</h2></div>
+    <div class="tscroll" tabindex="0" aria-labelledby="cmp-h">
+      <table aria-labelledby="cmp-h">
+        <thead><tr><th scope="col">Parameter</th><th scope="col">Mutual Funds</th><th scope="col" class="sifcol">SIF</th><th scope="col">PMS</th></tr></thead>
+        <tbody id="rows">
+          <tr><th scope="row">Structure</th><td>Pooled</td><td class="sifcol">Pooled</td><td>Individual portfolio</td></tr>
+          <tr><th scope="row">Portfolio flexibility</th><td>Standardised</td><td class="sifcol">Higher / differentiated</td><td>High</td></tr>
+          <tr><th scope="row">Minimum investment</th><td>Generally lower</td><td class="sifcol">₹10 lakh* across SIF strategies at PAN level</td><td>Typically higher</td></tr>
+          <tr><th scope="row">Investor profile</th><td>Broad investor base</td><td class="sifcol">Sophisticated investors</td><td>HNI / sophisticated investors</td></tr>
+          <tr><th scope="row">Management</th><td>Professional fund management</td><td class="sifcol">Professional fund management under SIF framework</td><td>Portfolio managed for individual client</td></tr>
+          <tr><th scope="row">Strategy range</th><td>Conventional MF categories</td><td class="sifcol">Specified differentiated SIF strategies</td><td>Can be customised within mandate</td></tr>
+          <tr><th scope="row">Liquidity</th><td>Depends on scheme</td><td class="sifcol">Depends on the strategy; may be daily/interval/other disclosed frequency</td><td>Depends on PMS mandate and portfolio liquidity</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">*The ₹10 lakh minimum investment threshold is prescribed by SEBI for SIFs at the PAN level across investment strategies, subject to applicable exceptions.</p>
+  </div>
+</section>
+
+<!-- DERIVATIVES -->
+<section class="der" id="der" data-screen-label="Derivatives">
+  <div class="wrap">
+    <div class="der-head">
+      <div><h2 class="h2">Understanding the role of derivatives</h2></div>
+      <p>Some SIF strategies can use derivatives not only for hedging and portfolio rebalancing, but also for taking limited unhedged short exposure, subject to the applicable regulatory limits. This can make certain SIF strategies more complex than conventional Mutual Fund schemes.</p>
+    </div>
+    <div class="der-list">
+      <div class="dcard">
+        <svg viewBox="0 0 400 160" aria-hidden="true"><path d="M20 130H380" stroke="#D6D9E6" stroke-width="2" fill="none"/><path class="draw" pathLength="1" d="M20 130C70 125 90 110 130 105S190 70 230 72 300 40 380 24" stroke="#2B50EC" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="380" cy="24" r="7" fill="#2B50EC"/></svg>
+        <p>A long position generally seeks to benefit from a rise in the value of an underlying investment.</p>
+      </div>
+      <div class="dcard">
+        <svg viewBox="0 0 400 160" aria-hidden="true"><path d="M20 130H380" stroke="#D6D9E6" stroke-width="2" fill="none"/><path d="M20 30C80 36 110 60 160 66S240 100 280 104 340 118 380 122" stroke="#C9CCDA" stroke-width="3" stroke-dasharray="6 8" fill="none"/><path class="draw" pathLength="1" d="M20 130C80 124 110 100 160 94S240 60 280 56 340 42 380 38" stroke="#5B3FE0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="380" cy="38" r="7" fill="#5B3FE0"/></svg>
+        <p>A short position through derivatives can seek to benefit from a fall in the value of an underlying investment or express a portfolio view.</p>
+      </div>
+      <div class="dcard">
+        <svg viewBox="0 0 400 160" aria-hidden="true"><path d="M20 80H380" stroke="#D6D9E6" stroke-width="2" fill="none"/><path class="draw" pathLength="1" d="M20 80C80 80 120 78 170 80S250 30 380 18" stroke="#13A8A0" stroke-width="4" fill="none" stroke-linecap="round"/><path class="draw" pathLength="1" d="M170 80C230 82 280 130 380 142" stroke="#E5484D" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="380" cy="18" r="6" fill="#13A8A0"/><circle cx="380" cy="142" r="6" fill="#E5484D"/><circle cx="170" cy="80" r="6" fill="#0B1030"/></svg>
+        <p>Derivative positions can increase both the flexibility and the complexity of a strategy; investors should understand how derivatives may affect gains and losses.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RISKS -->
+<section class="risks" id="risks" data-screen-label="Key risks">
+  <div class="wrap">
+    <h2 class="h2" style="max-width:16ch">Key risks investors should understand</h2>
+    <div class="rgrid" id="rgrid">
+      <div class="rcard"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 17l6-6 4 4 8-8"/></svg></span><h3>Market risk</h3><p>The value of investments can rise or fall due to market movements.</p></div>
+      <div class="rcard"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12h6l2-6 2 12 2-6h4"/></svg></span><h3>Strategy risk</h3><p>A differentiated strategy may behave differently from conventional Mutual Fund categories.</p></div>
+      <div class="rcard"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5"/></svg></span><h3>Derivative risk</h3><p>Derivatives can magnify gains or losses and may introduce additional complexity.</p></div>
+      <div class="rcard"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3c4 5 6 8 6 11a6 6 0 01-12 0c0-3 2-6 6-11z"/></svg></span><h3>Liquidity risk</h3><p>Some strategies may have less frequent redemption opportunities or notice periods.</p></div>
+      <div class="rcard"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></span><h3>Credit risk</h3><p>Debt-oriented strategies may be exposed to changes in the credit quality of issuers.</p></div>
+      <div class="rcard"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 5L5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg></span><h3>Interest-rate risk</h3><p>Debt securities can be affected by changes in interest rates.</p></div>
+      <div class="rcard"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg></span><h3>Concentration risk</h3><p>Strategies focused on sectors, segments or particular investment themes may have higher concentration.</p></div>
+      <div class="rcard"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg></span><h3>Operational / implementation risk</h3><p>The outcome depends on how the strategy is implemented within its stated mandate.</p></div>
+    </div>
+    <div class="band" id="band">
+      <div>
+        <h2 class="h2" style="font-size:clamp(32px,4vw,52px)">Risk-band</h2>
+        <p>SIF investment strategies use a five-level Risk-band, ranging from Level 1 (Lowest Risk) to Level 5 (Highest Risk). Investors should review the Risk-band together with the strategy objective, portfolio characteristics and other disclosures before investing.</p>
+      </div>
+      <div class="gauge" aria-hidden="true">
+        <svg viewBox="0 0 400 240">
+          <g fill="none" stroke-width="34">
+            <path d="M40 200A160 160 0 0 1 71.6 104.6" stroke="#13A8A0"/>
+            <path d="M75.7 99.4A160 160 0 0 1 151 47.8" stroke="#2B9BD6"/>
+            <path d="M157.4 45.8A160 160 0 0 1 242.6 45.8" stroke="#2B50EC"/>
+            <path d="M249 47.8A160 160 0 0 1 324.3 99.4" stroke="#5B3FE0"/>
+            <path d="M328.4 104.6A160 160 0 0 1 360 200" stroke="#E5484D"/>
+          </g>
+          <g fill="#FFFFFF" font-family="Figtree,sans-serif" font-size="16" font-weight="700" text-anchor="middle" style="font-variant-numeric:tabular-nums">
+            <text x="62" y="146">1</text><text x="108" y="74">2</text><text x="200" y="40">3</text><text x="292" y="74">4</text><text x="338" y="146">5</text>
+          </g>
+          <g class="needle"><path d="M196 200L200 64L204 200Z" fill="#FFFFFF"/></g>
+          <circle cx="200" cy="200" r="14" fill="#FFFFFF"/><circle cx="200" cy="200" r="6" fill="#0B1030"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHECKLIST -->
+<section class="check" id="check" data-screen-label="Checklist">
+  <div class="wrap">
+    <div class="check-head">
+      <h2 class="h2">Investor Awareness: Before You Invest in a SIF</h2>
+      <div class="cring" id="cring" aria-hidden="true">
+        <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="#E3E5EF" stroke-width="10"/><circle class="arc" id="arc" cx="60" cy="60" r="52" fill="none" stroke="url(#cg)" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/><defs><linearGradient id="cg" x1="0" x2="1"><stop offset="0" stop-color="#2B50EC"/><stop offset="1" stop-color="#5B3FE0"/></linearGradient></defs></svg>
+        <div class="burst" id="burst"></div>
+      </div>
+    </div>
+    <div class="clist" id="clist">
+      <div class="clist-head"><h3>A simple investor checklist</h3><span class="count" aria-live="polite"><span id="done">0</span>/8</span></div>
+      <button type="button" class="citem" id="chk-0" role="checkbox" aria-checked="false"><span class="box"><svg viewBox="0 0 16 16" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span><p><strong>Understand the strategy:</strong> Know what the SIF is trying to achieve and the types of securities or derivatives it can use.</p></button>
+      <button type="button" class="citem" id="chk-1" role="checkbox" aria-checked="false"><span class="box"><svg viewBox="0 0 16 16" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span><p><strong>Check the Risk-band:</strong> Review the prescribed risk level and understand the key risks behind it.</p></button>
+      <button type="button" class="citem" id="chk-2" role="checkbox" aria-checked="false"><span class="box"><svg viewBox="0 0 16 16" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span><p><strong>Understand liquidity:</strong> Check subscription and redemption frequency and whether any notice period applies.</p></button>
+      <button type="button" class="citem" id="chk-3" role="checkbox" aria-checked="false"><span class="box"><svg viewBox="0 0 16 16" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span><p><strong>Understand derivatives:</strong> If the strategy uses derivatives, understand whether they are used for hedging, rebalancing or short exposure.</p></button>
+      <button type="button" class="citem" id="chk-4" role="checkbox" aria-checked="false"><span class="box"><svg viewBox="0 0 16 16" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span><p><strong>Check the minimum investment:</strong> The aggregate SIF investment threshold is ₹10 lakh at PAN level, subject to applicable exceptions.</p></button>
+      <button type="button" class="citem" id="chk-5" role="checkbox" aria-checked="false"><span class="box"><svg viewBox="0 0 16 16" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span><p><strong>Assess suitability:</strong> Consider your investment objective, risk appetite, investment horizon and ability to tolerate losses.</p></button>
+      <button type="button" class="citem" id="chk-6" role="checkbox" aria-checked="false"><span class="box"><svg viewBox="0 0 16 16" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span><p><strong>Read the ISID:</strong> Review the Investment Strategy Information Document and other offer documents before investing.</p></button>
+      <button type="button" class="citem" id="chk-7" role="checkbox" aria-checked="false"><span class="box"><svg viewBox="0 0 16 16" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span><p><strong>Do not rely only on past performance:</strong> Past performance does not indicate future results.</p></button>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq" data-screen-label="FAQ">
+  <div class="wrap">
+    <h2 class="h2">Frequently Asked <span class="grad">Questions</span></h2>
+    <div id="faqList">
+      <div class="qa open"><h3><button type="button" id="faq-q0" aria-expanded="true" aria-controls="faq-a0"><span>Is a SIF the same as a Mutual Fund?</span><span class="pm" aria-hidden="true"></span></button></h3><div class="ans" id="faq-a0" role="region" aria-labelledby="faq-q0"><div><p>No. A SIF is a distinct investment product within the SEBI-regulated mutual fund framework, offering specified differentiated investment strategies.</p></div></div></div>
+      <div class="qa"><h3><button type="button" id="faq-q1" aria-expanded="false" aria-controls="faq-a1"><span>Is a SIF the same as PMS?</span><span class="pm" aria-hidden="true"></span></button></h3><div class="ans" id="faq-a1" role="region" aria-labelledby="faq-q1"><div><p>No. SIFs remain pooled investment vehicles, whereas PMS generally involves an individual portfolio for the client.</p></div></div></div>
+      <div class="qa"><h3><button type="button" id="faq-q2" aria-expanded="false" aria-controls="faq-a2"><span>Is ₹10 lakh required in every SIF strategy?</span><span class="pm" aria-hidden="true"></span></button></h3><div class="ans" id="faq-a2" role="region" aria-labelledby="faq-q2"><div><p>No, ₹10 lakh is not required for every individual Specialized Investment Fund (SIF) strategy. SEBI mandates a minimum aggregate investment of ₹10 lakh at the PAN level across all SIF strategies offered by a single Asset Management Company (AMC).</p></div></div></div>
+      <div class="qa"><h3><button type="button" id="faq-q3" aria-expanded="false" aria-controls="faq-a3"><span>Can SIFs use derivatives?</span><span class="pm" aria-hidden="true"></span></button></h3><div class="ans" id="faq-a3" role="region" aria-labelledby="faq-q3"><div><p>Yes. The permitted strategies can use derivatives subject to the applicable regulatory framework and strategy mandate.</p></div></div></div>
+      <div class="qa"><h3><button type="button" id="faq-q4" aria-expanded="false" aria-controls="faq-a4"><span>Are all SIFs high-risk?</span><span class="pm" aria-hidden="true"></span></button></h3><div class="ans" id="faq-a4" role="region" aria-labelledby="faq-q4"><div><p>Risk varies by strategy. Investors should consider the specific strategy's Risk-band, portfolio, investment approach and risk factors rather than treating all SIFs as identical.</p></div></div></div>
+      <div class="qa"><h3><button type="button" id="faq-q5" aria-expanded="false" aria-controls="faq-a5"><span>Can I redeem whenever I want?</span><span class="pm" aria-hidden="true"></span></button></h3><div class="ans" id="faq-a5" role="region" aria-labelledby="faq-q5"><div><p>Redemption terms vary depending on the investment strategy and are disclosed in the relevant ISID. Redemptions may be subject to a notice period and other applicable terms and conditions.</p></div></div></div>
+      <div class="qa"><h3><button type="button" id="faq-q6" aria-expanded="false" aria-controls="faq-a6"><span>Who should invest in a SIF?</span><span class="pm" aria-hidden="true"></span></button></h3><div class="ans" id="faq-a6" role="region" aria-labelledby="faq-q6"><div><p>SIFs are intended for investors seeking differentiated investment strategies and who are comfortable with the associated level of complexity, risk, volatility and minimum investment requirements. Since some SIF strategies may experience higher short-term volatility and fluctuations in value, they may not be suitable for first-time investors or those who are not yet familiar with market risks. Investors should have a clear understanding of their risk appetite and investment horizon before considering a SIF.</p></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE -->
+<section class="before" id="before" data-screen-label="Before investing">
+  <div class="wrap">
+    <div class="bcard" id="bcard">
+      <span class="fl a" data-speed="0.12" aria-hidden="true"></span>
+      <span class="fl b" data-speed="-0.18" aria-hidden="true"></span>
+      <span class="fl c" data-speed="0.08" aria-hidden="true"></span>
+      <span class="fl d" data-speed="-0.3" aria-hidden="true"></span>
+      <span class="fl e" data-speed="0.25" aria-hidden="true"></span>
+      <span class="fl f" data-speed="-0.1" aria-hidden="true"></span>
+      <h2>Things to Consider Before Investing</h2>
+      <p>SIFs are market-linked investments and carry investment risks. The suitability of any strategy depends on the investor's objectives, risk appetite, investment horizon and the specific strategy's mandate. Investors should read all scheme-related and statutory documents carefully before investing.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>An investor education &amp; awareness initiative of UTI Mutual Fund. To know about the KYC documentary requirements and procedure for change of address, phone number, bank details, etc. please visit <a href="https://www.utimf.com/servicerequest/kyc" target="_blank" rel="noopener">https://www.utimf.com/servicerequest/kyc</a>. Please deal with only registered mutual funds, details of which can be verified on the SEBI website under "Intermediaries/market Infrastructure Institutions." All complaints regarding UTI Mutual Fund can be directed towards <a href="mailto:service@uti.co.in">service@uti.co.in</a> and /or visit <a href="https://scores.sebi.gov.in" target="_blank" rel="noopener">https://scores.sebi.gov.in</a>(SEBI SCORES portal), or to escalate, investors may visit <a href="https://smartodr.in" target="_blank" rel="noopener">https://smartodr.in</a> Online Dispute Resolution Portal (ODR Portal). Investments in Specialized Investment Fund involves relatively higher risk including potential loss of capital, liquidity risk and market volatility. Please read all investment strategy related documents carefully before making the investment decision.</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const FRAMES = 140;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  const range = (p, a, b) => clamp((p - a) / (b - a));
+  let vh = innerHeight, vw = innerWidth;
+
+  // progress through a tall pinned section: 0 when its top hits the viewport top, 1 when its bottom hits the viewport bottom
+  const pinP = el => { const r = el.getBoundingClientRect(); return clamp(-r.top / Math.max(1, r.height - vh)); };
+  // progress while visible: 0 when entering from below, 1 when leaving above
+  const viewP = el => { const r = el.getBoundingClientRect(); return clamp((vh - r.top) / (vh + r.height)); };
+
+  /* ---------- hero frame scrubbing ---------- */
+  const canvas = $('#heroCanvas'), ctx = canvas.getContext('2d');
+  const imgs = new Array(FRAMES);
+  let cur = 0, target = 0, drawn = -1;
+  const src = i => `frames/f${String(i + 1).padStart(3, '0')}.webp`;
+  function sizeCanvas() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = Math.round(canvas.clientWidth * dpr);
+    canvas.height = Math.round(canvas.clientHeight * dpr);
+    drawn = -1;
+  }
+  function nearest(i) {
+    for (let d = 0; d < FRAMES; d++) {
+      const a = imgs[i - d], b = imgs[i + d];
+      if (a && a.complete && a.naturalWidth) return a;
+      if (b && b.complete && b.naturalWidth) return b;
+    }
+    return null;
+  }
+  function draw(i) {
+    const img = nearest(i); if (!img) return;
+    const cw = canvas.width, ch = canvas.height, iw = img.naturalWidth, ih = img.naturalHeight;
+    const s = Math.max(cw / iw, ch / ih), w = iw * s, h = ih * s;
+    ctx.drawImage(img, (cw - w) * 0.58, (ch - h) * 0.5, w, h);
+    drawn = i;
+  }
+  // first frame, then a coarse pass, then everything else, so scrubbing works early
+  const order = [0];
+  for (let i = 8; i < FRAMES; i += 8) order.push(i);
+  for (let i = 1; i < FRAMES; i++) if (!order.includes(i)) order.push(i);
+  let q = 0;
+  function loadNext() {
+    if (q >= order.length) return;
+    const i = order[q++], im = new Image();
+    im.decoding = 'async';
+    im.onload = im.onerror = () => { if (Math.round(cur) === i || drawn < 0) draw(Math.round(cur)); loadNext(); };
+    im.src = src(i); imgs[i] = im;
+  }
+  for (let k = 0; k < 6; k++) loadNext();
+
+  /* ---------- word fill ---------- */
+  const fill = $('#fill');
+  const words = fill.textContent.trim().split(/\s+/);
+  fill.innerHTML = words.map(w => `<span class="w">${w}</span>`).join(' ');
+  const wordEls = $$('#fill .w');
+
+  /* ---------- advantages rail ---------- */
+  const adv = $('#adv'), track = $('#track');
+  const narrow = () => vw <= 760;
+  let advOverflow = 0;
+  function sizeAdv() {
+    if (narrow()) { adv.style.height = ''; return; }
+    track.style.setProperty('--tx', '0px');
+    advOverflow = Math.max(0, track.scrollWidth - vw);
+    adv.style.height = (vh + advOverflow) + 'px';
+  }
+  const stepX = () => { const c = track.querySelector('.acard'); return c.getBoundingClientRect().width + 22; };
+  $('#advNext').addEventListener('click', () => narrow() ? track.scrollBy({ left: stepX(), behavior: 'smooth' }) : scrollBy({ top: stepX(), behavior: 'smooth' }));
+  $('#advPrev').addEventListener('click', () => narrow() ? track.scrollBy({ left: -stepX(), behavior: 'smooth' }) : scrollBy({ top: -stepX(), behavior: 'smooth' }));
+  track.addEventListener('scroll', () => { if (narrow()) $('#rail').style.setProperty('--rp', clamp((track.scrollLeft + track.clientWidth) / track.scrollWidth)); });
+
+  /* ---------- tabs ---------- */
+  const tabs = $$('#tabs [role=tab]'), pill = $('#tabs .pill');
+  function placePill() {
+    const t = tabs.find(b => b.getAttribute('aria-selected') === 'true');
+    pill.style.width = t.offsetWidth + 'px';
+    pill.style.transform = `translate(${t.offsetLeft}px, ${t.offsetTop - 6}px)`;
+  }
+  function selectTab(i, focus) {
+    tabs.forEach((b, j) => {
+      const on = i === j;
+      b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1;
+      const p = $('#panel-' + j); p.hidden = !on;
+      if (on) p.querySelectorAll('.stcard').forEach(c => { c.style.animation = 'none'; c.offsetHeight; c.style.animation = ''; });
+    });
+    if (focus) tabs[i].focus();
+    placePill();
+  }
+  tabs.forEach((b, i) => {
+    b.addEventListener('click', () => selectTab(i));
+    b.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') selectTab((i + 1) % 3, true);
+      if (e.key === 'ArrowLeft') selectTab((i + 2) % 3, true);
+    });
+  });
+
+  /* ---------- checklist ---------- */
+  const items = $$('.citem'), arc = $('#arc'), cring = $('#cring'), burst = $('#burst');
+  const colors = ['#2B50EC', '#5B3FE0', '#13A8A0', '#F2A24A'];
+  for (let i = 0; i < 14; i++) { const s = document.createElement('i'); s.style.setProperty('--a', (i * 360 / 14) + 'deg'); s.style.background = colors[i % 4]; burst.appendChild(s); }
+  let saved = [];
+  try { saved = JSON.parse(localStorage.getItem('sif-checklist') || '[]'); } catch (e) {}
+  function syncChecks() {
+    const n = items.filter(b => b.getAttribute('aria-checked') === 'true').length;
+    $('#done').textContent = n;
+    arc.style.strokeDashoffset = 326.7 * (1 - n / 8);
+    cring.classList.toggle('done', n === 8);
+    try { localStorage.setItem('sif-checklist', JSON.stringify(items.map(b => b.getAttribute('aria-checked') === 'true'))); } catch (e) {}
+  }
+  items.forEach((b, i) => {
+    if (saved[i]) b.setAttribute('aria-checked', 'true');
+    b.addEventListener('click', () => { b.setAttribute('aria-checked', b.getAttribute('aria-checked') !== 'true'); syncChecks(); });
+  });
+  syncChecks();
+
+  /* ---------- FAQ ---------- */
+  $$('.qa button').forEach(b => b.addEventListener('click', () => {
+    const open = b.getAttribute('aria-expanded') !== 'true';
+    b.setAttribute('aria-expanded', open);
+    b.closest('.qa').classList.toggle('open', open);
+  }));
+
+  /* ---------- scroll scene ---------- */
+  const hero = $('#hero'), media = $('#heroMedia'), h1s = $$('.hero h1 > span'), chips = $$('.chip'), cue = $('#cue');
+  const what = $('#what'), ghost = $('.what-ghost');
+  const cards = $$('.scard');
+  const feat = $('#features'), fcards = $$('.fcard'), bigNum = $('.fcard.big .num'), vizs = $$('.viz');
+  const who = $('#who'), whoBg = $('#whoBg'), whoH = $('.who .h2'), gcards = $$('.gcard');
+  const strat = $('#strat');
+  const rows = $$('#rows tr'), cmp = $('#cmp');
+  const draws = $$('.dcard');
+  const rcards = $$('.rcard'), band = $('#band'), needle = $('.gauge');
+  const bcard = $('#bcard'), fls = $$('.bcard .fl');
+  const prog = $('#prog');
+
+  function scene() {
+    const doc = document.documentElement;
+    prog.style.setProperty('--p', clamp(scrollY / (doc.scrollHeight - vh)));
+    if (reduce) return;
+
+    // hero
+    const hp = pinP(hero);
+    target = Math.min(FRAMES - 1, range(hp, 0, .82) * (FRAMES - 1));
+    media.style.setProperty('--zoom', 1.04 + hp * .1);
+    const shrink = ease(range(hp, .8, 1));
+    media.style.setProperty('--inset', (shrink * Math.min(vw * .05, 64)) + 'px');
+    media.style.setProperty('--rad', (shrink * 36) + 'px');
+    // lines drift apart (top line fastest) and dissolve before the camera settles
+    const lift = [1.1, .7, .35];
+    h1s.forEach((s, i) => {
+      const out = range(hp, .12 + i * .06, .38 + i * .06);
+      s.style.transform = `translate3d(0,${-hp * vh * lift[i]}px,0) scale(${1 + out * .08})`;
+      s.style.opacity = 1 - out;
+    });
+    chips.forEach(c => { c.style.transform = `translate3d(0,${-hp * vh * +c.dataset.depth}px,0)`; });
+    cue.style.opacity = 1 - range(hp, 0, .06);
+
+    // what is: word fill and ghost drift
+    const wp = pinP(what);
+    const lit = range(wp, .05, .85) * wordEls.length;
+    wordEls.forEach((w, i) => w.style.setProperty('--o', (0.16 + .84 * clamp(lit - i)).toFixed(3)));
+    ghost.style.setProperty('--gx', (-wp * 40) + 'vw');
+
+    // why: earlier cards recede as the next one lands on top
+    cards.forEach((c, i) => {
+      const next = cards[i + 1]; if (!next) return;
+      const r = next.getBoundingClientRect();
+      const t = clamp(1 - (r.top - vh * .16) / (vh * .6));
+      c.style.setProperty('--s', 1 - t * .06);
+    });
+
+    // features: layered depth
+    const fr = feat.getBoundingClientRect();
+    if (fr.bottom > 0 && fr.top < vh) {
+      const mid = fr.top + fr.height / 2 - vh / 2;
+      feat.style.setProperty('--bgy', (mid * -.25) + 'px');
+      if (vw > 900) fcards.forEach(c => c.style.setProperty('--ty', (mid * +c.dataset.speed) + 'px'));
+      bigNum.style.setProperty('--ny', (mid * .08) + 'px');
+      vizs.forEach(v => v.style.setProperty('--vy', (mid * -.04) + 'px'));
+    }
+
+    // advantages: vertical scroll drives the rail
+    if (!narrow()) {
+      const ap = pinP(adv);
+      track.style.setProperty('--tx', (-ap * advOverflow) + 'px');
+      $('#rail').style.setProperty('--rp', .2 + ap * .8);
+    }
+
+    // who: image window
+    const op = viewP(who);
+    whoBg.style.setProperty('--by', ((op - .5) * -18) + '%');
+    whoBg.style.setProperty('--bs', 1.18 - op * .12);
+    whoH.style.setProperty('--hy', ((op - .5) * -80) + 'px');
+    if (vw > 900) gcards.forEach(g => g.style.setProperty('--ty', ((.5 - op) * vh * +g.dataset.speed) + 'px'));
+
+    // strategies: cards tilt up into place
+    const sp = range(viewP(strat), .08, .38);
+    $$('.panel:not([hidden]) .stcard').forEach((c, i) => {
+      const t = clamp(sp * 1.4 - i * .15);
+      c.style.setProperty('--rx', ((1 - t) * 18) + 'deg');
+      c.style.setProperty('--ty', ((1 - t) * 60) + 'px');
+    });
+
+    // comparison rows slide in, staggered
+    const cp = range(viewP(cmp), .1, .45);
+    rows.forEach((r, i) => {
+      const t = ease(clamp(cp * 1.6 - i * .09));
+      r.style.setProperty('--rx', ((1 - t) * (i % 2 ? 60 : -60)) + 'px');
+      r.style.setProperty('--ro', .25 + .75 * t);
+    });
+
+    // derivatives: lines draw as each card crosses the viewport
+    draws.forEach(d => {
+      const t = ease(range(viewP(d), .12, .5));
+      d.querySelectorAll('.draw').forEach(p => p.style.setProperty('--d', 1 - t));
+    });
+
+    // risks: alternating column speeds, then the needle sweeps the band
+    if (vw > 560) {
+      const cols = vw > 900 ? 4 : 2;
+      rcards.forEach((c, i) => {
+        const r = c.parentElement.getBoundingClientRect();
+        const mid = r.top + r.height / 2 - vh / 2;
+        const sp = [0, .12, -.04, .18][i % cols] ?? 0;
+        c.style.setProperty('--ty', (mid * sp) + 'px');
+      });
+    }
+    const gp = ease(range(viewP(band), .2, .65));
+    needle.style.setProperty('--g', (-72 + gp * 144) + 'deg');
+
+    // before investing: card opens out
+    const bp = viewP(bcard);
+    const open = ease(range(bp, 0, .45));
+    bcard.style.setProperty('--bsc', .9 + open * .1);
+    bcard.style.setProperty('--br', 2 - open);
+    fls.forEach(f => f.style.setProperty('--ty', ((bp - .5) * 400 * +f.dataset.speed) + 'px'));
+  }
+
+  // one rAF loop: re-run the scene on scroll, and ease the video frame toward its target
+  let dirty = true;
+  addEventListener('scroll', () => { dirty = true; }, { passive: true });
+  addEventListener('resize', () => { vh = innerHeight; vw = innerWidth; sizeCanvas(); sizeAdv(); placePill(); dirty = true; });
+  function tick() {
+    if (dirty) { scene(); dirty = false; }
+    cur += (target - cur) * .18;
+    if (Math.abs(target - cur) < .05) cur = target;
+    const f = Math.round(cur);
+    if (f !== drawn) draw(f);
+    requestAnimationFrame(tick);
+  }
+  sizeCanvas(); sizeAdv(); placePill();
+  if (document.fonts) document.fonts.ready.then(() => { sizeAdv(); placePill(); });
+  requestAnimationFrame(tick);
+})();
+</script>
