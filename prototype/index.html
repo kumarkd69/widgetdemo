@@ -1,0 +1,983 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Original Tour Prototype</title>
+<style>
+@font-face{font-family:"ProtoSans";src:url(assets/fonts/figtree-latin-400-normal.woff2) format("woff2");font-weight:400}
+@font-face{font-family:"ProtoSans";src:url(assets/fonts/figtree-latin-600-normal.woff2) format("woff2");font-weight:600}
+@font-face{font-family:"ProtoSans";src:url(assets/fonts/figtree-latin-700-normal.woff2) format("woff2");font-weight:700}
+:root{
+  --paper:#f8f5ef;--header:#efe8da;--primary:#164291;--text:#171717;--text2:#525252;--border:#e5e5e5;--border2:#f5f5f5;
+  --disabled:#d4d4d4;--footer:#002b76;--red:#e30910;--redDark:#9e1525;--blueDark:#0d2755;--blueLight:#dce8f7;--muted:#6b7488;
+  --font:"Proxima Nova","ProtoSans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --ease:cubic-bezier(.22,.8,.24,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#202124;font-family:var(--font);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img{display:block;-webkit-user-drag:none;user-select:none}
+
+/* ---------- stage ---------- */
+.stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;gap:56px}
+.panel{width:280px;color:#e8e8e8;font-size:14px;line-height:1.5;flex:none}
+.panel h1{font-size:20px;font-weight:700;margin-bottom:4px;color:#fff}
+.panel .sub{color:#9aa0a6;margin-bottom:20px}
+.panel h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#9aa0a6;margin:20px 0 8px;font-weight:600}
+.panel ul{list-style:none}
+.panel li{color:#c7c9cc;padding:2px 0}
+.panel li b{color:#fff;font-weight:600}
+.seg{display:flex;background:#2f3134;border-radius:10px;padding:3px;gap:3px}
+.seg button{flex:1;padding:8px 6px;border-radius:8px;color:#c7c9cc;font-size:13px;font-weight:600}
+.seg button.on{background:#fff;color:#111}
+.jump{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.jump button{background:#2f3134;color:#e8e8e8;border-radius:8px;padding:8px 10px;font-size:13px;text-align:left}
+.jump button:hover{background:#3a3d41}
+.note{margin-top:16px;color:#80868b;font-size:12px}
+.device-wrap{flex:none;position:relative}
+.device{width:417px;height:876px;border-radius:66px;background:#0b0b0c;padding:12px;box-shadow:0 0 0 2px #3a3b3d,0 40px 80px rgba(0,0,0,.55);transform-origin:center center}
+.screen{position:relative;width:393px;height:852px;border-radius:54px;overflow:hidden;background:#f3e6dc;isolation:isolate;touch-action:none;user-select:none;-webkit-user-select:none}
+body.bare .stage{gap:0}
+body.bare .panel{display:none}
+body.bare .device{padding:0;border-radius:0;background:none;box-shadow:none;width:393px;height:852px}
+body.bare .screen{border-radius:0}
+
+/* ---------- maps ---------- */
+.maps{position:absolute;inset:0;overflow:hidden;background:#f6e3d8}
+.map{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .45s var(--ease),transform .55s var(--ease);touch-action:none}
+.map.on{opacity:1;pointer-events:auto}
+.map.enter{transform:scale(.94)}
+.map.leave{transform:scale(1.08)}
+.map-inner{position:absolute;left:0;top:0;transform-origin:0 0}
+.map-inner>img.tile{position:absolute;left:0;top:0;width:100%;height:100%}
+.mk{position:absolute;left:0;top:0;transform:translate(-50%,-50%) scale(var(--ms,1));transform-origin:center;cursor:pointer}
+.mk-stop{width:35.77px;height:35.77px;display:flex;align-items:center;justify-content:center}
+.mk-stop i{width:22.76px;height:22.76px;border-radius:50%;background:#fff;border:1.626px solid var(--c);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:600;font-size:11.38px;line-height:1;color:var(--d);transition:transform .2s}
+.mk-stop:active i,.mk-stop.pop i{transform:scale(1.25)}
+.mk-bus{width:42.27px;height:27.64px;border-radius:13.82px;border:.813px solid #fff;display:flex;align-items:center;justify-content:center}
+.mk-bus svg{width:19.5px;height:19.5px}
+.mk-me{width:27.64px;height:27.64px;pointer-events:none}
+.mk-me svg{width:100%;height:100%;overflow:visible}
+.mk-me .halo{transform-origin:17px 17px;animation:halo 2.2s ease-out infinite}
+@keyframes halo{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.6);opacity:0}}
+.hot{position:absolute;transform:translate(-50%,-50%) scale(var(--ms,1));border-radius:50%;cursor:pointer}
+.hot::after{content:"";position:absolute;inset:0;border-radius:inherit;background:rgba(22,66,145,.18);opacity:0;transition:opacity .15s}
+.hot.flash::after{opacity:1}
+
+/* ---------- header ---------- */
+.hdr{position:absolute;left:0;top:0;width:393px;z-index:20;pointer-events:none}
+.status{position:absolute;left:0;top:0;width:393px;height:44px;background:var(--paper);z-index:3}
+.status .time{position:absolute;left:31.5px;top:15px}
+.status .icons{position:absolute;right:14px;top:16px;display:flex;gap:4px}
+.brand{position:absolute;left:0;top:44px;width:393px;height:68px;background:var(--paper);transition:transform .38s var(--ease),opacity .3s;z-index:2;pointer-events:auto}
+.brand .brow{position:absolute;left:20px;top:12px;width:345px;display:flex;align-items:center;justify-content:space-between}
+.cbtn{width:44px;height:44px;border-radius:41px;background:#fff;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.cbtn:active,.press{transform:scale(.92)}
+.flipx{transform:scaleX(-1)}
+.logo{width:57px;height:34px}
+.chips{position:absolute;left:20px;top:125px;width:353px;display:flex;gap:6px;transition:transform .38s var(--ease);pointer-events:auto;z-index:4}
+.chips .search{width:44px;height:44px;flex:none;border-radius:41px;background:#fff;border:1px solid var(--primary);display:flex;align-items:center;justify-content:center}
+.chip{flex:1 0 0;min-width:1px;height:44px;border-radius:999px;background:#fff;border:1px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:14px;line-height:21px;font-weight:600;color:var(--text);white-space:nowrap;padding:7px 10px;transition:background .25s,color .25s,border-color .25s,transform .15s}
+.chip:active{transform:scale(.96)}
+.chip.on{background:var(--text);color:#fff;border-color:var(--text)}
+.brand .brow{transition:opacity .25s,transform .38s var(--ease)}
+.hdr.compact .brand .brow{opacity:0;transform:translateY(-14px);pointer-events:none}
+.hdr.compact .chips{transform:translateY(-69px)}
+
+/* ---------- sheet ---------- */
+.sheet{position:absolute;left:0;top:0;width:393px;height:852px;z-index:10;will-change:transform;background:var(--paper);border-radius:24px 24px 0 0;box-shadow:0 -4px 19.8px rgba(0,0,0,.1);touch-action:none}
+.sheet.anim{transition:transform .42s var(--ease)}
+.sheet-in{position:absolute;inset:0;background:#fff;border-radius:24px 24px 0 0;overflow:hidden}
+.sheet-scroll{position:absolute;left:0;right:0;top:0;bottom:0;overflow:hidden;padding:20px 16px 0}
+.sheet-scroll.can{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.sheet-scroll::-webkit-scrollbar{display:none}
+.handle-wrap{display:flex;justify-content:center;height:4px}
+.handle{width:40px;height:4px;border-radius:2px;background:var(--disabled)}
+.content{transition:opacity .25s,transform .35s var(--ease)}
+.content.swap{opacity:0;transform:translateY(16px)}
+.sheet-x{position:absolute;left:342px;top:12px;width:36px;height:36px;z-index:2;transition:transform .15s}
+.sheet-x:active{transform:scale(.9)}
+.spacer{height:110px}
+
+.col{display:flex;flex-direction:column}
+.g8{gap:8px}.g12{gap:12px}.g16{gap:16px}.g20{gap:20px}.g24{gap:24px}.g32{gap:32px}.g40{gap:40px}
+.card{background:var(--primary);border:1px solid var(--border);border-radius:12px;padding:12px;width:362px;color:#fff;box-shadow:0 8px 20px -4px rgba(0,0,0,.1),0 4px 24px rgba(0,0,0,.08);overflow:hidden;display:flex;flex-direction:column;gap:16px}
+.t14{font-size:14px;line-height:21px}
+.t12{font-size:12px;line-height:17px}
+.t16{font-size:16px;line-height:26px}
+.t18{font-size:18px;line-height:22px}
+.sb{font-weight:600}.b{font-weight:700}.r{font-weight:400}
+.locrow{display:flex;gap:4px;align-items:center}
+.divider{height:1px;background:rgba(255,255,255,.35);width:100%}
+.nearbox{background:var(--primary);border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;align-items:center;justify-content:space-between;filter:drop-shadow(0 7px 3.5px rgba(33,36,41,.16));transition:transform .15s,background .2s}
+.nearbox:active{transform:scale(.98);background:#1a4ca6}
+.nearbox .l{display:flex;gap:8px;align-items:center;white-space:nowrap}
+.hscroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-right:-12px;padding-right:12px}
+.hscroll::-webkit-scrollbar{display:none}
+.rcard{background:#fff;border-radius:8px;padding:8px 12px;min-height:58px;display:flex;flex-direction:column;justify-content:center;gap:2px;flex:none;color:#000;transition:transform .15s}
+.rcard:active{transform:scale(.97)}
+.rcard .top{display:flex;gap:8px;align-items:center;white-space:nowrap}
+.sec{color:var(--text2)}
+.h-sec{font-size:16px;line-height:26px;font-weight:600;color:var(--footer);white-space:nowrap}
+.grid{display:flex;flex-direction:column;gap:20px;width:362px}
+.grow{display:flex;gap:12px;align-items:flex-start;width:362px}
+.att{flex:1 0 0;min-width:1px;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;cursor:pointer}
+.att.fixed{flex:none;width:112.667px}
+.att .ph{width:77px;height:77px;border-radius:50%;box-shadow:0 6.424px 18.148px rgba(0,0,0,.13);overflow:hidden;transition:transform .2s}
+.att:active .ph{transform:scale(.93)}
+.att .ph img{width:77px;height:77px}
+.att span{font-size:16px;line-height:19px;font-weight:600;color:var(--text)}
+.startrow{background:#fff;border-radius:8px;padding:12px;min-height:58px;display:flex;align-items:center;justify-content:space-between;color:#000;transition:transform .15s}
+.startrow:active{transform:scale(.98)}
+.startrow .l{display:flex;gap:8px;align-self:stretch;align-items:stretch}
+.badge{background:var(--blueLight);border-radius:8px;padding:5px 12px;display:flex;align-items:center;font-weight:700;font-size:16px;color:var(--text);white-space:nowrap}
+.badge.red{background:#fde3e4}
+.segm{background:var(--border2);height:55px;border-radius:40px;padding:0 2px;display:flex;align-items:center;gap:8px;width:362px;position:relative}
+.segm button{flex:1 0 0;border-radius:999px;padding:12px 16px;font-size:16px;line-height:26px;font-weight:600;text-align:center;position:relative;z-index:1;transition:color .3s;color:var(--text)}
+.segm button.on{color:#fff}
+.segm .pill{position:absolute;top:2.5px;height:50px;border-radius:999px;background:var(--text);transition:left .35s var(--ease);width:calc(50% - 6px)}
+.segm .ghost{position:absolute;top:2.5px;height:50px;border-radius:999px;background:#fff;border:.605px solid var(--border);width:calc(50% - 6px);transition:left .35s var(--ease)}
+.row{background:#fff;border:1px solid var(--border);border-radius:8px;min-height:58px;padding:0 12px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,.08);width:100%;cursor:pointer;transition:transform .15s,background .15s}
+.row:active{transform:scale(.98);background:#fafafa}
+.sbadge{width:30px;height:30px;border-radius:40px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex:none}
+.row .txt{flex:1 0 0;min-width:0;display:flex;flex-direction:column}
+.row .txt .n{font-size:14px;line-height:21px;font-weight:600;color:#000}
+.row .txt .a{font-size:12px;line-height:17px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.busrow{gap:12px}
+.busico{width:36px;height:36px;border-radius:8px;background:var(--blueLight);display:flex;align-items:center;justify-content:center;flex:none}
+.busrow .a{color:var(--muted)!important}
+.mins{font-weight:700;font-size:16px;color:var(--primary);white-space:nowrap}
+.mins.tick{animation:tick .6s}
+@keyframes tick{0%{opacity:.2}100%{opacity:1}}
+.photos{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-right:-12px;padding-right:12px}
+.photos::-webkit-scrollbar{display:none}
+.photos img{width:141px;height:114px;border-radius:8px;flex:none;background:#fff;object-fit:cover}
+.lead{font-size:14px;line-height:21px;color:#fff}
+
+/* ---------- nav ---------- */
+.nav{position:absolute;left:calc(50% + .5px);transform:translateX(-50%);bottom:12px;width:360px;height:68px;background:#fff;border:1px solid var(--border);border-radius:40px;padding:4px;display:flex;gap:4px;box-shadow:0 4px 35px rgba(3,16,38,.2);z-index:30;transition:transform .35s var(--ease),opacity .3s}
+.nav.hide{transform:translate(-50%,120px);opacity:0}
+.nav button{height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:93px;font-size:14px;line-height:21px;color:var(--text);transition:transform .15s,background .2s}
+.nav button:active{transform:scale(.94)}
+.nav .t{flex:1 0 0;min-width:1px;padding:4px 20px}
+.nav .track{width:115px;flex:none;background:var(--primary);color:#fff;font-weight:600;gap:3px;border-radius:40px}
+.nav .bk{width:75px;flex:none;color:var(--text2);gap:3px;border-radius:40px}
+
+/* ---------- directions ---------- */
+.dir{position:absolute;inset:0;z-index:40;background:#efefef;transform:translateX(100%);transition:transform .45s var(--ease);overflow:hidden}
+.dir.on{transform:none}
+.dir .dmap{position:absolute;left:0;top:0;width:393px;height:852px;overflow:hidden}
+.dir-head{position:absolute;left:0;top:0;width:393px;height:162.33px;pointer-events:none;z-index:3}
+.dir-head img{width:393px;height:162.33px}
+.fab{position:absolute;left:313px;width:56px;height:56px;border-radius:60px;background:#fff;border:1px solid var(--border);box-shadow:0 8px 24px rgba(13,36,82,.08);display:flex;align-items:center;justify-content:center;z-index:3;transition:transform .15s}
+.fab:active{transform:scale(.92)}
+.fab .slash{position:absolute;width:26px;height:2px;background:var(--primary);transform:rotate(45deg);border-radius:2px;opacity:0;transition:opacity .2s}
+.fab.muted .slash{opacity:1}
+.dsheet{position:absolute;left:-.5px;bottom:0;width:394px;background:var(--paper);border-radius:24px 24px 0 0;box-shadow:0 -4px 19.8px rgba(0,0,0,.1);z-index:3}
+.dsheet .in{background:#fff;border-radius:24px 24px 0 0;padding:20px 16px 24px;display:flex;justify-content:center}
+.dsheet .w{width:345px;display:flex;flex-direction:column;gap:20px}
+.big{font-size:28px;line-height:34px;font-weight:700;letter-spacing:-.25px;color:var(--text)}
+.mid{font-size:18px;line-height:29px;color:var(--text2);white-space:pre}
+.exit{background:var(--red);height:44px;padding:12px 16px;border-radius:8px;color:#fff;font-weight:700;font-size:14px;line-height:14px;letter-spacing:.5px;transition:transform .15s}
+.exit:active{transform:scale(.95)}
+.walker{position:absolute;left:0;top:0;width:66px;height:66px;transform:translate(-50%,-50%) scale(var(--ms,1))}
+.walker::before{content:"";position:absolute;inset:6px;border-radius:50%;background:rgba(19,169,255,.18);animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.85);opacity:1}100%{transform:scale(1.35);opacity:0}}
+.dest{position:absolute;width:32px;height:32px;transform:translate(-50%,-50%) scale(var(--ms,1))}
+
+.hint{position:absolute;left:50%;top:190px;transform:translateX(-50%);background:rgba(23,23,23,.86);color:#fff;font-size:13px;line-height:18px;padding:8px 14px;border-radius:999px;white-space:nowrap;z-index:35;pointer-events:none;opacity:0;transition:opacity .4s}
+.hint.on{opacity:1}
+</style>
+</head>
+<body>
+<div class="stage">
+  <aside class="panel">
+    <h1>The Original Tour · Track</h1>
+    <p class="sub">Clickable prototype of the Map flow</p>
+    <h2>Try</h2>
+    <ul>
+      <li><b>Drag</b> the map to pan</li>
+      <li><b>Pinch</b>, <b>scroll</b> or <b>double-tap</b> to zoom</li>
+      <li><b>Drag the sheet</b> up, down or tap its handle</li>
+      <li>Tap <b>route chips</b>, <b>stop markers</b>, <b>buses</b>, <b>attractions</b></li>
+    </ul>
+    <h2>Location</h2>
+    <div class="seg" id="locSeg">
+      <button data-loc="remote" class="on">In Mumbai</button>
+      <button data-loc="nearby">In London</button>
+    </div>
+    <h2>Jump to screen</h2>
+    <div class="jump" id="jump">
+      <button data-jump="home">01 Default</button>
+      <button data-jump="zoom">Zoom in</button>
+      <button data-jump="drawer">Drawer up</button>
+      <button data-jump="blue">02 Blue route</button>
+      <button data-jump="attraction">Attraction</button>
+      <button data-jump="nearest">Nearest stop</button>
+      <button data-jump="stop">Stop selected</button>
+      <button data-jump="directions">Directions</button>
+    </div>
+    <p class="note">Red route has no screen in the design, so it uses the Blue route sheet layout with red-route content as a placeholder.</p>
+  </aside>
+
+  <div class="device-wrap"><div class="device" id="device"><div class="screen" id="screen">
+
+    <div class="maps" id="maps"></div>
+
+    <div class="hdr" id="hdr">
+      <div class="status">
+        <svg class="time" width="33" height="15" viewBox="0 0 33 15" fill="none"><path d="M5.86719 13.0889C8.55518 13.0889 10.1519 10.9868 10.1519 7.42725C10.1519 6.08691 9.89551 4.95898 9.40479 4.0874C8.69434 2.73242 7.47119 2 5.92578 2C3.62598 2 2 3.54541 2 5.71338C2 7.74951 3.46484 9.229 5.479 9.229C6.7168 9.229 7.72021 8.65039 8.21826 7.64697H8.24023C8.24023 7.64697 8.26953 7.64697 8.27686 7.64697C8.2915 7.64697 8.34277 7.64697 8.34277 7.64697C8.34277 10.064 7.42725 11.5068 5.88184 11.5068C4.97363 11.5068 4.27051 11.0088 4.02881 10.2104H2.14648C2.46143 11.9463 3.93359 13.0889 5.86719 13.0889ZM5.93311 7.72754C4.71729 7.72754 3.85303 6.86328 3.85303 5.65479C3.85303 4.47559 4.76123 3.57471 5.94043 3.57471C7.11963 3.57471 8.02783 4.49023 8.02783 5.68408C8.02783 6.86328 7.1416 7.72754 5.93311 7.72754Z" fill="#191C1D"/><path d="M13.243 12.9863C13.9388 12.9863 14.4148 12.4883 14.4148 11.8291C14.4148 11.1626 13.9388 10.6719 13.243 10.6719C12.5545 10.6719 12.0711 11.1626 12.0711 11.8291C12.0711 12.4883 12.5545 12.9863 13.243 12.9863ZM13.243 7.49316C13.9388 7.49316 14.4148 7.00244 14.4148 6.34326C14.4148 5.67676 13.9388 5.18604 13.243 5.18604C12.5545 5.18604 12.0711 5.67676 12.0711 6.34326C12.0711 7.00244 12.5545 7.49316 13.243 7.49316Z" fill="#191C1D"/><path d="M21.2706 12.8325H23.0797V10.8623H24.5079V9.26562H23.0797V2.26367H20.4137C18.546 5.07617 17.0592 7.42725 16.107 9.17773V10.8623H21.2706V12.8325ZM17.8575 9.19971C19.088 7.03174 20.1866 5.2959 21.1974 3.80176H21.2999V9.30957H17.8575V9.19971Z" fill="#191C1D"/><path d="M28.5365 12.8325H30.4262V2.26367H28.5438L25.7826 4.19727V6.01367L28.412 4.16797H28.5365V12.8325Z" fill="#191C1D"/></svg>
+        <div class="icons">
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2H17.5C18.0523 2 18.5 2.44772 18.5 3V11C18.5 11.5523 18.0523 12 17.5 12H16.5C15.9477 12 15.5 11.5523 15.5 11V3C15.5 2.44772 15.9477 2 16.5 2Z" fill="#D4D4D4"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 4H13C13.5523 4 14 4.44772 14 5V11C14 11.5523 13.5523 12 13 12H12C11.4477 12 11 11.5523 11 11V5C11 4.44772 11.4477 4 12 4Z" fill="#191C1D"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7.5 6H8.5C9.05228 6 9.5 6.44772 9.5 7V11C9.5 11.5523 9.05228 12 8.5 12H7.5C6.94772 12 6.5 11.5523 6.5 11V7C6.5 6.44772 6.94772 6 7.5 6Z" fill="#191C1D"/><path fill-rule="evenodd" clip-rule="evenodd" d="M3 7.5H4C4.55228 7.5 5 7.94772 5 8.5V11C5 11.5523 4.55228 12 4 12H3C2.44772 12 2 11.5523 2 11V8.5C2 7.94772 2.44772 7.5 3 7.5Z" fill="#191C1D"/></svg>
+          <svg width="16" height="14" viewBox="0 0 16 14" fill="none"><path d="M8.13198 8.93958C8.77147 8.93958 9.39286 9.10762 9.94037 9.42804L10.1622 9.55787C10.3304 9.65629 10.36 9.88665 10.2221 10.0242L8.328 11.913C8.21166 12.029 8.02303 12.029 7.90669 11.913L6.02478 10.0363C5.88749 9.89939 5.91611 9.67021 6.08287 9.57106L6.30222 9.44064C6.85476 9.1121 7.48403 8.93958 8.13198 8.93958Z" fill="#191C1D"/><path d="M8.13267 5.46985C9.7235 5.46985 11.2509 5.99759 12.4952 6.97491L12.6711 7.11303C12.8113 7.22315 12.8236 7.43064 12.6974 7.55649L11.5666 8.68412C11.462 8.78842 11.2965 8.8004 11.1779 8.71226L11.0401 8.60981C10.1997 7.98523 9.18633 7.6502 8.13267 7.6502C7.07251 7.6502 6.05323 7.9894 5.21005 8.62115L5.07207 8.72453C4.95346 8.81339 4.78737 8.80169 4.68247 8.69709L3.5521 7.56986C3.42618 7.44429 3.43813 7.23732 3.57769 7.127L3.75254 6.98876C4.99979 6.00273 6.53416 5.46985 8.13267 5.46985Z" fill="#191C1D"/><path d="M8.13272 2C10.6574 2 13.0717 2.89057 14.9828 4.52294L15.1459 4.66228C15.2777 4.77488 15.2855 4.97558 15.1627 5.09797L14.0356 6.22195C13.9264 6.33084 13.7519 6.33847 13.6336 6.23952L13.494 6.12283C11.9894 4.86472 10.1035 4.18035 8.13272 4.18035C6.15517 4.18035 4.26327 4.86943 2.75641 6.13541L2.6168 6.2527C2.4985 6.3521 2.32359 6.34466 2.2142 6.23557L1.08726 5.11176C0.964693 4.98954 0.972236 4.78918 1.10365 4.67646L1.26614 4.53708C3.17953 2.89589 5.60056 2 8.13272 2Z" fill="#191C1D"/></svg>
+          <svg width="25" height="14" viewBox="0 0 25 14" fill="none"><path d="M24 5C24.5523 5 25 5.44772 25 6V8C25 8.55228 24.5523 9 24 9V5Z" fill="#A3A3A3"/><path fill-rule="evenodd" clip-rule="evenodd" d="M3 1H20C21.6569 1 23 2.34315 23 4V10C23 11.6569 21.6569 13 20 13H3C1.34315 13 0 11.6569 0 10V4C0 2.34315 1.34315 1 3 1ZM3 2C1.89543 2 1 2.89543 1 4V10C1 11.1046 1.89543 12 3 12H20C21.1046 12 22 11.1046 22 10V4C22 2.89543 21.1046 2 20 2H3Z" fill="#A3A3A3"/><rect x="2" y="3" width="19" height="8" rx="1" fill="#191C1D"/></svg>
+        </div>
+      </div>
+      <div class="brand">
+        <div class="brow">
+          <button class="cbtn" data-act="press" aria-label="Menu"><svg class="flipx" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 12H14" stroke="#141B34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 5H20" stroke="#141B34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 19H20" stroke="#141B34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <img class="logo" src="assets/logo.png" alt="The Original Tour">
+          <button class="cbtn" data-act="press" aria-label="Notifications"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15.5 18C15.5 19.933 13.933 21.5 12 21.5C10.067 21.5 8.5 19.933 8.5 18" stroke="#002B76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.2311 18H4.76887C3.79195 18 3 17.208 3 16.2311C3 15.762 3.18636 15.3121 3.51809 14.9803L4.12132 14.3771C4.68393 13.8145 5 13.0514 5 12.2558V9.5C5 5.63401 8.13401 2.5 12 2.5C15.866 2.5 19 5.634 19 9.5V12.2558C19 13.0514 19.3161 13.8145 19.8787 14.3771L20.4819 14.9803C20.8136 15.3121 21 15.762 21 16.2311C21 17.208 20.208 18 19.2311 18Z" stroke="#002B76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+      <div class="chips" id="chips">
+        <button class="search" data-act="press" aria-label="Search"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M17 17L21 21" stroke="#164291" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="#164291" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="chip on" data-route="all">All routes</button>
+        <button class="chip" data-route="red">Red route</button>
+        <button class="chip" data-route="blue">Blue route</button>
+      </div>
+    </div>
+
+    <div class="sheet" id="sheet">
+      <div class="sheet-in">
+        <div class="sheet-scroll" id="sheetScroll">
+          <div class="handle-wrap"><div class="handle"></div></div>
+          <div class="content" id="content"></div>
+          <div class="spacer"></div>
+        </div>
+      </div>
+      <button class="sheet-x" id="sheetX" hidden aria-label="Close"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><rect width="36" height="36" rx="18" fill="#F5F5F5"/><path d="M24.75 11.25L18 18M18 18L11.25 24.75M18 18L24.75 24.75M18 18L11.25 11.25" stroke="#164291" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+
+    <nav class="nav" id="nav">
+      <button class="t" data-act="press"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 11.9896V14.5C3 17.7998 3 19.4497 4.02513 20.4749C5.05025 21.5 6.70017 21.5 10 21.5H14C17.2998 21.5 18.9497 21.5 19.9749 20.4749C21 19.4497 21 17.7998 21 14.5V11.9896C21 10.3083 21 9.46773 20.6441 8.74005C20.2882 8.01237 19.6247 7.49628 18.2976 6.46411L16.2976 4.90855C14.2331 3.30285 13.2009 2.5 12 2.5C10.7991 2.5 9.76689 3.30285 7.70242 4.90855L5.70241 6.46411C4.37533 7.49628 3.71179 8.01237 3.3559 8.74005C3 9.46773 3 10.3083 3 11.9896Z" stroke="#737373" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17H8" stroke="#737373" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Home</button>
+      <button class="t" data-act="press"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M17 17L21 21" stroke="#737373" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="#737373" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Explore</button>
+      <button class="track" data-act="track"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 15L5 19M15 21L3 9" stroke="white" stroke-width="1.5"/><path d="M13.5 6.75C14.8846 6.75 16 7.86536 16 9.23242C16 9.9089 15.7797 10.4503 15.2734 10.9688L15.0381 11.1904C14.6318 11.545 14.0147 12.174 13.5059 12.7705C13.0859 12.2772 12.5909 11.7695 12.2061 11.4111L11.9619 11.1904C11.288 10.6025 11 10.0058 11 9.23242C11 7.86536 12.1154 6.75 13.5 6.75Z" stroke="white" stroke-width="1.5"/><path d="M12 2.75C17.1086 2.75 21.25 6.89137 21.25 12C21.25 17.1086 17.1086 21.25 12 21.25C6.89137 21.25 2.75 17.1086 2.75 12C2.75 6.89136 6.89136 2.75 12 2.75Z" stroke="white" stroke-width="1.5"/></svg>Track</button>
+      <button class="bk" data-act="press"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M7 6.5V21M17 6.5V21" stroke="#737373" stroke-width="1.5"/><path d="M8.5 6.5C8.5 5.09554 8.5 4.3933 8.83706 3.88886C8.98298 3.67048 9.17048 3.48298 9.38886 3.33706C9.89332 3 10.5956 3 12 3C13.4045 3 14.1067 3 14.6112 3.33706C14.8296 3.48298 15.0171 3.67048 15.163 3.88886C15.5 4.3933 15.5 5.09554 15.5 6.5" stroke="#737373" stroke-width="1.5"/><path d="M9.2998 7.25H14.7002C16.2089 7.25 17.2539 7.25244 18.041 7.37402C18.7947 7.49049 19.2056 7.70204 19.5107 8.05273C19.8289 8.41845 20.0309 8.93559 20.1387 9.85547C20.2478 10.7874 20.2498 12.0155 20.25 13.7402V14.2578C20.2503 15.983 20.2495 17.2113 20.1406 18.1436C20.0465 18.9491 19.8795 19.4461 19.626 19.8027L19.5127 19.9473C19.2076 20.298 18.7965 20.5095 18.043 20.626C17.2556 20.7477 16.2096 20.75 14.7002 20.75H9.2998C7.79081 20.75 6.74523 20.7476 5.95801 20.626C5.20434 20.5095 4.79342 20.298 4.48828 19.9473C4.1701 19.5815 3.96797 19.0644 3.86035 18.1445C3.75133 17.2124 3.75 15.9839 3.75 14.2588V13.7412C3.75 12.0159 3.75132 10.7876 3.86035 9.85547C3.96796 8.9355 4.17009 8.41852 4.48828 8.05273C4.79343 7.70198 5.20425 7.49051 5.95801 7.37402C6.74527 7.25236 7.79071 7.25 9.2998 7.25Z" stroke="#737373" stroke-width="1.5"/></svg>Bookings</button>
+    </nav>
+
+    <div class="dir" id="dir">
+      <div class="dmap" id="dmap"></div>
+      <div class="dir-head"><img src="assets/directions-header.png" alt="Head west"></div>
+      <button class="fab" id="fabVol" style="top:564px" aria-label="Voice guidance"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M19 9C19.6254 9.81968 20 10.8634 20 12C20 13.1366 19.6254 14.1803 19 15" stroke="#164291" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14.8135V9.18646C16 6.04126 16 4.46866 15.0747 4.0773C14.1494 3.68593 13.0603 4.79793 10.8823 7.02192C9.75439 8.17365 9.11085 8.42869 7.50604 8.42869C6.10257 8.42869 5.40084 8.42869 4.89675 8.77262C3.85035 9.48655 4.00852 10.882 4.00852 12C4.00852 13.118 3.85035 14.5134 4.89675 15.2274C5.40084 15.5713 6.10257 15.5713 7.50604 15.5713C9.11085 15.5713 9.75439 15.8264 10.8823 16.9781C13.0603 19.2021 14.1494 20.3141 15.0747 19.9227C16 19.5313 16 17.9587 16 14.8135Z" stroke="#164291" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="slash"></span></button>
+      <button class="fab" id="fabLoc" style="top:637px" aria-label="Recenter"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M1.83203 10.9999H4.58225M4.58225 10.9999C4.58225 14.544 7.45532 17.4171 10.9994 17.4171M4.58225 10.9999C4.58225 7.45581 7.45532 4.58274 10.9994 4.58274M10.9994 17.4171C14.5435 17.4171 17.4166 14.544 17.4166 10.9999M10.9994 17.4171V20.1673M10.9994 4.58274C14.5435 4.58274 17.4166 7.45581 17.4166 10.9999M10.9994 4.58274V1.83252M17.4166 10.9999H20.1668M13.7497 10.9999C13.7497 12.5188 12.5183 13.7501 10.9994 13.7501C9.48053 13.7501 8.24921 12.5188 8.24921 10.9999C8.24921 9.48102 9.48053 8.2497 10.9994 8.2497C12.5183 8.2497 13.7497 9.48102 13.7497 10.9999Z" stroke="#164291" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <div class="dsheet"><div class="in"><div class="w">
+        <div class="handle-wrap"><div class="handle"></div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div class="col g4" style="gap:4px">
+            <p class="big" id="dMin">5 min</p>
+            <p class="mid" id="dMeta">4 min walk · 300 m ·  5:15 PM</p>
+          </div>
+          <button class="exit" id="dExit">Exit</button>
+        </div>
+      </div></div></div>
+    </div>
+
+    <div class="hint" id="hint">Pinch, scroll or double-tap to zoom</div>
+  </div></div></div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const screen = $('#screen');
+const W = 393, H = 852;
+
+/* ---------- device scaling ---------- */
+function fit() {
+  const bare = innerWidth < 760;
+  document.body.classList.toggle('bare', bare);
+  const dev = $('#device');
+  const dw = bare ? 393 : 417, dh = bare ? 852 : 876;
+  const room = bare ? 1 : 0.94;
+  const s = Math.min((bare ? innerWidth : innerWidth - 360) / dw, innerHeight * room / dh, bare ? 4 : 1.15);
+  dev.style.transform = `scale(${s})`;
+  dev.parentElement.style.width = dw * s + 'px';
+  dev.parentElement.style.height = dh * s + 'px';
+  dev.style.marginLeft = (dw * s - dw) / 2 + 'px';
+  dev.style.marginTop = (dh * s - dh) / 2 + 'px';
+  screenScale = s;
+}
+let screenScale = 1;
+addEventListener('resize', fit);
+fit();
+// pointer position in screen (393x852) coordinates
+function pt(e) {
+  const r = screen.getBoundingClientRect();
+  return { x: (e.clientX - r.left) / screenScale, y: (e.clientY - r.top) / screenScale };
+}
+
+/* ---------- icons ---------- */
+const ICON = {
+  loc: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10.3327 7.33333C10.3327 8.622 9.28802 9.66667 7.99935 9.66667C6.71068 9.66667 5.66602 8.622 5.66602 7.33333C5.66602 6.04467 6.71068 5 7.99935 5C9.28802 5 10.3327 6.04467 10.3327 7.33333Z" stroke="white" stroke-width="1.5"/><path d="M8 1.33337C11.2471 1.33337 14 4.02203 14 7.28391C14 10.5977 11.2022 12.9232 8.618 14.5045C8.42967 14.6108 8.21667 14.6667 8 14.6667C7.78333 14.6667 7.57033 14.6108 7.382 14.5045C4.8026 12.9078 2 10.6092 2 7.28391C2 4.02203 4.75296 1.33337 8 1.33337Z" stroke="white" stroke-width="1.5"/></svg>',
+  arrow: c => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="${c}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  bus: (c, s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 20 20" fill="none" stroke="${c}" stroke-width="1.21933" stroke-linecap="round" stroke-linejoin="round"><path d="M10.9742 2.4386H8.53554C6.23634 2.4386 5.08674 2.4386 4.37247 3.15287C3.6582 3.86714 3.6582 5.01673 3.6582 7.31594V10.5675C3.6582 12.8667 3.6582 14.0163 4.37247 14.7305C5.08674 15.4448 6.23634 15.4448 8.53554 15.4448H10.9742C13.2734 15.4448 14.423 15.4448 15.1373 14.7305C15.8515 14.0163 15.8515 12.8667 15.8515 10.5675V7.31594C15.8515 5.01673 15.8515 3.86714 15.1373 3.15287C14.423 2.4386 13.2734 2.4386 10.9742 2.4386Z"/><path d="M6.504 13.1078V13.2094M6.70723 13.2094C6.70723 13.3217 6.61624 13.4127 6.504 13.4127C6.39177 13.4127 6.30078 13.3217 6.30078 13.2094C6.30078 13.0972 6.39177 13.0062 6.504 13.0062C6.61624 13.0062 6.70723 13.0972 6.70723 13.2094Z"/><path d="M13.006 13.1078V13.2094M13.2092 13.2094C13.2092 13.3217 13.1182 13.4127 13.006 13.4127C12.8937 13.4127 12.8027 13.3217 12.8027 13.2094C12.8027 13.0972 12.8937 13.0062 13.006 13.0062C13.1182 13.0062 13.2092 13.0972 13.2092 13.2094Z"/><path d="M4.87891 15.4448V17.0706M14.6336 15.4448V17.0706"/><path d="M17.8847 6.90954V6.5031C17.8847 5.7367 17.8847 5.3535 17.6466 5.11541C17.4086 4.87732 17.0254 4.87732 16.259 4.87732H3.25273C2.48633 4.87732 2.10314 4.87732 1.86504 5.11541C1.62695 5.3535 1.62695 5.7367 1.62695 6.5031V6.90954"/><path d="M3.6582 10.161L5.10902 10.7413C5.39884 10.8573 5.54375 10.9152 5.69608 10.9446C5.8484 10.9739 6.00447 10.9739 6.31662 10.9739H13.1932C13.5053 10.9739 13.6614 10.9739 13.8137 10.9446C13.966 10.9152 14.1109 10.8573 14.4007 10.7413L15.8515 10.161"/></svg>`,
+  me: '<svg viewBox="0 0 34 34" fill="none"><circle class="halo" cx="17" cy="17" r="17" fill="#2D7FF9" fill-opacity="0.25"/><circle cx="17" cy="17" r="17" fill="#2D7FF9" fill-opacity="0.2"/><circle cx="17" cy="17" r="7.5" fill="#2D7FF9" stroke="white" stroke-width="3"/></svg>'
+};
+
+/* ---------- MapView: pan / pinch / wheel / double-tap ---------- */
+class MapView {
+  constructor(o) {
+    Object.assign(this, { minRel: 0.6, maxRel: 3, markerScale: s => 1 / s, onTap: null, viewTop: () => 0, viewBottom: () => H }, o);
+    this.el = document.createElement('div');
+    this.el.className = 'map';
+    this.inner = document.createElement('div');
+    this.inner.className = 'map-inner';
+    this.inner.style.width = this.w + 'px';
+    this.inner.style.height = this.h + 'px';
+    const img = new Image();
+    img.className = 'tile';
+    img.src = this.src;
+    img.alt = '';
+    img.draggable = false;
+    this.inner.appendChild(img);
+    this.el.appendChild(this.inner);
+    (this.parent || $('#maps')).appendChild(this.el);
+    this.s = 1; this.tx = this.x; this.ty = this.y;
+    this.ptrs = new Map();
+    this.bind();
+    this.apply();
+  }
+  add(html, x, y, cls = '') {
+    const d = document.createElement('div');
+    d.innerHTML = html.trim();
+    const n = d.firstElementChild;
+    n.style.left = x + 'px'; n.style.top = y + 'px';
+    if (cls) n.classList.add(...cls.split(' '));
+    this.inner.appendChild(n);
+    return n;
+  }
+  minS() {
+    const vt = this.viewTop(), vb = this.viewBottom();
+    return Math.max(this.minRel, W / this.w, (vb - vt) / this.h);
+  }
+  maxS() { return this.maxRel; }
+  bounds(s) {
+    const vt = this.viewTop(), vb = this.viewBottom();
+    return { minX: W - this.w * s, maxX: 0, minY: vb - this.h * s, maxY: vt };
+  }
+  apply() {
+    this.inner.style.transform = `translate3d(${this.tx}px,${this.ty}px,0) scale(${this.s})`;
+    this.inner.style.setProperty('--ms', this.markerScale(this.s));
+  }
+  reset() { this.stop(); this.s = 1; this.tx = this.x; this.ty = this.y; this.apply(); }
+  stop() { cancelAnimationFrame(this.raf); this.raf = 0; }
+  animateTo(s, tx, ty, dur = 380, done) {
+    this.stop();
+    const s0 = this.s, x0 = this.tx, y0 = this.ty, t0 = performance.now();
+    const step = now => {
+      const k = easeOut(clamp((now - t0) / dur, 0, 1));
+      this.s = s0 + (s - s0) * k; this.tx = x0 + (tx - x0) * k; this.ty = y0 + (ty - y0) * k;
+      this.apply();
+      if (k < 1) this.raf = requestAnimationFrame(step); else { this.raf = 0; done && done(); }
+    };
+    this.raf = requestAnimationFrame(step);
+  }
+  // target that respects bounds
+  fitted(s, tx, ty) {
+    s = clamp(s, this.minS(), this.maxS());
+    const b = this.bounds(s);
+    return { s, tx: b.minX > b.maxX ? (b.minX + b.maxX) / 2 : clamp(tx, b.minX, b.maxX), ty: b.minY > b.maxY ? (b.minY + b.maxY) / 2 : clamp(ty, b.minY, b.maxY) };
+  }
+  settle(dur = 320, done) {
+    let s = this.s, tx = this.tx, ty = this.ty;
+    const ns = clamp(s, this.minS(), this.maxS());
+    if (ns !== s) { // zoom about the centre of the visible map area
+      const ax = W / 2, ay = (this.viewTop() + this.viewBottom()) / 2;
+      tx = ax - (ax - tx) * (ns / s); ty = ay - (ay - ty) * (ns / s); s = ns;
+    }
+    const f = this.fitted(s, tx, ty);
+    this.animateTo(f.s, f.tx, f.ty, dur, done);
+  }
+  zoomAt(px, py, ns, dur = 320) {
+    const f0 = clamp(ns, this.minS(), this.maxS());
+    const tx = px - (px - this.tx) * (f0 / this.s), ty = py - (py - this.ty) * (f0 / this.s);
+    const f = this.fitted(f0, tx, ty);
+    this.animateTo(f.s, f.tx, f.ty, dur);
+  }
+  // centre a base-coordinate point on screen point (cx, cy) at scale s
+  focus(bx, by, s, cx = W / 2, cy = 270, dur = 420, done) {
+    const f = this.fitted(s, cx - bx * s, cy - by * s);
+    this.animateTo(f.s, f.tx, f.ty, dur, done);
+  }
+  rubber(v, min, max) {
+    if (v > max) return max + (v - max) * 0.35;
+    if (v < min) return min - (min - v) * 0.35;
+    return v;
+  }
+  bind() {
+    const el = this.el;
+    let downTarget = null, last = null, moved = false, vel = { x: 0, y: 0 }, lastT = 0, start = null, pinch = null, lastTap = 0, raw = null;
+    el.addEventListener('pointerdown', e => {
+      if (e.button > 0) return;
+      if (!this.ptrs.size) downTarget = e.target;
+      el.setPointerCapture(e.pointerId);
+      this.ptrs.set(e.pointerId, pt(e));
+      this.stop();
+      if (this.ptrs.size === 1) {
+        start = last = pt(e); moved = false; vel = { x: 0, y: 0 }; lastT = performance.now();
+        raw = { tx: this.tx, ty: this.ty };
+      } else if (this.ptrs.size === 2) {
+        const [a, b] = [...this.ptrs.values()];
+        pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), s: this.s, mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2, tx: this.tx, ty: this.ty };
+        moved = true;
+        this.onGesture && this.onGesture(this);
+      }
+    });
+    el.addEventListener('pointermove', e => {
+      if (!this.ptrs.has(e.pointerId)) return;
+      const p = pt(e);
+      this.ptrs.set(e.pointerId, p);
+      if (this.ptrs.size >= 2 && pinch) {
+        const [a, b] = [...this.ptrs.values()];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+        let ns = pinch.s * d / pinch.d;
+        const mn = this.minS(), mxs = this.maxS();
+        if (ns < mn) ns = mn - (mn - ns) * 0.3; if (ns > mxs) ns = mxs + (ns - mxs) * 0.3;
+        this.tx = mx - (pinch.mx - pinch.tx) * (ns / pinch.s);
+        this.ty = my - (pinch.my - pinch.ty) * (ns / pinch.s);
+        this.s = ns;
+        this.apply();
+        return;
+      }
+      if (this.ptrs.size !== 1 || !last) return;
+      const dx = p.x - last.x, dy = p.y - last.y;
+      if (!moved && Math.hypot(p.x - start.x, p.y - start.y) > 6) {
+        moved = true;
+        this.onGesture && this.onGesture(this);
+      }
+      if (!moved) return;
+      const now = performance.now(), dt = Math.max(1, now - lastT);
+      vel = { x: 0.8 * dx / dt + 0.2 * vel.x, y: 0.8 * dy / dt + 0.2 * vel.y };
+      lastT = now;
+      raw.tx += dx; raw.ty += dy;
+      const b = this.bounds(this.s);
+      this.tx = this.rubber(raw.tx, b.minX, b.maxX);
+      this.ty = this.rubber(raw.ty, b.minY, b.maxY);
+      this.apply();
+      last = p;
+    });
+    const up = e => {
+      if (!this.ptrs.has(e.pointerId)) return;
+      const p = this.ptrs.get(e.pointerId);
+      this.ptrs.delete(e.pointerId);
+      if (pinch) {
+        if (this.ptrs.size < 2) { pinch = null; this.settle(); }
+        if (this.ptrs.size === 1) { last = [...this.ptrs.values()][0]; raw = { tx: this.tx, ty: this.ty }; }
+        return;
+      }
+      if (this.ptrs.size) return;
+      if (!moved) {
+        const now = performance.now();
+        const hit = downTarget && downTarget.closest && downTarget.closest('[data-tap]');
+        if (hit && this.onTap) { lastTap = 0; this.onTap(hit.dataset.tap, hit, this); return; }
+        if (now - lastTap < 300) { lastTap = 0; this.onGesture && this.onGesture(this); this.zoomAt(p.x, p.y, this.s * 2); }
+        else lastTap = now;
+        return;
+      }
+      if (performance.now() - lastT > 80) vel = { x: 0, y: 0 };
+      this.fling(vel);
+    };
+    el.addEventListener('pointerup', up);
+    el.addEventListener('pointercancel', up);
+    el.addEventListener('wheel', e => {
+      e.preventDefault();
+      this.onGesture && this.onGesture(this);
+      const p = pt(e);
+      if (e.ctrlKey || Math.abs(e.deltaY) > Math.abs(e.deltaX) && !e.shiftKey && e.deltaMode === 0 && Math.abs(e.deltaY) >= 40 || e.deltaMode === 1) {
+        const k = Math.exp(-e.deltaY * (e.ctrlKey ? 0.012 : 0.0025));
+        this.stop();
+        const ns = clamp(this.s * k, this.minS(), this.maxS());
+        this.tx = p.x - (p.x - this.tx) * (ns / this.s);
+        this.ty = p.y - (p.y - this.ty) * (ns / this.s);
+        this.s = ns;
+        const f = this.fitted(this.s, this.tx, this.ty);
+        this.tx = f.tx; this.ty = f.ty; this.apply();
+      } else {
+        // trackpad two-finger pan
+        const f = this.fitted(this.s, this.tx - e.deltaX, this.ty - e.deltaY);
+        this.tx = f.tx; this.ty = f.ty; this.apply();
+      }
+    }, { passive: false });
+  }
+  fling(v) {
+    let vx = v.x * 16, vy = v.y * 16;
+    const step = () => {
+      vx *= 0.93; vy *= 0.93;
+      this.tx += vx; this.ty += vy;
+      const b = this.bounds(this.s);
+      const out = this.tx > b.maxX || this.tx < b.minX || this.ty > b.maxY || this.ty < b.minY;
+      this.apply();
+      if (out || Math.hypot(vx, vy) < 0.3) { this.raf = 0; this.settle(); return; }
+      this.raf = requestAnimationFrame(step);
+    };
+    this.stop();
+    this.raf = requestAnimationFrame(step);
+  }
+}
+
+/* ---------- data ---------- */
+const ATT = {
+  eye: ['London Eye', 'assets/a-eye.png'], tower: ['Tower of London', 'assets/a-tower.png'], stpauls: ["St Paul's Cathedral", 'assets/a-stpauls.png'],
+  tussauds: ['Madame Tussauds', 'assets/a-tussauds.png'], dungeon: ['London Dungeon', 'assets/a-dungeon.png'], sealife: ['London SEA LIFE Centre', 'assets/a-sealife.png'],
+  kensington: ['Kensington Palace', 'assets/a-kensington.png'], cable: ['London Cable Car & UberBoat', 'assets/a-cable.png'], shrek: ["Shrek's Adventure!", 'assets/a-shrek.png'],
+  merlin: ['Merlin Pass', 'assets/a-merlin.png']
+};
+const BLUE_STOPS = [
+  [18, 'Grosvenor Gardens', 'outside Alchemist Bar, Stop Z6, SW1W 0EB'],
+  [19, 'Buckingham Palace', "Outside The King's Gallery, SW1A 1AA"],
+  [20, 'Horseferry Road', 'Outside 56 Victoria Pharmacy, Stop NH, SW1P 2AF'],
+  [21, 'Lambeth Palace', 'In front of Riverside Café, Lambeth Palace, SE1 7SG'],
+  [22, 'Westminster Bridge', "Outside St. Thomas' Hospital, Westminster Bridge Road, SE1 7EP"]
+];
+const RED_STOPS = [
+  [26, 'Trafalgar Square', "Nelson's Column & National Gallery"],
+  [27, 'Whitehall', 'Horse Guards Parade'],
+  [28, 'Downing Street', 'Whitehall, SW1A'],
+  [29, 'Parliament Square', 'Big Ben & Parliament'],
+  [30, 'Westminster Bridge', 'Westminster Bridge Road, SE1'],
+  [31, 'London Eye', 'York Road, South Bank']
+];
+const BUSES = [['Bus 11', 11], ['Bus 09', 18], ['Bus 09', 18], ['Bus 09', 18]];
+
+/* ---------- templates ---------- */
+const att = (k, fixed) => `<div class="att${fixed ? ' fixed' : ''}" data-act="attraction" data-id="${k}"><div class="ph"><img src="${ATT[k][1]}" alt=""></div><span>${ATT[k][0] === 'London Eye' ? 'London<br>Eye' : ATT[k][0]}</span></div>`;
+const grid = (rows) => `<div class="grid">${rows.map(r => `<div class="grow">${r.map(k => att(k, r.length < 3)).join('')}</div>`).join('')}</div>`;
+const stopRow = ([n, name, addr]) => `<div class="row" data-act="stop" data-n="${n}"><div class="sbadge">${n}</div><div class="txt"><p class="n">${name}</p><p class="a">${addr}</p></div></div>`;
+const busRow = ([bus, m], i, route = 'Blue Route') => `<div class="row busrow" data-act="press"><div class="busico">${ICON.bus('#164291')}</div><div class="txt"><p class="n">${bus} · ${route}</p><p class="a">Towards Trafalgar Square</p></div><p class="mins" data-min="${i}">${m} min</p></div>`;
+const routeCards = () => `<div class="hscroll">
+  <div class="rcard" data-act="route" data-route="red"><div class="top"><p class="t16 sb">Red Route</p><p class="t14 sec">6 stops · every 10 min </p></div><p class="t14 sec" style="white-space:nowrap">Buckingham Palace · Trafalghar Sq</p></div>
+  <div class="rcard" data-act="route" data-route="blue"><div class="top"><p class="t16 sb">Blue Route · Classic London</p></div><p class="t14 sec" style="white-space:nowrap">London Eye · Trafalghar Sq</p></div>
+</div>`;
+const homeGrid = () => grid([['eye', 'tower', 'stpauls'], ['tussauds', 'dungeon', 'sealife'], ['kensington', 'cable', 'shrek'], ['merlin']]);
+
+const T = {
+  home: () => `<div class="col g24" style="margin-top:20px">
+    <div class="card">
+      <div class="col g8">
+        <div class="locrow">${ICON.loc}<p class="t14 sb" style="width:305px">In Mumbai · Viewing London</p></div>
+        <div class="divider"></div>
+        <div class="col" style="gap:4px"><p class="t18 b">Pick a route to explore</p><p class="t14 r">Buses run 9:00 - 18:00 London</p></div>
+      </div>
+      ${routeCards()}
+    </div>
+    <div class="col g12"><p class="h-sec">Nearby Attractions</p>${homeGrid()}</div>
+  </div>`,
+  nearest: () => `<div class="col g24" style="margin-top:20px">
+    <div class="card">
+      <div class="col g12">
+        <div class="nearbox" data-act="directions"><div class="l">${ICON.loc}<p><span class="t14 sb">London · Nearest Stop:</span> <span class="sb" style="font-size:18px;line-height:29px">Westminster</span></p></div>${ICON.arrow('white')}</div>
+        <div class="col" style="gap:4px"><p class="t18 b">Pick a route to explore</p><p class="t14 r">Buses run 9:00 - 18:00 London</p></div>
+      </div>
+      ${routeCards()}
+    </div>
+    <div class="col g12"><p class="h-sec">Nearby Attractions</p>${homeGrid()}</div>
+  </div>`,
+  route: (red) => `<div class="col g32" style="margin-top:32px">
+    <div class="card">
+      <div class="col" style="gap:4px">
+        <p class="t18 b">${red ? 'Red route' : 'Blue route'} <span class="r">·</span> ${red ? 'Classic London' : 'River Route'}</p>
+        <p class="t14"><span class="r">Every 10 min </span><span class="b">· 9:00 - 18:00 London · 6 stops </span></p>
+      </div>
+      <div class="col g8">
+        <p class="t14 sb">Starts at</p>
+        <div class="startrow" data-act="stop" data-n="1"><div class="l"><div class="badge${red ? ' red' : ''}">Stop 1</div><div class="col" style="justify-content:center"><p class="t16 sb">${red ? 'Buckingham Palace' : 'Westminster'}</p><p class="t14 sec">${red ? "Outside The King's Gallery" : 'Big Ben &amp; Parliment'}</p></div></div>${ICON.arrow('#164291')}</div>
+      </div>
+    </div>
+    <div class="col g8">
+      <div class="segm" id="segm"><span class="pill" style="left:2px"></span><span class="ghost" style="left:calc(50% + 4px)"></span><button class="on" data-act="seg" data-v="stops">All Stops</button><button data-act="seg" data-v="buses">All Buses</button></div>
+      <div class="col g12" id="segList">${(red ? RED_STOPS : BLUE_STOPS).map(stopRow).join('')}</div>
+    </div>
+    <div class="col g12"><p class="h-sec" style="padding:0 16px">Along the ${red ? 'Red' : 'Blue'} Route</p>${red ? grid([['eye', 'tower', 'stpauls'], ['tussauds', 'sealife']]) : grid([['eye', 'tower', 'tussauds'], ['sealife', 'kensington']])}</div>
+  </div>`,
+  attraction: () => `<div class="col g32" style="margin-top:20px">
+    <div class="card">
+      <div class="col g8">
+        <div class="col" style="gap:4px"><p class="t18 b">London Eye</p><p style="letter-spacing:.1px"><span class="t14 r">Attraction</span><span class="t12"> · </span><span class="t14 r">Blue route stop </span><span class="t12">· </span><span class="t14 r">2</span></p></div>
+        <div class="photos"><img src="assets/eye-1.jpg" alt=""><img src="assets/eye-2.jpg" alt=""><img src="assets/eye-3.jpg" alt=""></div>
+      </div>
+      <p class="lead">The London Eye, originally the Millennium Wheel, is a cantilevered observation wheel on the South Bank of the River Thames in London. It is the world's tallest cantilevered observation wheel, and the most popular paid tourist attraction in the United Kingdom with more than three million visitors annually.</p>
+    </div>
+    <div class="col g8"><p class="h-sec">Nearest Stop</p>${stopRow([22, 'Westminster Bridge', 'Big Ben &amp; Parliment'])}</div>
+    <div class="col g12"><p class="h-sec">Nearby Attractions</p>${grid([['dungeon', 'sealife', 'shrek']])}</div>
+  </div>`,
+  stop: () => `<div class="col g32" style="margin-top:40px">
+    <div class="card">
+      <div class="col g8">
+        <p class="t18 b">Stop 2 · Westminster</p>
+        <div class="photos"><img src="assets/west-1.jpg" alt=""><img src="assets/west-2.jpg" alt=""><img src="assets/west-3.jpg" alt=""></div>
+      </div>
+      <p class="lead">Westminster is the bustling government area near Buckingham Palace. Tourists head to Trafalgar Square’s monuments and to see the changing of the guards at Horse Guards Parade while politicians mingle in Whitehall’s pubs.</p>
+    </div>
+    <div class="col g8"><p class="h-sec">Upcoming buses</p><div class="col g12">${BUSES.map((b, i) => busRow(b, i)).join('')}</div></div>
+    <div class="col g12"><p class="h-sec">Nearby Attractions</p>${grid([['sealife', 'shrek', 'eye']])}</div>
+  </div>`
+};
+// fix: single-item rows (Merlin / last row of route grids) use fixed width like design
+// (handled by grid(): rows with fewer than 3 items get fixed-width cells)
+
+/* ---------- maps ---------- */
+const sheetTop = () => sheet.top;
+const headerBottom = () => app.compact ? 112 : 117;
+const vb = () => sheetTop() + 16;
+
+const KA = 722.348 / 2700, KB = 717 / 2700;
+const maps = {};
+maps.all = new MapView({ src: 'assets/map-all.jpg', w: 722.348, h: 390, x: -69, y: 46, minRel: 0.75, maxRel: 4,
+  markerScale: s => clamp(s, 1, 2) / s, viewTop: headerBottom, viewBottom: vb });
+maps.blue = new MapView({ src: 'assets/map-blue.jpg', w: 717, h: 387, x: -319, y: 84, maxRel: 4, viewTop: headerBottom, viewBottom: vb,
+  markerScale: s => 1 / s });
+maps.attraction = new MapView({ src: 'assets/map-attraction.jpg', w: 860, h: 464, x: -221, y: 41, maxRel: 3, viewTop: headerBottom, viewBottom: vb });
+maps.stop = new MapView({ src: 'assets/map-stop.jpg', w: 1186, h: 641, x: -725, y: -135, maxRel: 2.5, viewTop: headerBottom, viewBottom: vb });
+maps.nearest = new MapView({ src: 'assets/map-nearest.jpg', w: 612, h: 330, x: -126, y: 108, maxRel: 3.5, viewTop: headerBottom, viewBottom: vb });
+
+// --- all routes overlays (positions from the Figma "Container" layer) ---
+const stopMk = (n, red) => `<div class="mk mk-stop" data-tap="stop:${n}" style="--c:${red ? '#e30910' : '#164291'};--d:${red ? '#9e1525' : '#0d2755'}"><i>${n}</i></div>`;
+[[399.13, 278.82, 7, 1], [334.91, 251.99, 6, 1], [247.11, 212.97, 5, 1], [168.26, 230.04, 4, 1], [384.49, 204.03, 8, 1],
+ [116.24, 168.26, 1, 0], [158.51, 203.22, 2, 0], [211.35, 243.86, 3, 0], [240.61, 290.2, 4, 0], [381.24, 308.08, 5, 0]]
+  .forEach(([x, y, n, r]) => maps.all.add(stopMk(n, r), x, y));
+const busMk = (c, route) => `<div class="mk mk-bus" data-tap="bus:${route}" style="background:${c}">${ICON.bus('#fff', 19.5)}</div>`;
+maps.all.add(busMk('#164291', 'blue'), 137.37, 275.57);
+maps.all.add(busMk('#e30910', 'red'), 344.66, 331.66);
+maps.all.add(busMk('#164291', 'blue'), 291.82, 208.91);
+maps.all.add(`<div class="mk mk-me">${ICON.me}</div>`, 169.89, 254.44);
+maps.all.add(`<div class="hot" data-tap="attraction" style="width:22px;height:22px"></div>`, 1435 * KA, 862 * KA);
+maps.all.add(`<div class="hot" data-tap="stop:bigben" style="width:18px;height:18px"></div>`, 1290 * KA, 1118 * KA);
+// --- blue route: the numbered squares are baked into the artwork; add tap targets ---
+[[14, 645, 131], [13, 551, 222], [12, 353, 480], [11, 256, 493], [10, 183, 530], [9, 296, 842], [6, 738, 989], [8, 404, 1167], [7, 606, 1116],
+ [16, 926, 383], [2, 1550, 497], [3, 1405, 607], [4, 1199, 768], [48, 910, 806], [19, 1392, 980], [18, 1293, 1166], [17, 1304, 1235],
+ [25, 1913, 562], [24, 2032, 693], [23, 2032, 833], [22, 2412, 937], [20, 2020, 1235], [21, 2304, 1204]]
+  .forEach(([n, x, y]) => maps.blue.add(`<div class="hot" data-tap="stop:${n}" style="width:30px;height:30px;border-radius:6px"></div>`, x * KB, y * KB));
+maps.blue.add(`<div class="hot" data-tap="attraction" style="width:34px;height:34px"></div>`, 2420 * KB, 600 * KB);
+// --- attraction: the London Eye pin is baked in ---
+maps.attraction.add(`<div class="hot" data-tap="pulse" style="width:70px;height:70px"></div>`, 428, 224);
+maps.attraction.add(`<div class="hot" data-tap="stop:22" style="width:40px;height:40px"></div>`, 405, 351);
+// --- stop: the Westminster pin is baked in; tapping it shows walking time ---
+maps.stop.add(`<div class="hot" data-tap="directions" style="width:52px;height:52px"></div>`, 932, 414);
+// --- nearest stop: "2 / Start here" baked in; live location dot from Figma ---
+maps.nearest.add(`<div class="mk mk-me" style="width:34px;height:34px">${ICON.me}</div>`, 238, 165);
+maps.nearest.add(`<div class="hot" data-tap="directions" style="width:80px;height:72px;border-radius:24px"></div>`, 271, 230);
+
+/* ---------- sheet controller ---------- */
+const sheetEl = $('#sheet'), scrollEl = $('#sheetScroll'), contentEl = $('#content');
+const sheet = {
+  top: 412, snaps: { peek: 764, def: 412, full: 214 }, state: 'def',
+  set(top, anim = true) {
+    this.top = top;
+    sheetEl.classList.toggle('anim', anim);
+    sheetEl.style.transform = `translate3d(0,${top}px,0)`;
+    scrollEl.style.bottom = Math.max(0, top) + 'px';
+    scrollEl.classList.toggle('can', this.state === 'full');
+    if (this.state !== 'full') scrollEl.scrollTop = 0;
+  },
+  snap(state, anim = true) {
+    this.state = state;
+    this.set(this.snaps[state], anim);
+    app.onSheet(state);
+  }
+};
+// drag + manual scrolling for the sheet (and horizontal carousels inside it)
+(() => {
+  let s = null;
+  sheetEl.addEventListener('pointerdown', e => {
+    if (e.button > 0 || e.target.closest('.sheet-x')) return;
+    const p = pt(e);
+    s = { id: e.pointerId, y0: p.y, x0: p.x, top0: sheet.top, st0: scrollEl.scrollTop, axis: null, h: e.target.closest('.hscroll,.photos'), sl0: 0, last: p.y, t: performance.now(), v: 0, mode: null };
+    if (s.h) s.sl0 = s.h.scrollLeft;
+  });
+  sheetEl.addEventListener('pointermove', e => {
+    if (!s || e.pointerId !== s.id) return;
+    const p = pt(e), dx = p.x - s.x0, dy = p.y - s.y0;
+    if (!s.axis) {
+      if (Math.hypot(dx, dy) < 6) return;
+      s.axis = Math.abs(dx) > Math.abs(dy) && s.h ? 'x' : 'y';
+      sheetEl.setPointerCapture(e.pointerId);
+      sheetEl.classList.remove('anim');
+      app.dragged = true;
+    }
+    if (s.axis === 'x') { s.h.scrollLeft = s.sl0 - dx; return; }
+    const now = performance.now();
+    s.v = (p.y - s.last) / Math.max(1, now - s.t); s.last = p.y; s.t = now;
+    const canScroll = sheet.state === 'full';
+    if (canScroll && (s.mode === 'scroll' || (s.mode == null && (dy < 0 || scrollEl.scrollTop > 0)))) {
+      s.mode = 'scroll';
+      scrollEl.scrollTop = s.st0 - dy;
+      if (scrollEl.scrollTop <= 0 && dy > 0 && s.st0 - dy < 0) { s.mode = 'sheet'; s.y0 = p.y; s.top0 = sheet.top; }
+      return;
+    }
+    s.mode = 'sheet';
+    let top = s.top0 + (p.y - s.y0);
+    const lo = sheet.snaps.full, hi = sheet.snaps.peek;
+    if (top < lo) top = lo - (lo - top) * 0.25;
+    if (top > hi) top = hi + (top - hi) * 0.25;
+    sheet.top = top;
+    sheetEl.style.transform = `translate3d(0,${top}px,0)`;
+  });
+  const end = e => {
+    if (!s || e.pointerId !== s.id) return;
+    const st = s; s = null;
+    if (!st.axis) { // tap: handle toggles, lowered sheet comes back up
+      if (sheet.state === 'peek') { app.dragged = true; sheet.snap('def'); }
+      else if (pt(e).y - sheet.top < 40) app.toggleSheet();
+      return;
+    }
+    if (st.axis === 'x') return;
+    if (st.mode === 'scroll') { momentum(st.v); return; }
+    const v = st.v, t = sheet.top, sn = sheet.snaps;
+    let target;
+    if (v < -0.5) target = t < sn.def ? 'full' : (t < sn.peek ? (t > sn.def ? 'def' : 'full') : 'def');
+    else if (v > 0.5) target = t > sn.def ? 'peek' : 'def';
+    else target = Object.entries(sn).sort((a, b) => Math.abs(a[1] - t) - Math.abs(b[1] - t))[0][0];
+    if (!app.allowPeek && target === 'peek') target = 'def';
+    sheet.snap(target);
+  };
+  sheetEl.addEventListener('pointerup', end);
+  sheetEl.addEventListener('pointercancel', end);
+  // suppress click after drag
+  sheetEl.addEventListener('click', e => { if (app.dragged) { e.stopPropagation(); e.preventDefault(); } app.dragged = false; }, true);
+  function momentum(v) {
+    let vv = -v * 16;
+    const step = () => { vv *= 0.94; scrollEl.scrollTop += vv; if (Math.abs(vv) > 0.4) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+  sheetEl.addEventListener('wheel', e => {
+    if (sheet.state !== 'full') { e.preventDefault(); if (e.deltaY > 8) sheet.snap('full'); else if (e.deltaY < -8 && sheet.state === 'def' && app.allowPeek) sheet.snap('peek'); else if (e.deltaY < -8 && sheet.state === 'peek') {} }
+    else if (scrollEl.scrollTop <= 0 && e.deltaY < -20) { e.preventDefault(); sheet.snap('def'); }
+  }, { passive: false });
+})();
+
+/* ---------- app ---------- */
+const hdr = $('#hdr'), nav = $('#nav');
+const app = {
+  screen: 'home', loc: 'remote', compact: false, allowPeek: true, history: [], dragged: false, map: null,
+  setCompact(c) { this.compact = c; hdr.classList.toggle('compact', c); },
+  setChip(r) { document.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c.dataset.route === r)); },
+  showMap(name, mode = 'fade') {
+    const next = maps[name];
+    if (this.map === next) { next.animateTo(1, next.x, next.y, 450); return next; }
+    const prev = this.map;
+    next.reset();
+    next.el.classList.remove('leave');
+    next.el.classList.add('enter');
+    next.el.style.zIndex = 2;
+    requestAnimationFrame(() => { next.el.classList.add('on'); next.el.classList.remove('enter'); });
+    if (prev) {
+      prev.el.style.zIndex = 1;
+      prev.el.classList.remove('on');
+      if (mode === 'zoom') prev.el.classList.add('leave');
+      setTimeout(() => prev.el.classList.remove('leave'), 600);
+    }
+    this.map = next;
+    return next;
+  },
+  render(html, extra) {
+    contentEl.classList.add('swap');
+    setTimeout(() => {
+      contentEl.innerHTML = html;
+      scrollEl.scrollTop = 0;
+      extra && extra();
+      requestAnimationFrame(() => contentEl.classList.remove('swap'));
+    }, contentEl.innerHTML ? 160 : 0);
+  },
+  go(screen, opts = {}) {
+    if (!opts.back && this.screen !== screen && screen !== 'directions') this.history.push(this.screen);
+    if (screen === 'home' && this.loc === 'nearby') screen = 'nearest';
+    this.screen = screen;
+    $('#sheetX').hidden = screen !== 'stop';
+    scrollEl.style.paddingTop = screen === 'stop' ? '14px' : '20px';
+    const full = { home: 'all', nearest: 'all', red: 'red', blue: 'blue', attraction: 'blue', stop: 'blue' };
+    this.setChip(full[screen]);
+    this.setCompact(screen === 'attraction' || screen === 'stop');
+    this.allowPeek = true;
+    sheet.snaps.def = screen === 'stop' ? 489 : 412;
+    nav.classList.remove('hide');
+    const mode = opts.zoom ? 'zoom' : 'fade';
+    if (screen === 'home') { this.showMap('all', mode); this.render(T.home()); }
+    if (screen === 'nearest') { this.showMap('nearest', mode); this.render(T.nearest()); }
+    if (screen === 'red') {
+      const m = this.showMap('all', mode);
+      this.render(T.route(true));
+      setTimeout(() => m.focus(284, 240, 1.5, 196.5, 272, 650), 60);
+    }
+    if (screen === 'blue') { this.showMap('blue', mode); this.render(T.route(false)); }
+    if (screen === 'attraction') { this.showMap('attraction', mode); this.render(T.attraction()); }
+    if (screen === 'stop') { this.showMap('stop', mode); this.render(T.stop()); }
+    sheet.snap(opts.sheet || 'def');
+  },
+  back() { const p = this.history.pop() || 'home'; this.go(p === 'nearest' ? 'home' : p, { back: true }); },
+  toggleSheet() { sheet.snap(sheet.state === 'def' ? 'full' : 'def'); },
+  onSheet(state) {
+    // immersive "Zoom in" state: logo row hides when the sheet is lowered
+    const compactScreen = this.screen === 'attraction' || this.screen === 'stop';
+    this.setCompact(compactScreen || state === 'peek');
+    nav.classList.toggle('hide', state === 'peek' && !compactScreen);
+    const m = this.map;
+    if (m) requestAnimationFrame(() => { if (!m.raf && !m.ptrs.size) m.settle(420); });
+  },
+  // user starts moving the map -> lower the sheet out of the way (as in "Zoom in")
+  onMapGesture(m) {
+    if (sheet.state === 'full') { sheet.snap('def'); return; }
+    if (sheet.state !== 'def' || !this.allowPeek) return;
+    if (this.screen !== 'home' && this.screen !== 'nearest' && this.screen !== 'red') return;
+    sheet.snap('peek');
+  },
+  // zoom into a point on the current map, then switch screen
+  diveTo(screen, m, bx, by) {
+    m.focus(bx, by, Math.min(m.s * 2.2, m.maxS()), W / 2, 300, 380, () => this.go(screen, { zoom: true }));
+  },
+  directions() {
+    $('#dir').classList.add('on');
+    nav.classList.add('hide');
+    walk.start();
+  },
+  exitDirections() { $('#dir').classList.remove('on'); nav.classList.remove('hide'); walk.stop(); }
+};
+Object.values(maps).forEach(m => {
+  m.onGesture = mm => app.onMapGesture(mm);
+  m.onTap = (tap, el, mm) => {
+    const [kind, arg] = tap.split(':');
+    el.classList.add('pop', 'flash');
+    setTimeout(() => el.classList.remove('pop', 'flash'), 300);
+    const bx = parseFloat(el.style.left), by = parseFloat(el.style.top);
+    if (kind === 'stop') app.diveTo('stop', mm, bx, by);
+    else if (kind === 'bus') app.go(arg);
+    else if (kind === 'attraction') app.diveTo('attraction', mm, bx, by);
+    else if (kind === 'directions') setTimeout(() => app.directions(), 150);
+    else if (kind === 'pulse') mm.zoomAt(mm.tx + bx * mm.s, mm.ty + by * mm.s, mm.s * 1.6);
+  };
+});
+
+/* ---------- click delegation ---------- */
+screen.addEventListener('click', e => {
+  const t = e.target.closest('[data-act],[data-route]');
+  if (!t) return;
+  const act = t.dataset.act;
+  if (t.classList.contains('chip')) {
+    const r = t.dataset.route;
+    app.go(r === 'all' ? 'home' : r);
+    return;
+  }
+  if (act === 'press') { t.classList.add('press'); setTimeout(() => t.classList.remove('press'), 160); }
+  if (act === 'route') app.go(t.dataset.route);
+  if (act === 'attraction') app.go('attraction');
+  if (act === 'stop') app.go('stop');
+  if (act === 'directions') app.directions();
+  if (act === 'track') { app.history = []; app.go('home'); }
+  if (act === 'seg') {
+    const v = t.dataset.v, seg = t.parentElement;
+    seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === t));
+    seg.querySelector('.pill').style.left = v === 'stops' ? '2px' : 'calc(50% + 4px)';
+    seg.querySelector('.ghost').style.left = v === 'stops' ? 'calc(50% + 4px)' : '2px';
+    const red = app.screen === 'red';
+    const list = $('#segList');
+    list.style.opacity = 0;
+    setTimeout(() => {
+      list.innerHTML = v === 'stops' ? (red ? RED_STOPS : BLUE_STOPS).map(stopRow).join('') : BUSES.map((b, i) => busRow(b, i, red ? 'Red Route' : 'Blue Route')).join('');
+      list.style.transition = 'opacity .25s'; list.style.opacity = 1;
+    }, 150);
+  }
+});
+$('#sheetX').addEventListener('click', () => app.back());
+
+/* ---------- live minutes on bus rows ---------- */
+setInterval(() => {
+  BUSES.forEach(b => { b[1] = b[1] > 1 ? b[1] - 1 : 20; });
+  document.querySelectorAll('.mins').forEach(el => {
+    const i = +el.dataset.min; el.textContent = BUSES[i][1] + ' min';
+    el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick');
+  });
+}, 20000);
+
+/* ---------- directions ---------- */
+const dmap = new MapView({ parent: $('#dmap'), src: 'assets/map-directions.jpg', w: 393, h: 806, x: 0, y: 0, minRel: 1, maxRel: 3,
+  viewTop: () => 0, viewBottom: () => 806, markerScale: s => 1 / s });
+dmap.el.classList.add('on');
+dmap.inner.insertAdjacentHTML('beforeend', `
+  <svg style="position:absolute;left:83.5px;top:242.5px;overflow:visible" width="187" height="352" viewBox="0 0 187 352" fill="none"><path id="route" d="M2.5 2.5V131.589C2.5 144.292 12.7974 154.589 25.5 154.589H85.2273H117.88C130.583 154.589 140.88 164.887 140.88 177.589V310.734C140.88 318.894 145.203 326.442 152.24 330.571L184.5 349.5" stroke="#1856FF" stroke-width="5" stroke-linecap="round"/></svg>`);
+const dest = dmap.add(`<svg class="dest" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#fff" stroke="#164291" stroke-width="2"/><circle cx="16" cy="16" r="8" fill="#164291"/></svg>`, 86, 239);
+const walker = dmap.add(`<div class="walker"><svg width="66" height="66" viewBox="0 0 66 66" fill="none" style="position:relative"><g><rect x="4.25586" y="46.0151" width="44.358" height="44.358" rx="22.179" transform="rotate(-70.2857 4.25586 46.0151)" fill="white"/><path d="M50.3592 38.6161C46.9159 48.2254 36.3345 53.2239 26.7253 49.7806C17.116 46.3373 12.1175 35.756 15.5609 26.1467C19.0042 16.5375 29.5854 11.5389 39.1947 14.9823C48.8039 18.4256 53.8025 29.0069 50.3592 38.6161ZM28.9727 40.7693L34.0765 34.7448L41.975 34.6301L28.4942 22.9279L28.9727 40.7693Z" fill="#164291"/></g></svg></div>`, 271.4, 597.4);
+dmap.onGesture = () => { walk.follow = false; };
+const route = $('#route');
+const L = route.getTotalLength();
+route.style.strokeDasharray = `${L} ${L}`;
+const walk = {
+  p: 0, raf: 0, follow: true,
+  start() { this.p = 0; this.follow = true; dmap.reset(); this.draw(); cancelAnimationFrame(this.raf); this.t0 = performance.now() + 900; this.tick(); },
+  stop() { cancelAnimationFrame(this.raf); },
+  tick() {
+    const now = performance.now();
+    this.p = clamp((now - this.t0) / 45000, 0, 1);
+    this.draw();
+    if (this.p < 1) this.raf = requestAnimationFrame(() => this.tick());
+  },
+  draw() {
+    const len = L * (1 - this.p);
+    const q = route.getPointAtLength(len);
+    walker.style.left = 83.5 + q.x + 'px'; walker.style.top = 242.5 + q.y + 'px';
+    route.style.strokeDashoffset = 0;
+    route.style.strokeDasharray = `${len} ${L}`;
+    const left = 1 - this.p;
+    $('#dMin').textContent = this.p >= 1 ? 'Arrived' : Math.max(1, Math.ceil(5 * left)) + ' min';
+    $('#dMeta').textContent = this.p >= 1 ? 'Westminster · Stop 2' : `${Math.max(1, Math.ceil(4 * left))} min walk · ${Math.max(10, Math.round(300 * left / 10) * 10)} m ·  5:15 PM`;
+    if (this.follow && dmap.s > 1.01) {
+      const wx = 83.5 + q.x, wy = 242.5 + q.y;
+      const f = dmap.fitted(dmap.s, W / 2 - wx * dmap.s, 420 - wy * dmap.s);
+      dmap.tx = f.tx; dmap.ty = f.ty; dmap.apply();
+    }
+  }
+};
+$('#dExit').addEventListener('click', () => app.exitDirections());
+$('#fabVol').addEventListener('click', e => e.currentTarget.classList.toggle('muted'));
+$('#fabLoc').addEventListener('click', () => {
+  walk.follow = true;
+  const q = route.getPointAtLength(L * (1 - walk.p));
+  dmap.focus(83.5 + q.x, 242.5 + q.y, Math.max(dmap.s, 1.8), W / 2, 420, 500);
+});
+
+/* ---------- panel ---------- */
+$('#locSeg').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  app.loc = b.dataset.loc;
+  document.querySelectorAll('#locSeg button').forEach(x => x.classList.toggle('on', x === b));
+  if (app.screen === 'home' || app.screen === 'nearest') app.go('home', { back: true });
+});
+$('#jump').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const j = b.dataset.jump;
+  app.exitDirections();
+  app.history = [];
+  if (j === 'home') { setLoc('remote'); app.go('home', { back: true }); }
+  if (j === 'zoom') { setLoc('remote'); app.go('home', { back: true }); setTimeout(() => { sheet.snap('peek'); maps.all.animateTo(1.9539, -146, 46, 500); }, 250); }
+  if (j === 'drawer') { setLoc('remote'); app.go('home', { back: true, sheet: 'full' }); }
+  if (j === 'blue') app.go('blue', { back: true });
+  if (j === 'attraction') { app.history = ['blue']; app.go('attraction', { back: true }); }
+  if (j === 'nearest') { setLoc('nearby'); app.go('home', { back: true }); }
+  if (j === 'stop') { app.history = ['blue']; app.go('stop', { back: true }); }
+  if (j === 'directions') { setLoc('nearby'); app.go('home', { back: true }); setTimeout(() => app.directions(), 300); }
+});
+function setLoc(l) { app.loc = l; document.querySelectorAll('#locSeg button').forEach(x => x.classList.toggle('on', x.dataset.loc === l)); }
+
+/* ---------- boot ---------- */
+sheet.set(412, false);
+app.go('home', { back: true });
+setTimeout(() => { $('#hint').classList.add('on'); setTimeout(() => $('#hint').classList.remove('on'), 2600); }, 900);
+})();
+</script>
+</body>
+</html>
