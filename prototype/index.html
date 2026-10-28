@@ -243,6 +243,7 @@ body.bare .screen{border-radius:0}
       <button data-jump="stop">Stop selected</button>
       <button data-jump="directions">Directions</button>
       <button data-jump="search">Search</button>
+      <button data-jump="notif">Notifications</button>
       <button data-jump="allbuses">All Buses</button>
       <button data-jump="bus">Bus clicked</button>
     </div>
@@ -266,7 +267,7 @@ body.bare .screen{border-radius:0}
         <div class="brow">
           <button class="cbtn" style="cursor:default" aria-label="Menu"><svg class="flipx" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 12H14" stroke="#141B34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 5H20" stroke="#141B34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 19H20" stroke="#141B34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <img class="logo" src="assets/logo.png" alt="The Original Tour">
-          <button class="cbtn" style="cursor:default" aria-label="Notifications"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15.5 18C15.5 19.933 13.933 21.5 12 21.5C10.067 21.5 8.5 19.933 8.5 18" stroke="#002B76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.2311 18H4.76887C3.79195 18 3 17.208 3 16.2311C3 15.762 3.18636 15.3121 3.51809 14.9803L4.12132 14.3771C4.68393 13.8145 5 13.0514 5 12.2558V9.5C5 5.63401 8.13401 2.5 12 2.5C15.866 2.5 19 5.634 19 9.5V12.2558C19 13.0514 19.3161 13.8145 19.8787 14.3771L20.4819 14.9803C20.8136 15.3121 21 15.762 21 16.2311C21 17.208 20.208 18 19.2311 18Z" stroke="#002B76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="cbtn" id="bell" aria-label="Notifications"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15.5 18C15.5 19.933 13.933 21.5 12 21.5C10.067 21.5 8.5 19.933 8.5 18" stroke="#002B76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.2311 18H4.76887C3.79195 18 3 17.208 3 16.2311C3 15.762 3.18636 15.3121 3.51809 14.9803L4.12132 14.3771C4.68393 13.8145 5 13.0514 5 12.2558V9.5C5 5.63401 8.13401 2.5 12 2.5C15.866 2.5 19 5.634 19 9.5V12.2558C19 13.0514 19.3161 13.8145 19.8787 14.3771L20.4819 14.9803C20.8136 15.3121 21 15.762 21 16.2311C21 17.208 20.208 18 19.2311 18Z" stroke="#002B76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
       </div>
       <div class="chips" id="chips">
@@ -321,6 +322,11 @@ body.bare .screen{border-radius:0}
       <div class="hs" data-s="fill" id="hsChip" style="left:24px;top:280px;width:128px;height:38px;border-radius:19px"></div>
       <div class="hs" data-s="clear" id="hsClear" style="left:322px;top:150px;width:40px;height:42px;display:none"></div>
       <div class="hs" data-s="stop" id="hsStop" style="left:24px;top:372px;width:345px;height:80px;display:none"></div>
+    </div>
+    <div class="srch" id="notif">
+      <img src="assets/notifications.jpg" alt="Notifications">
+      <div class="hs" data-n="back" style="left:20px;top:56px;width:44px;height:44px;border-radius:50%"></div>
+      <div class="hs" data-n="blue" style="left:16px;top:516px;width:361px;height:104px"></div>
     </div>
     <div class="hint" id="hint">Pinch, scroll or double-tap to zoom</div>
   </div></div></div>
@@ -956,7 +962,13 @@ $('#recenter').addEventListener('click', () => {
   if (sheet.state === 'peek') sheet.snap('def');
   m.animateTo(1, m.x, m.y, 500);
 });
-const srch = $('#srch');
+const srch = $('#srch'), notif = $('#notif');
+$('#bell').addEventListener('click', () => notif.classList.add('on'));
+notif.addEventListener('click', e => {
+  const h = e.target.closest('[data-n]'); if (!h) return;
+  notif.classList.remove('on');
+  if (h.dataset.n === 'blue') app.go('blue');
+});
 function searchMode(filled) {
   $('#sFil').style.opacity = filled ? 1 : 0;
   $('#hsField').style.display = $('#hsChip').style.display = filled ? 'none' : '';
@@ -1045,7 +1057,8 @@ $('#jump').addEventListener('click', e => {
   if (j === 'attraction') { app.history = ['blue']; app.go('attraction', { back: true }); }
   if (j === 'nearest') { setLoc('nearby'); app.go('home', { back: true }); }
   if (j === 'stop') { app.history = ['blue']; app.go('stop', { back: true }); }
-  srch.classList.remove('on');
+  srch.classList.remove('on'); notif.classList.remove('on');
+  if (j === 'notif') { setLoc('remote'); app.go('home', { back: true }); setTimeout(() => notif.classList.add('on'), 200); }
   if (j === 'allbuses') { app.go('blue', { back: true }); setTimeout(() => document.querySelector('[data-v="buses"]').click(), 400); }
   if (j === 'bus') { app.history = ['blue']; app.go('bus', { back: true }); }
   if (j === 'search') { setLoc('remote'); app.go('home', { back: true }); searchMode(false); setTimeout(() => srch.classList.add('on'), 200); }
