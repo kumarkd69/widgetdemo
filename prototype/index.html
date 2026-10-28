@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#f8f5ef">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Original Tour Prototype</title>
 <style>
 @font-face{font-family:"ProtoSans";src:url(assets/fonts/figtree-latin-400-normal.woff2) format("woff2");font-weight:400}
@@ -15,13 +18,13 @@
   --ease:cubic-bezier(.22,.8,.24,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
+html,body{height:100%;overscroll-behavior:none;touch-action:none}
 body{background:#202124;font-family:var(--font);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 img{display:block;-webkit-user-drag:none;user-select:none}
 
 /* ---------- stage ---------- */
-.stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;gap:56px}
+.stage{position:fixed;inset:0;height:100dvh;display:flex;align-items:center;justify-content:center;gap:56px}
 .panel{width:280px;color:#e8e8e8;font-size:14px;line-height:1.5;flex:none}
 .panel h1{font-size:20px;font-weight:700;margin-bottom:4px;color:#fff}
 .panel .sub{color:#9aa0a6;margin-bottom:20px}
@@ -38,10 +41,11 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 .note{margin-top:16px;color:#80868b;font-size:12px}
 .device-wrap{flex:none;position:relative}
 .device{width:417px;height:876px;border-radius:66px;background:#0b0b0c;padding:12px;box-shadow:0 0 0 2px #3a3b3d,0 40px 80px rgba(0,0,0,.55);transform-origin:center center}
-.screen{position:relative;width:393px;height:852px;border-radius:54px;overflow:hidden;background:#f3e6dc;isolation:isolate;touch-action:none;user-select:none;-webkit-user-select:none}
+.screen{position:relative;width:393px;height:var(--H,852px);border-radius:54px;overflow:hidden;background:#f3e6dc;isolation:isolate;touch-action:none;user-select:none;-webkit-user-select:none}
 body.bare .stage{gap:0}
 body.bare .panel{display:none}
-body.bare .device{padding:0;border-radius:0;background:none;box-shadow:none;width:393px;height:852px}
+body.bare{background:#f8f5ef}
+body.bare .device{padding:0;border-radius:0;background:none;box-shadow:none;width:393px;height:var(--H,852px)}
 body.bare .screen{border-radius:0}
 
 /* ---------- maps ---------- */
@@ -87,7 +91,7 @@ body.bare .screen{border-radius:0}
 .hdr.compact .chips{transform:translateY(-69px)}
 
 /* ---------- sheet ---------- */
-.sheet{position:absolute;left:0;top:0;width:393px;height:852px;z-index:10;will-change:transform;background:var(--paper);border-radius:24px 24px 0 0;box-shadow:0 -4px 19.8px rgba(0,0,0,.1);touch-action:none}
+.sheet{position:absolute;left:0;top:0;width:393px;height:var(--H,852px);z-index:10;will-change:transform;background:var(--paper);border-radius:24px 24px 0 0;box-shadow:0 -4px 19.8px rgba(0,0,0,.1);touch-action:none}
 .sheet.anim{transition:transform .42s var(--ease)}
 .sheet-in{position:absolute;inset:0;background:#fff;border-radius:24px 24px 0 0;overflow:hidden}
 .sheet-scroll{position:absolute;left:0;right:0;top:0;bottom:0;overflow:hidden;padding:20px 16px 0}
@@ -187,7 +191,7 @@ body.bare .screen{border-radius:0}
 /* ---------- directions ---------- */
 .dir{position:absolute;inset:0;z-index:40;background:#efefef;transform:translateX(100%);transition:transform .45s var(--ease);overflow:hidden}
 .dir.on{transform:none}
-.dir .dmap{position:absolute;left:0;top:0;width:393px;height:852px;overflow:hidden}
+.dir .dmap{position:absolute;left:0;top:0;width:393px;height:100%;overflow:hidden}
 .dir-head{position:absolute;left:0;top:0;width:393px;height:162.33px;pointer-events:none;z-index:3}
 .dir-head img{width:393px;height:162.33px}
 .fab{position:absolute;left:313px;width:56px;height:56px;border-radius:60px;background:#fff;border:1px solid var(--border);box-shadow:0 8px 24px rgba(13,36,82,.08);display:flex;align-items:center;justify-content:center;z-index:3;transition:transform .15s}
@@ -208,7 +212,7 @@ body.bare .screen{border-radius:0}
 
 .srch{position:absolute;inset:0;z-index:45;background:#fff;transform:translateX(100%);transition:transform .4s var(--ease)}
 .srch.on{transform:none}
-.srch img{position:absolute;inset:0;width:393px;height:852px;transition:opacity .2s}
+.srch img{position:absolute;left:0;top:0;width:393px;height:852px;transition:opacity .2s}
 .srch .hs{position:absolute;cursor:pointer;border-radius:12px}
 .srch .hs:active{background:rgba(22,66,145,.08)}
 .hint{position:absolute;left:50%;top:190px;transform:translateX(-50%);background:rgba(23,23,23,.86);color:#fff;font-size:13px;line-height:18px;padding:8px 14px;border-radius:999px;white-space:nowrap;z-index:35;pointer-events:none;opacity:0;transition:opacity .4s}
@@ -300,8 +304,8 @@ body.bare .screen{border-radius:0}
     <div class="dir" id="dir">
       <div class="dmap" id="dmap"></div>
       <div class="dir-head"><img src="assets/directions-header.png" alt="Head west"></div>
-      <button class="fab" id="fabVol" style="top:564px" aria-label="Voice guidance"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M19 9C19.6254 9.81968 20 10.8634 20 12C20 13.1366 19.6254 14.1803 19 15" stroke="#164291" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14.8135V9.18646C16 6.04126 16 4.46866 15.0747 4.0773C14.1494 3.68593 13.0603 4.79793 10.8823 7.02192C9.75439 8.17365 9.11085 8.42869 7.50604 8.42869C6.10257 8.42869 5.40084 8.42869 4.89675 8.77262C3.85035 9.48655 4.00852 10.882 4.00852 12C4.00852 13.118 3.85035 14.5134 4.89675 15.2274C5.40084 15.5713 6.10257 15.5713 7.50604 15.5713C9.11085 15.5713 9.75439 15.8264 10.8823 16.9781C13.0603 19.2021 14.1494 20.3141 15.0747 19.9227C16 19.5313 16 17.9587 16 14.8135Z" stroke="#164291" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="slash"></span></button>
-      <button class="fab" id="fabLoc" style="top:637px" aria-label="Recenter"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M1.83203 10.9999H4.58225M4.58225 10.9999C4.58225 14.544 7.45532 17.4171 10.9994 17.4171M4.58225 10.9999C4.58225 7.45581 7.45532 4.58274 10.9994 4.58274M10.9994 17.4171C14.5435 17.4171 17.4166 14.544 17.4166 10.9999M10.9994 17.4171V20.1673M10.9994 4.58274C14.5435 4.58274 17.4166 7.45581 17.4166 10.9999M10.9994 4.58274V1.83252M17.4166 10.9999H20.1668M13.7497 10.9999C13.7497 12.5188 12.5183 13.7501 10.9994 13.7501C9.48053 13.7501 8.24921 12.5188 8.24921 10.9999C8.24921 9.48102 9.48053 8.2497 10.9994 8.2497C12.5183 8.2497 13.7497 9.48102 13.7497 10.9999Z" stroke="#164291" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <button class="fab" id="fabVol" style="bottom:232px" aria-label="Voice guidance"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M19 9C19.6254 9.81968 20 10.8634 20 12C20 13.1366 19.6254 14.1803 19 15" stroke="#164291" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14.8135V9.18646C16 6.04126 16 4.46866 15.0747 4.0773C14.1494 3.68593 13.0603 4.79793 10.8823 7.02192C9.75439 8.17365 9.11085 8.42869 7.50604 8.42869C6.10257 8.42869 5.40084 8.42869 4.89675 8.77262C3.85035 9.48655 4.00852 10.882 4.00852 12C4.00852 13.118 3.85035 14.5134 4.89675 15.2274C5.40084 15.5713 6.10257 15.5713 7.50604 15.5713C9.11085 15.5713 9.75439 15.8264 10.8823 16.9781C13.0603 19.2021 14.1494 20.3141 15.0747 19.9227C16 19.5313 16 17.9587 16 14.8135Z" stroke="#164291" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="slash"></span></button>
+      <button class="fab" id="fabLoc" style="bottom:159px" aria-label="Recenter"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M1.83203 10.9999H4.58225M4.58225 10.9999C4.58225 14.544 7.45532 17.4171 10.9994 17.4171M4.58225 10.9999C4.58225 7.45581 7.45532 4.58274 10.9994 4.58274M10.9994 17.4171C14.5435 17.4171 17.4166 14.544 17.4166 10.9999M10.9994 17.4171V20.1673M10.9994 4.58274C14.5435 4.58274 17.4166 7.45581 17.4166 10.9999M10.9994 4.58274V1.83252M17.4166 10.9999H20.1668M13.7497 10.9999C13.7497 12.5188 12.5183 13.7501 10.9994 13.7501C9.48053 13.7501 8.24921 12.5188 8.24921 10.9999C8.24921 9.48102 9.48053 8.2497 10.9994 8.2497C12.5183 8.2497 13.7497 9.48102 13.7497 10.9999Z" stroke="#164291" stroke-width="2" stroke-linecap="round"/></svg></button>
       <div class="dsheet"><div class="in"><div class="w">
         <div class="handle-wrap"><div class="handle"></div></div>
         <div style="display:flex;align-items:center;justify-content:space-between">
@@ -339,25 +343,36 @@ const $ = (s, r = document) => r.querySelector(s);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const easeOut = t => 1 - Math.pow(1 - t, 3);
 const screen = $('#screen');
-const W = 393, H = 852;
+const W = 393; let H = 852; let onFit = null;
 
 /* ---------- device scaling ---------- */
 function fit() {
   const bare = innerWidth < 760;
   document.body.classList.toggle('bare', bare);
   const dev = $('#device');
-  const dw = bare ? 393 : 417, dh = bare ? 852 : 876;
-  const room = bare ? 1 : 0.94;
-  const s = Math.min((bare ? innerWidth : innerWidth - 360) / dw, innerHeight * room / dh, bare ? 4 : 1.15);
+  let s, dw, dh;
+  if (bare) { // phone: fill the whole viewport, screen height adapts to the device
+    s = innerWidth / 393;
+    const h = clamp(innerHeight / s, 640, 1100);
+    s = Math.min(s, innerHeight / h);
+    H = Math.round(h); dw = 393; dh = H;
+  } else {
+    H = 852; dw = 417; dh = 876;
+    s = Math.min((innerWidth - 360) / dw, innerHeight * 0.94 / dh, 1.15);
+  }
+  screen.style.setProperty('--H', H + 'px');
   dev.style.transform = `scale(${s})`;
   dev.parentElement.style.width = dw * s + 'px';
   dev.parentElement.style.height = dh * s + 'px';
   dev.style.marginLeft = (dw * s - dw) / 2 + 'px';
   dev.style.marginTop = (dh * s - dh) / 2 + 'px';
   screenScale = s;
+  onFit && onFit();
 }
 let screenScale = 1;
 addEventListener('resize', fit);
+addEventListener('orientationchange', () => setTimeout(fit, 250));
+if (window.visualViewport) visualViewport.addEventListener('resize', fit);
 fit();
 // pointer position in screen (393x852) coordinates
 function pt(e) {
@@ -735,6 +750,7 @@ maps.nearest.add(`<div class="hot" data-tap="directions" style="width:80px;heigh
 const sheetEl = $('#sheet'), scrollEl = $('#sheetScroll'), contentEl = $('#content');
 const sheet = {
   top: 412, snaps: { peek: 764, def: 412, full: 214 }, state: 'def',
+  layout(stop) { this.snaps.peek = H - 88; this.snaps.def = Math.max(H - (stop ? 363 : 440), stop ? 400 : 340); },
   set(top, anim = true) {
     this.top = top;
     sheetEl.classList.toggle('anim', anim);
@@ -863,7 +879,7 @@ const app = {
     this.setChip(full[screen]);
     this.setCompact(screen === 'attraction' || screen === 'stop');
     this.allowPeek = true;
-    sheet.snaps.def = screen === 'stop' ? 489 : 412;
+    sheet.layout(screen === 'stop');
     nav.classList.remove('hide');
     const mode = opts.zoom ? 'zoom' : 'fade';
     if (screen === 'home') { this.showMap('all', mode); this.render(T.home()); }
@@ -1004,9 +1020,13 @@ dmap.onGesture = () => { walk.follow = false; };
 const route = $('#route');
 const L = route.getTotalLength();
 route.style.strokeDasharray = `${L} ${L}`;
+function dirFit() { // short phones: shrink so the whole route sits between header and sheet
+  const top = 175, bot = H - 150, s = clamp((bot - top) / 430, 0.8, 1);
+  dmap.minRel = 0.8; dmap.s = s; dmap.tx = W / 2 - 177 * s; dmap.ty = (top + bot) / 2 - 418 * s; dmap.apply();
+}
 const walk = {
   p: 0, raf: 0, follow: true,
-  start() { this.p = 0; this.follow = true; dmap.reset(); this.draw(); cancelAnimationFrame(this.raf); this.t0 = performance.now() + 900; this.tick(); },
+  start() { this.p = 0; this.follow = true; dmap.reset(); if (H < 852) dirFit(); this.draw(); cancelAnimationFrame(this.raf); this.t0 = performance.now() + 900; this.tick(); },
   stop() { cancelAnimationFrame(this.raf); },
   tick() {
     const now = performance.now();
@@ -1034,6 +1054,7 @@ $('#dExit').addEventListener('click', () => app.exitDirections());
 $('#fabVol').addEventListener('click', e => e.currentTarget.classList.toggle('muted'));
 $('#fabLoc').addEventListener('click', () => {
   walk.follow = true;
+  if (H < 852) { dirFit(); return; }
   const q = route.getPointAtLength(L * (1 - walk.p));
   dmap.focus(83.5 + q.x, 242.5 + q.y, Math.max(dmap.s, 1.8), W / 2, 420, 500);
 });
@@ -1067,7 +1088,9 @@ $('#jump').addEventListener('click', e => {
 function setLoc(l) { app.loc = l; document.querySelectorAll('#locSeg button').forEach(x => x.classList.toggle('on', x.dataset.loc === l)); }
 
 /* ---------- boot ---------- */
-sheet.set(412, false);
+onFit = () => { if (!app.screen) return; sheet.layout(app.screen === 'stop'); sheet.snap(sheet.state, false); };
+sheet.layout(false);
+sheet.set(sheet.snaps.def, false);
 app.go('home', { back: true });
 setTimeout(() => { $('#hint').classList.add('on'); setTimeout(() => $('#hint').classList.remove('on'), 2600); }, 900);
 })();
