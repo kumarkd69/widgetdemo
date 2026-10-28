@@ -99,6 +99,9 @@ body.bare .screen{border-radius:0}
 .content.swap{opacity:0;transform:translateY(16px)}
 .sheet-x{position:absolute;left:342px;top:12px;width:36px;height:36px;z-index:2;transition:transform .15s}
 .sheet-x:active{transform:scale(.9)}
+.recenter{position:absolute;left:333px;top:-64px;width:44px;height:44px;border-radius:50%;transition:transform .15s,opacity .25s}
+.recenter:active{transform:scale(.9)}
+.sheet.full .recenter{opacity:0;pointer-events:none}
 .spacer{height:110px}
 
 .col{display:flex;flex-direction:column}
@@ -264,6 +267,7 @@ body.bare .screen{border-radius:0}
           <div class="spacer"></div>
         </div>
       </div>
+      <button class="recenter" id="recenter" aria-label="Recenter map"><svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect x="0.5" y="0.5" width="43" height="43" rx="21.5" fill="#164291" stroke="#164291"/><g stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 24.25C23.2426 24.25 24.25 23.2426 24.25 22C24.25 20.7574 23.2426 19.75 22 19.75C20.7574 19.75 19.75 20.7574 19.75 22C19.75 23.2426 20.7574 24.25 22 24.25Z"/><path d="M22 28.75C25.7279 28.75 28.75 25.7279 28.75 22C28.75 18.2721 25.7279 15.25 22 15.25C18.2721 15.25 15.25 18.2721 15.25 22C15.25 25.7279 18.2721 28.75 22 28.75Z"/><path d="M22 15.25V13M28.75 22H31M22 28.75V31M15.25 22H13"/></g></svg></button>
       <button class="sheet-x" id="sheetX" hidden aria-label="Close"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><rect width="36" height="36" rx="18" fill="#F5F5F5"/><path d="M24.75 11.25L18 18M18 18L11.25 24.75M18 18L24.75 24.75M18 18L11.25 11.25" stroke="#164291" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
 
@@ -703,6 +707,7 @@ const sheet = {
   },
   snap(state, anim = true) {
     this.state = state;
+    sheetEl.classList.toggle('full', state === 'full');
     this.set(this.snaps[state], anim);
     app.onSheet(state);
   }
@@ -711,7 +716,7 @@ const sheet = {
 (() => {
   let s = null;
   sheetEl.addEventListener('pointerdown', e => {
-    if (e.button > 0 || e.target.closest('.sheet-x')) return;
+    if (e.button > 0 || e.target.closest('.sheet-x,.recenter')) return;
     const p = pt(e);
     s = { id: e.pointerId, y0: p.y, x0: p.x, top0: sheet.top, st0: scrollEl.scrollTop, axis: null, h: e.target.closest('.hscroll,.photos'), sl0: 0, last: p.y, t: performance.now(), v: 0, mode: null };
     if (s.h) s.sl0 = s.h.scrollLeft;
@@ -911,6 +916,12 @@ screen.addEventListener('click', e => {
   }
 });
 $('#sheetX').addEventListener('click', () => app.back());
+// recenter: return the current map to its default (design) view
+$('#recenter').addEventListener('click', () => {
+  const m = app.map; if (!m) return;
+  if (sheet.state === 'peek') sheet.snap('def');
+  m.animateTo(1, m.x, m.y, 500);
+});
 const srch = $('#srch');
 function searchMode(filled) {
   $('#sFil').style.opacity = filled ? 1 : 0;
