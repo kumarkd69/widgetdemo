@@ -102,6 +102,22 @@ body.bare .screen{border-radius:0}
 .recenter{position:absolute;left:333px;top:-64px;width:44px;height:44px;border-radius:50%;transition:transform .15s,opacity .25s}
 .recenter:active{transform:scale(.9)}
 .sheet.full .recenter{opacity:0;pointer-events:none}
+.busico.red{background:#fde3e4}
+.livehd{background:var(--primary);border-radius:12px 12px 0 0;padding:12px;color:#fff;width:362px;margin-left:0}
+.dirrow{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid var(--border);font-size:14px;color:var(--text2)}
+.tl{display:flex;flex-direction:column;position:relative}
+.tl::before{content:"";position:absolute;left:19.5px;top:30px;bottom:30px;width:1px;background:var(--disabled)}
+.tlr{display:flex;align-items:center;gap:10px;min-height:62px;padding:0 8px;border-bottom:1px solid var(--border);position:relative}
+.tlr.now{background:#edf3fb}
+.tlr .dot{width:24px;height:24px;border-radius:50%;border:1px solid var(--disabled);background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex:none;z-index:1}
+.tlr.gone .dot{background:#d4d4d4;border-color:#d4d4d4;color:#525252}
+.tlr.now .dot{background:var(--blueDark);border-color:var(--blueDark);color:#fff}
+.tlr .txt{flex:1;min-width:0}
+.tlr .n{font-size:14px;line-height:21px;font-weight:600;color:#000}
+.tlr .a{font-size:12px;line-height:17px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tlr .eta{text-align:right;font-size:14px;font-weight:700;color:var(--primary);white-space:nowrap}
+.tlr .eta small{display:block;font-size:12px;font-weight:600;color:var(--primary)}
+.tlr.gone .eta{color:var(--text)}.tlr.gone .eta small{color:var(--text2);font-weight:400}
 .spacer{height:110px}
 
 .col{display:flex;flex-direction:column}
@@ -227,6 +243,8 @@ body.bare .screen{border-radius:0}
       <button data-jump="stop">Stop selected</button>
       <button data-jump="directions">Directions</button>
       <button data-jump="search">Search</button>
+      <button data-jump="allbuses">All Buses</button>
+      <button data-jump="bus">Bus clicked</button>
     </div>
     <p class="note">Only elements with a designed screen are clickable. Search: tap the field or “Westminster”, then the Blue Route result.</p>
   </aside>
@@ -574,6 +592,8 @@ const RED_STOPS = [
   [31, 'London Eye', 'York Road, South Bank']
 ];
 const BUSES = [['Bus 11', 11], ['Bus 09', 18], ['Bus 09', 18], ['Bus 09', 18]];
+const ALL_BUSES = [['Bus 24', 'Red', 6], ['Bus 13', 'Blue', 15], ['Bus 09', 'Red', 24], ['Bus 18', 'Blue', 38], ['Bus 203', 'Red', 51]];
+const allBusRow = ([bus, r, m]) => `<div class="row busrow"${r === 'Blue' ? ' data-act="bus"' : ' style="cursor:default"'}><div class="busico${r === 'Red' ? ' red' : ''}">${ICON.bus(r === 'Red' ? '#e30910' : '#164291')}</div><div class="txt"><p class="n">${bus} · ${r} Route</p><p class="a">Towards Trafalgar Square</p></div><p class="mins">${m} min</p></div>`;
 
 /* ---------- templates ---------- */
 const att = (k, fixed) => `<div class="att${fixed ? ' fixed' : ''}"${k === 'eye' ? ' data-act="attraction"' : ' style="cursor:default"'} data-id="${k}"><div class="ph"><img src="${ATT[k][1]}" alt=""></div><span>${ATT[k][0] === 'London Eye' ? 'London<br>Eye' : ATT[k][0]}</span></div>`;
@@ -620,7 +640,7 @@ const T = {
       </div>
     </div>
     <div class="col g8">
-      <div class="segm" id="segm"><span class="pill" style="left:2px"></span><span class="ghost" style="left:calc(50% + 4px)"></span><button class="on" data-act="seg" data-v="stops">All Stops</button><button style="cursor:default">All Buses</button></div>
+      <div class="segm" id="segm"><span class="pill" style="left:2px"></span><span class="ghost" style="left:calc(50% + 4px)"></span><button class="on" data-act="seg" data-v="stops">All Stops</button><button data-act="seg" data-v="buses">All Buses</button></div>
       <div class="col g12" id="segList">${(red ? RED_STOPS : BLUE_STOPS).map(stopRow).join('')}</div>
     </div>
     <div class="col g12"><p class="h-sec" style="padding:0 16px">Along the ${red ? 'Red' : 'Blue'} Route</p>${red ? grid([['eye', 'tower', 'stpauls'], ['tussauds', 'sealife']]) : grid([['eye', 'tower', 'tussauds'], ['sealife', 'kensington']])}</div>
@@ -635,6 +655,17 @@ const T = {
     </div>
     <div class="col g8"><p class="h-sec">Nearest Stop</p>${stopRow([22, 'Westminster Bridge', 'Big Ben &amp; Parliment'])}</div>
     <div class="col g12"><p class="h-sec">Nearby Attractions</p>${grid([['dungeon', 'sealife', 'shrek']])}</div>
+  </div>`,
+  bus: () => `<div style="margin-top:40px">
+    <div class="livehd"><p class="t18 b">Bus 204 · Blue Route</p><p class="t12" style="margin-top:4px">to Tower Hill · Live, updated <span id="upd">4</span>s ago</p></div>
+    <div class="dirrow"><span>City Center</span><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 12h15m-5-5 5 5-5 5" stroke="#171717" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Towards Trafalgar Square</span></div>
+    <div class="tl">
+      <div class="tlr gone"><div class="dot">18</div><div class="txt"><p class="n">Grosvenor Gardens</p><p class="a">Outside Alchemist Bar, Stop Z6, SW1W 0EB</p></div><p class="eta"><small>Departed</small>9:36 AM</p></div>
+      <div class="tlr now"><div class="dot">19</div><div class="txt"><p class="n">Buckingham Palace</p><p class="a">Outside The King's Gallery, SW1A 1AA</p></div><p class="eta"><small>Arriving in</small>2 min</p></div>
+      <div class="tlr"><div class="dot">20</div><div class="txt"><p class="n">Horseferry Road</p><p class="a">Outside 56 Victoria Pharmacy, Stop NH, SW1P 2AF</p></div><p class="eta">15 min</p></div>
+      <div class="tlr"><div class="dot">21</div><div class="txt"><p class="n">Lambeth Palace</p><p class="a">in front of Riverside Café, Lambeth Palace, SE1 7SG</p></div><p class="eta">27 min</p></div>
+      <div class="tlr" data-act="stop" style="cursor:pointer"><div class="dot">22</div><div class="txt"><p class="n">Westminster Bridge</p><p class="a">Outside St. Thomas' Hospital, Westminster Bridge Road, SE1 7EP</p></div><p class="eta">39 min</p></div>
+    </div>
   </div>`,
   stop: () => `<div class="col g32" style="margin-top:40px">
     <div class="card">
@@ -664,6 +695,7 @@ maps.blue = new MapView({ src: 'assets/map-blue.jpg', w: 717, h: 387, x: -319, y
   markerScale: s => 1 / s });
 maps.attraction = new MapView({ src: 'assets/map-attraction.jpg', w: 860, h: 464, x: -221, y: 41, maxRel: 3, viewTop: headerBottom, viewBottom: vb });
 maps.stop = new MapView({ src: 'assets/map-stop.jpg', w: 1186, h: 641, x: -725, y: -135, maxRel: 2.5, viewTop: headerBottom, viewBottom: vb });
+maps.bus = new MapView({ src: 'assets/map-bus.jpg', w: 773, h: 417, x: -187, y: 22, maxRel: 3, viewTop: headerBottom, viewBottom: vb });
 maps.nearest = new MapView({ src: 'assets/map-nearest.jpg', w: 612, h: 330, x: -126, y: 108, maxRel: 3.5, viewTop: headerBottom, viewBottom: vb });
 
 // --- all routes overlays (positions from the Figma "Container" layer) ---
@@ -819,9 +851,9 @@ const app = {
     if (!opts.back && this.screen !== screen && screen !== 'directions') this.history.push(this.screen);
     if (screen === 'home' && this.loc === 'nearby') screen = 'nearest';
     this.screen = screen;
-    $('#sheetX').hidden = screen !== 'stop';
+    $('#sheetX').hidden = screen !== 'stop' && screen !== 'bus';
     scrollEl.style.paddingTop = screen === 'stop' ? '14px' : '20px';
-    const full = { home: 'all', nearest: 'all', red: 'red', blue: 'blue', attraction: 'blue', stop: 'blue' };
+    const full = { home: 'all', nearest: 'all', red: 'red', blue: 'blue', attraction: 'blue', stop: 'blue', bus: 'blue' };
     this.setChip(full[screen]);
     this.setCompact(screen === 'attraction' || screen === 'stop');
     this.allowPeek = true;
@@ -838,6 +870,7 @@ const app = {
     if (screen === 'blue') { this.showMap('blue', mode); this.render(T.route(false)); }
     if (screen === 'attraction') { this.showMap('attraction', mode); this.render(T.attraction()); }
     if (screen === 'stop') { this.showMap('stop', mode); this.render(T.stop()); }
+    if (screen === 'bus') { this.showMap('bus', mode); this.render(T.bus()); }
     sheet.snap(opts.sheet || 'def');
   },
   back() { const p = this.history.pop() || 'home'; this.go(p === 'nearest' ? 'home' : p, { back: true }); },
@@ -876,7 +909,7 @@ Object.values(maps).forEach(m => {
     setTimeout(() => el.classList.remove('pop', 'flash'), 300);
     const bx = parseFloat(el.style.left), by = parseFloat(el.style.top);
     if (kind === 'stop') app.diveTo('stop', mm, bx, by);
-    else if (kind === 'bus') app.go(arg);
+    else if (kind === 'bus') app.go('bus');
     else if (kind === 'attraction') app.diveTo('attraction', mm, bx, by);
     else if (kind === 'directions') setTimeout(() => app.directions(), 150);
     else if (kind === 'pulse') mm.zoomAt(mm.tx + bx * mm.s, mm.ty + by * mm.s, mm.s * 1.6);
@@ -899,6 +932,7 @@ screen.addEventListener('click', e => {
   if (act === 'search') { searchMode(false); srch.classList.add('on'); }
   if (act === 'attraction') app.go('attraction');
   if (act === 'stop') app.go('stop');
+  if (act === 'bus') app.go('bus');
   if (act === 'directions') app.directions();
   if (act === 'track') { app.history = []; app.go('home'); }
   if (act === 'seg') {
@@ -910,7 +944,7 @@ screen.addEventListener('click', e => {
     const list = $('#segList');
     list.style.opacity = 0;
     setTimeout(() => {
-      list.innerHTML = v === 'stops' ? (red ? RED_STOPS : BLUE_STOPS).map(stopRow).join('') : BUSES.map((b, i) => busRow(b, i, red ? 'Red Route' : 'Blue Route')).join('');
+      list.innerHTML = v === 'stops' ? (red ? RED_STOPS : BLUE_STOPS).map(stopRow).join('') : ALL_BUSES.map(allBusRow).join('');
       list.style.transition = 'opacity .25s'; list.style.opacity = 1;
     }, 150);
   }
@@ -1012,6 +1046,8 @@ $('#jump').addEventListener('click', e => {
   if (j === 'nearest') { setLoc('nearby'); app.go('home', { back: true }); }
   if (j === 'stop') { app.history = ['blue']; app.go('stop', { back: true }); }
   srch.classList.remove('on');
+  if (j === 'allbuses') { app.go('blue', { back: true }); setTimeout(() => document.querySelector('[data-v="buses"]').click(), 400); }
+  if (j === 'bus') { app.history = ['blue']; app.go('bus', { back: true }); }
   if (j === 'search') { setLoc('remote'); app.go('home', { back: true }); searchMode(false); setTimeout(() => srch.classList.add('on'), 200); }
   if (j === 'directions') { setLoc('nearby'); app.go('home', { back: true }); setTimeout(() => app.directions(), 300); }
 });
