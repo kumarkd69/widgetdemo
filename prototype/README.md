@@ -17,4 +17,4 @@ Clickable, mobile-mockup prototype of the **Map** flow from the Figma file
 - Location toggle (side panel): "In Mumbai" vs "In London" → nearest-stop suggestion.
 - Nearest stop card, "Start here" and the stop pin → walking directions with an animated walker, recenter and mute buttons, Exit.
 
-Red route has no screen in the design; it reuses the Blue route sheet layout with placeholder red-route content.
+Only elements with a designed screen are clickable (Red route, other stops, other attractions and All Buses are not linked). Search: search icon → tap field or "Westminster" → Blue Route result → stop screen.
