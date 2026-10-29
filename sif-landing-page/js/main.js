@@ -17,6 +17,8 @@
   /* reveal on entry (content is visible without it; this only adds the rise) */
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .15 });
   $$('.reveal').forEach(el => io.observe(el));
+  $$('.steps, .bento, .fsub, .adv-list, .who-cards, .panel, .der-cards, .rgrid, .notes, .faq-list').forEach(g =>
+    [...g.children].forEach((c, i) => { if (!c.classList.contains('fsub')) { c.dataset.st = ''; c.style.setProperty('--i', i); } }));
 
   /* hero: the video advances frame by frame as the hero scrolls away */
   const FRAMES = 140, canvas = $('#heroCanvas'), ctx = canvas.getContext('2d'), imgs = [];

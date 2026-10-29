@@ -94,7 +94,8 @@ button{font:inherit;color:inherit}
 
 /* ---------- why ---------- */
 .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s4);max-width:1000px;margin:0 auto;position:relative;list-style:none;padding:0}
-.steps::before{content:"";position:absolute;top:28px;left:16.6%;right:16.6%;border-top:2px dashed #9FD3EE}
+.steps::before{content:"";position:absolute;top:27px;left:16.6%;right:16.6%;height:2px;background:repeating-linear-gradient(90deg,#9FD3EE 0 6px,transparent 6px 12px);animation:march 1.2s linear infinite}
+@keyframes march{to{background-position:12px 0}}
 .steps li{display:grid;justify-items:center;gap:var(--s3);text-align:center}
 .dot{position:relative;width:56px;height:56px;border-radius:50%;background:var(--paper);box-shadow:0 4px 16px rgba(0,59,128,.12);display:grid;place-items:center}
 .dot::before{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid #CDE8F6}
@@ -106,17 +107,24 @@ button{font:inherit;color:inherit}
 /* ---------- features ---------- */
 .bento{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr);gap:var(--s3)}
 .fsub{display:contents}
-.fcard{background:var(--card);border-radius:var(--r);padding:var(--s4);display:grid;gap:var(--s2);align-content:start}
+.fcard{position:relative;isolation:isolate;overflow:hidden;background:var(--card);border-radius:var(--r);padding:var(--s4);display:grid;gap:var(--s2);align-content:start;cursor:default;--cd:.12s;transition:color .2s var(--cd),transform .35s cubic-bezier(.2,.7,.1,1),box-shadow .35s}
+.fcard::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--grad);transform:scaleY(0);transform-origin:50% 100%;transition:transform .38s cubic-bezier(.65,0,.35,1)}
 .fcard h3{font-size:var(--t-m);font-weight:700}
-.fcard p{color:var(--muted)}
-.fcard .ic{width:40px;height:40px;border-radius:12px;background:var(--paper);display:grid;place-items:center;margin-bottom:var(--s2)}
+.fcard p{color:var(--muted);transition:color .2s var(--cd)}
+.fcard .ic{width:40px;height:40px;border-radius:12px;background:var(--paper);display:grid;place-items:center;margin-bottom:var(--s2);transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
+/* white on the gradient's lightest stop (#0071B9) is 5.2:1, so every line of text switches to white,
+   timed to land just as the fill reaches it */
+.fcard:hover,.fcard:focus-within{--cd:.24s;color:var(--on-dark);transform:translateY(-4px);box-shadow:0 18px 36px -14px rgba(0,59,128,.45)}
+.fcard:hover::before,.fcard:focus-within::before{transform:scaleY(1)}
+.fcard:hover p,.fcard:hover .amt span,.fcard:hover .amt b,.fcard:hover strong{color:var(--on-dark)}
+.fcard:hover .ic{transform:scale(1.1) rotate(-6deg)}
 .fcard .ic svg{width:24px;height:24px}
-.fmain{grid-row:span 2;background:var(--grad);color:var(--on-dark);align-content:space-between;gap:var(--s4);position:relative;overflow:hidden}
-.fmain::after{content:"";position:absolute;right:-60px;bottom:-60px;width:200px;height:200px;border-radius:50%;border:1px solid rgba(255,255,255,.2)}
-.fmain p{color:var(--on-dark-muted)}
+.fmain{grid-row:span 2;align-content:space-between;gap:var(--s4)}
+.fmain::after{content:"";position:absolute;right:-60px;bottom:-60px;width:200px;height:200px;border-radius:50%;border:1px solid rgba(0,113,185,.18);z-index:-1;transition:transform .8s cubic-bezier(.2,.7,.1,1),border-color .35s}
+.fmain:hover::after{transform:scale(1.25);border-color:rgba(255,255,255,.3)}
 .fmain .amt{display:grid;gap:var(--s2)}
-.fmain .amt b{font-size:var(--t-hero);line-height:1;font-weight:800;color:#8FDDF9}
-.fmain .amt span{font-size:var(--t-s);color:var(--on-dark-muted)}
+.fmain .amt b{font-size:var(--t-hero);line-height:1;font-weight:800;color:var(--accent);transition:color .2s var(--cd)}
+.fmain .amt span{font-size:var(--t-s);color:var(--muted);transition:color .2s var(--cd)}
 
 /* ---------- advantages ---------- */
 .adv-list{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--s3);max-width:1040px;margin:0 auto;list-style:none;padding:0}
@@ -246,6 +254,81 @@ footer p{font-size:var(--t-xs);color:var(--muted);line-height:1.6}
 footer a{word-break:break-word}
 footer b{color:var(--ink)}
 
+
+/* ---------- micro-interactions ---------- */
+/* hero heading settles in on load */
+.hero h1>span{animation:heroIn .9s cubic-bezier(.2,.7,.1,1) backwards}
+.hero h1 .b{animation-delay:.12s}
+@keyframes heroIn{from{translate:0 24px;opacity:0}}
+/* nav */
+.nav a{transition:background .25s,color .25s}
+.nav a:not([aria-current]):hover{background:rgba(255,255,255,.2)}
+.top.solid .nav a:not([aria-current]):hover{background:var(--card)}
+.brand img{transition:transform .6s cubic-bezier(.34,1.56,.64,1)}
+.brand:hover img{transform:rotate(-20deg) scale(1.06)}
+/* staggered entry for card groups, using translate so hover transforms stay free */
+.js .reveal.in [data-st]{animation:rise .65s cubic-bezier(.2,.7,.1,1) backwards;animation-delay:calc(var(--i,0) * 70ms)}
+@keyframes rise{from{translate:0 20px;opacity:0}}
+/* why */
+.dot{transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.dot::before{animation:ring 2.8s ease-out infinite}
+.steps li:nth-child(2) .dot::before{animation-delay:.9s}
+.steps li:nth-child(3) .dot::before{animation-delay:1.8s}
+@keyframes ring{0%{transform:scale(.9);opacity:1}70%,100%{transform:scale(1.3);opacity:0}}
+.steps li:hover .dot{transform:scale(1.12)}
+/* advantages */
+.adv-list .ic{transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
+.adv-list li:hover .ic{transform:scale(1.12) rotate(-8deg)}
+/* who */
+.wcard{transition:transform .35s cubic-bezier(.2,.7,.1,1),box-shadow .35s}
+.wcard:hover{transform:translateY(-6px);box-shadow:0 18px 32px -16px rgba(0,59,128,.3)}
+.wcard .av{transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
+.wcard:hover .av{transform:translateY(-4px) scale(1.08)}
+/* strategies */
+.tabs button{transition:background .25s,color .25s,box-shadow .25s}
+.tabs button[aria-selected="false"]:hover{color:var(--ink);background:rgba(255,255,255,.6)}
+.scard{transition:transform .35s cubic-bezier(.2,.7,.1,1),box-shadow .35s}
+.scard:hover{transform:translateY(-6px);box-shadow:0 18px 32px -16px rgba(0,59,128,.25)}
+.scard svg{transition:transform .8s cubic-bezier(.2,.7,.1,1)}
+.scard:hover svg{transform:rotate(90deg)}
+/* comparison */
+tbody tr>*{transition:background .2s}
+tbody tr:hover>th,tbody tr:hover>td{background:#EAF4FB}
+tbody tr:hover>.sif{background:#DCEEFA}
+/* derivatives */
+.dcard{transition:transform .35s cubic-bezier(.2,.7,.1,1),box-shadow .35s}
+.dcard:hover{transform:translateY(-6px);box-shadow:0 18px 32px -16px rgba(0,59,128,.25)}
+.dcard svg circle{transition:transform .4s cubic-bezier(.34,1.56,.64,1);transform-box:fill-box;transform-origin:center}
+.dcard:hover svg circle{transform:scale(1.5)}
+/* risks */
+.rcard{transition:background .25s,transform .35s cubic-bezier(.2,.7,.1,1),box-shadow .35s}
+.rcard:hover{background:var(--paper);transform:translateY(-4px);box-shadow:0 14px 28px -14px rgba(0,59,128,.3)}
+.rcard i{transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
+.rcard:hover i{transform:scale(1.6)}
+.in .needle{animation:wobble 3.2s ease-in-out 1.9s infinite}
+@keyframes wobble{0%,100%{transform:rotate(56deg)}50%{transform:rotate(48deg)}}
+/* checklist: paper lifts and straightens; ticks draw in one by one */
+.citem{transition:transform .35s cubic-bezier(.2,.7,.1,1),box-shadow .35s}
+.notes .citem:hover{transform:rotate(0) translateY(-6px);box-shadow:0 2px 4px rgba(40,40,60,.08),0 18px 30px -12px rgba(40,40,60,.28)}
+.citem .box path{stroke-dasharray:14;stroke-dashoffset:0}
+.js .reveal.in .citem .box path{animation:tick .5s ease-out backwards;animation-delay:calc(.4s + var(--i,0) * 110ms)}
+@keyframes tick{from{stroke-dashoffset:14}}
+/* faq */
+.qa:not(.open):hover{background:var(--mist)}
+.qa button span:first-child{transition:color .2s}
+.qa button:hover span:first-child{color:var(--accent-text)}
+.qa:not(.open) button:hover .pm{transform:rotate(90deg)}
+.ans p{transition:opacity .35s,translate .35s}
+.qa:not(.open) .ans p{opacity:0;translate:0 -6px}
+/* before investing */
+.bcard::before{animation:drift 9s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(60px,-40px) scale(1.4)}}
+.bcard{transition:transform .5s cubic-bezier(.2,.7,.1,1),box-shadow .5s}
+.bcard:hover{transform:translateY(-4px);box-shadow:0 24px 48px -20px rgba(37,32,122,.5)}
+/* footer links */
+footer a{text-decoration-thickness:1px;transition:text-decoration-thickness .2s,color .2s}
+footer a:hover{text-decoration-thickness:2px}
+
 /* ---------- 1300px-class laptops and short screens ---------- */
 @media (max-width:1366px),(max-height:820px){
   :root{--t-hero:56px;--t-h2:36px}
@@ -278,7 +361,7 @@ footer b{color:var(--ink)}
   .what p{font-size:var(--t-s)}
   .head{margin-bottom:var(--s4)}
   .steps{grid-template-columns:minmax(0,1fr);gap:var(--s4)}
-  .steps::before{top:28px;bottom:28px;left:27px;right:auto;border-top:0;border-left:2px dashed #9FD3EE}
+  .steps::before{top:28px;bottom:28px;left:27px;right:auto;width:0;height:auto;background:none;animation:none;border-left:2px dashed #9FD3EE}
   .steps li{grid-template-columns:56px minmax(0,1fr);justify-items:start;text-align:left;align-items:center}
   .adv-list li,.adv-list li:nth-child(n+4){grid-column:auto}
   .adv-list strong{font-size:var(--t-s)}
@@ -592,6 +675,8 @@ footer b{color:var(--ink)}
   /* reveal on entry (content is visible without it; this only adds the rise) */
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .15 });
   $$('.reveal').forEach(el => io.observe(el));
+  $$('.steps, .bento, .fsub, .adv-list, .who-cards, .panel, .der-cards, .rgrid, .notes, .faq-list').forEach(g =>
+    [...g.children].forEach((c, i) => { if (!c.classList.contains('fsub')) { c.dataset.st = ''; c.style.setProperty('--i', i); } }));
 
   /* hero: the video advances frame by frame as the hero scrolls away */
   const FRAMES = 140, canvas = $('#heroCanvas'), ctx = canvas.getContext('2d'), imgs = [];
