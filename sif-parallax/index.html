@@ -124,15 +124,18 @@ button{font:inherit;color:inherit}
 .fmain .amt span{font-size:var(--t-s);color:var(--on-dark-muted)}
 
 /* ---------- advantages ---------- */
-.adv-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s4) var(--s5);max-width:1040px;margin:0 auto;list-style:none;padding:0}
-.adv-list li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:var(--s3);align-items:start}
-.adv-list .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--tint-blue)}
+.adv-list{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--s3);max-width:1040px;margin:0 auto;list-style:none;padding:0}
+.adv-list li{grid-column:span 2;display:grid;gap:var(--s3);align-content:start;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:var(--s4);transition:transform .25s,box-shadow .25s,border-color .25s}
+.adv-list li:nth-child(n+4){grid-column:span 3}
+.adv-list li:hover{transform:translateY(-4px);border-color:transparent;box-shadow:0 12px 28px rgba(0,59,128,.1)}
+.adv-list .ic{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;background:var(--tint-blue)}
+.adv-list li:nth-child(4) .ic{background:#E8F0FB}
 .adv-list li:nth-child(2) .ic{background:var(--tint-teal)}
 .adv-list li:nth-child(3) .ic{background:var(--tint-violet)}
 .adv-list li:nth-child(5) .ic{background:#FFF1E2}
-.adv-list svg{width:20px;height:20px}
+.adv-list svg{width:24px;height:24px}
 .adv-list p{color:var(--muted)}
-.adv-list strong{display:block;color:var(--ink);font-size:var(--t-m);margin-bottom:var(--s1)}
+.adv-list strong{display:block;color:var(--ink);font-size:var(--t-m);margin-bottom:var(--s2)}
 
 /* ---------- who ---------- */
 .who-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3);max-width:1040px;margin:0 auto}
@@ -207,14 +210,15 @@ th:first-child,td:first-child{position:sticky;left:0;background:var(--mist);z-in
 .pill .tick svg{width:14px;height:14px}
 .pill h3{font-size:var(--t-xs);font-weight:600}
 .pill .count{font-size:var(--t-xs);font-weight:700;color:var(--accent-text);font-variant-numeric:tabular-nums;padding:2px var(--s2);border-radius:999px;background:var(--tint-blue)}
-.notes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s3);max-width:1040px;margin:0 auto}
-.citem{position:relative;text-align:left;background:var(--note);border:1px solid var(--note-line);border-radius:12px;padding:var(--s4) var(--s3) var(--s3);display:grid;gap:var(--s2);align-content:start;cursor:pointer;box-shadow:0 2px 6px rgba(120,100,40,.08);transition:transform .2s,box-shadow .2s}
-.citem::before{content:"";position:absolute;top:-8px;left:50%;width:48px;height:14px;margin-left:-24px;border-radius:3px;background:#BFE3F5;opacity:.9}
-.citem:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(120,100,40,.12)}
-.citem .box{width:24px;height:24px;border-radius:6px;border:2px solid var(--accent);display:grid;place-items:center;background:var(--paper)}
-.citem .box svg{width:14px;height:14px;opacity:0}
-.citem[aria-checked="true"] .box{background:var(--accent)}
-.citem[aria-checked="true"] .box svg{opacity:1}
+.notes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s4) var(--s3);max-width:1040px;margin:0 auto;list-style:none;padding:var(--s2) 0 0}
+/* each item is a sheet of ruled paper taped to the board, with a folded corner and a second sheet peeking behind */
+.citem{position:relative;background:#FFFEFA repeating-linear-gradient(180deg,transparent 0 23px,#EEF2F8 23px 24px);background-position:0 12px;border-radius:4px;padding:var(--s4) var(--s3) var(--s3);display:grid;gap:var(--s2);align-content:start;box-shadow:0 1px 2px rgba(40,40,60,.08),0 8px 18px -8px rgba(40,40,60,.18)}
+.citem::before{content:"";position:absolute;top:-6px;left:50%;width:56px;height:16px;margin-left:-28px;background:rgba(191,227,245,.85);transform:rotate(-2deg);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.citem::after{content:"";position:absolute;right:0;bottom:0;width:20px;height:20px;background:linear-gradient(315deg,var(--mist) 50%,#E9E4D6 50%);border-top-left-radius:3px}
+.citem:nth-child(odd){transform:rotate(-.6deg)}
+.citem:nth-child(even){transform:rotate(.5deg)}
+.citem .box{width:24px;height:24px;border-radius:6px;display:grid;place-items:center;background:var(--accent)}
+.citem .box svg{width:14px;height:14px}
 .citem p{font-size:var(--t-xs);color:var(--muted)}
 .citem strong{display:block;color:var(--ink);font-size:var(--t-s);margin-bottom:var(--s1)}
 
@@ -256,6 +260,8 @@ footer b{color:var(--ink)}
 @media (max-width:1100px){
   :root{--gut:48px}
   .rgrid,.notes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .adv-list li,.adv-list li:nth-child(n+4){grid-column:span 3}
+  .adv-list li:last-child{grid-column:2/span 4}
   .bento{grid-template-columns:repeat(2,minmax(0,1fr))}
   .fmain{grid-row:auto;grid-column:span 2}
 }
@@ -279,7 +285,7 @@ footer b{color:var(--ink)}
   .steps{grid-template-columns:minmax(0,1fr);gap:var(--s4)}
   .steps::before{top:28px;bottom:28px;left:27px;right:auto;border-top:0;border-left:2px dashed #9FD3EE}
   .steps li{grid-template-columns:56px minmax(0,1fr);justify-items:start;text-align:left;align-items:center}
-  .adv-list{grid-template-columns:minmax(0,1fr);gap:var(--s3)}
+  .adv-list li,.adv-list li:nth-child(n+4){grid-column:auto}
   .adv-list strong{font-size:var(--t-s)}
   /* card groups become one swipeable row so each section stays within one screen */
   .rail{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:var(--s3);margin-left:calc(-1 * var(--gut));margin-right:calc(-1 * var(--gut));padding-left:var(--gut);padding-right:var(--gut);padding-bottom:var(--s2);scrollbar-width:none;max-width:none}
@@ -388,7 +394,7 @@ footer b{color:var(--ink)}
 <section class="sec alt" data-screen-label="Potential Advantages">
   <div class="wrap reveal">
     <div class="head"><h2 class="h2">Potential Advantages</h2></div>
-    <ul class="adv-list">
+    <ul class="adv-list rail">
       <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 20 20"><rect x="2" y="2" width="7" height="7" rx="2" fill="#0071B9"/><rect x="11" y="2" width="7" height="7" rx="2" fill="#9FD3EE"/><rect x="2" y="11" width="7" height="7" rx="2" fill="#9FD3EE"/><rect x="11" y="11" width="7" height="7" rx="2" fill="#0071B9"/></svg></span><p><strong>Greater choice:</strong>Access to differentiated strategies beyond conventional Mutual Fund categories.</p></li>
       <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 20 20"><rect x="2" y="9" width="3.5" height="9" rx="1" fill="#00A3A3"/><rect x="8.25" y="4" width="3.5" height="14" rx="1" fill="#00A3A3"/><rect x="14.5" y="11" width="3.5" height="7" rx="1" fill="#00A3A3"/></svg></span><p><strong>Portfolio flexibility:</strong>A framework intended to provide greater flexibility than traditional Mutual Funds.</p></li>
       <li><span class="ic" aria-hidden="true"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#7B5BB6" stroke-width="1.5" stroke-dasharray="2 2"/><circle cx="10" cy="10" r="3.5" fill="#7B5BB6"/></svg></span><p><strong>Professional expertise:</strong>Investment decisions are managed by professional fund managers.</p></li>
@@ -509,18 +515,18 @@ footer b{color:var(--ink)}
   <div class="wrap reveal">
     <div class="chk-head">
       <h2 class="h2">Investor Awareness: Before You Invest in a SIF</h2>
-      <div class="pill"><span class="tick" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><h3>A simple investor checklist</h3><span class="count" aria-live="polite"><span id="done">0</span>/8</span></div>
+      <div class="pill"><span class="tick" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><h3>A simple investor checklist</h3><span class="count">8/8</span></div>
     </div>
-    <div class="notes rail" id="notes">
-      <button type="button" class="citem" role="checkbox" aria-checked="false"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Understand the strategy:</strong> Know what the SIF is trying to achieve and the types of securities or derivatives it can use.</p></button>
-      <button type="button" class="citem" role="checkbox" aria-checked="false"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Check the Risk-band:</strong> Review the prescribed risk level and understand the key risks behind it.</p></button>
-      <button type="button" class="citem" role="checkbox" aria-checked="false"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Understand liquidity:</strong> Check subscription and redemption frequency and whether any notice period applies.</p></button>
-      <button type="button" class="citem" role="checkbox" aria-checked="false"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Understand derivatives:</strong> If the strategy uses derivatives, understand whether they are used for hedging, rebalancing or short exposure.</p></button>
-      <button type="button" class="citem" role="checkbox" aria-checked="false"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Check the minimum investment:</strong> The aggregate SIF investment threshold is ₹10 lakh at PAN level, subject to applicable exceptions.</p></button>
-      <button type="button" class="citem" role="checkbox" aria-checked="false"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Assess suitability:</strong> Consider your investment objective, risk appetite, investment horizon and ability to tolerate losses.</p></button>
-      <button type="button" class="citem" role="checkbox" aria-checked="false"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Read the ISID:</strong> Review the Investment Strategy Information Document and other offer documents before investing.</p></button>
-      <button type="button" class="citem" role="checkbox" aria-checked="false"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Do not rely only on past performance:</strong> Past performance does not indicate future results.</p></button>
-    </div>
+    <ul class="notes rail" id="notes">
+      <li class="citem"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Understand the strategy:</strong> Know what the SIF is trying to achieve and the types of securities or derivatives it can use.</p></li>
+      <li class="citem"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Check the Risk-band:</strong> Review the prescribed risk level and understand the key risks behind it.</p></li>
+      <li class="citem"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Understand liquidity:</strong> Check subscription and redemption frequency and whether any notice period applies.</p></li>
+      <li class="citem"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Understand derivatives:</strong> If the strategy uses derivatives, understand whether they are used for hedging, rebalancing or short exposure.</p></li>
+      <li class="citem"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Check the minimum investment:</strong> The aggregate SIF investment threshold is ₹10 lakh at PAN level, subject to applicable exceptions.</p></li>
+      <li class="citem"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Assess suitability:</strong> Consider your investment objective, risk appetite, investment horizon and ability to tolerate losses.</p></li>
+      <li class="citem"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Read the ISID:</strong> Review the Investment Strategy Information Document and other offer documents before investing.</p></li>
+      <li class="citem"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5L11 4.5"/></svg></span><p><strong>Do not rely only on past performance:</strong> Past performance does not indicate future results.</p></li>
+    </ul>
   </div>
 </section>
 
@@ -588,9 +594,11 @@ footer b{color:var(--ink)}
   }
   function draw(i) {
     const im = pick(i); if (!im) return;
-    const cw = canvas.width, ch = canvas.height, s = Math.max(cw / im.naturalWidth, ch / im.naturalHeight);
-    const w = im.naturalWidth * s, h = im.naturalHeight * s;
-    ctx.drawImage(im, (cw - w) * (innerWidth < 768 ? .62 : .58), (ch - h) / 2, w, h); drawn = i;
+    // the source frames carry a generator mark in the bottom-right corner; drop the right 14% of each frame so it never shows
+    const sw = im.naturalWidth * .86, sh = im.naturalHeight;
+    const cw = canvas.width, ch = canvas.height, s = Math.max(cw / sw, ch / sh);
+    const w = sw * s, h = sh * s;
+    ctx.drawImage(im, 0, 0, sw, sh, (cw - w) * (innerWidth < 768 ? .7 : .62), (ch - h) / 2, w, h); drawn = i;
   }
   const order = [0]; for (let i = 8; i < FRAMES; i += 8) order.push(i); for (let i = 1; i < FRAMES; i++) if (!order.includes(i)) order.push(i);
   let q = 0;
@@ -604,7 +612,7 @@ footer b{color:var(--ink)}
 
   function onScroll() {
     const r = heroCard.getBoundingClientRect();
-    top.classList.toggle('solid', r.bottom < 80);
+    top.classList.toggle('solid', scrollY > 40);
     if (reduce) return;
     const p = clamp(-r.top / (r.height * .9));
     target = p * (FRAMES - 1);
@@ -637,20 +645,6 @@ footer b{color:var(--ink)}
       if (e.key === 'ArrowLeft') select((i + 2) % 3, true);
     });
   });
-
-  /* checklist */
-  const items = $$('.citem');
-  let saved = [];
-  try { saved = JSON.parse(localStorage.getItem('sif-checklist') || '[]'); } catch (e) {}
-  function sync() {
-    $('#done').textContent = items.filter(b => b.getAttribute('aria-checked') === 'true').length;
-    try { localStorage.setItem('sif-checklist', JSON.stringify(items.map(b => b.getAttribute('aria-checked') === 'true'))); } catch (e) {}
-  }
-  items.forEach((b, i) => {
-    if (saved[i]) b.setAttribute('aria-checked', 'true');
-    b.addEventListener('click', () => { b.setAttribute('aria-checked', b.getAttribute('aria-checked') !== 'true'); sync(); });
-  });
-  sync();
 
   /* FAQ */
   $$('.qa button').forEach(b => b.addEventListener('click', () => {
