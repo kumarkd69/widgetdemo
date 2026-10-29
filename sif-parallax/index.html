@@ -318,6 +318,26 @@ footer b{color:var(--ink)}
   .bcard{padding:var(--s4) var(--s3)}
   .tabs{border-radius:var(--r)}
 }
+/* ---------- short phones (e.g. 360x740): tighter rhythm so each section still fits one screen ---------- */
+@media (max-width:767px) and (max-height:780px){
+  :root{--sec:32px;--t-h2:24px}
+  .head{margin-bottom:var(--s3);gap:var(--s2)}
+  .fcard,.wcard,.scard,.dcard,.rcard{padding:var(--s3)}
+  .fmain .amt b{font-size:40px}
+  .wcard{min-height:150px;gap:var(--s4)}
+  .scard svg{width:40px;height:40px;margin-bottom:0}
+  .tabs{margin-bottom:var(--s3)}
+  .der-head{margin-bottom:var(--s3)}
+  .der-head p{font-size:var(--t-xs)}
+  th,td{padding:6px 10px}
+  thead th{padding-block:8px}
+  .band{padding:var(--s3);margin-top:var(--s3)}
+  .band .gauge svg{max-width:120px}
+  .qa button{min-height:44px;padding:10px var(--s3);font-size:var(--t-xs)}
+  .ans p{font-size:var(--t-xs)}
+  .scard p,.band p{font-size:var(--t-xs)}
+  .band .gauge svg{max-width:100px}
+}
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important}
   html{scroll-behavior:auto}
